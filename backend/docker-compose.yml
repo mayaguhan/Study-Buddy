@@ -9,9 +9,9 @@ services:
   ##################################
   user:
     build:
-      context: ./
+      context: ./user
       dockerfile: user.Dockerfile
-    image: yuquanyeo/user:esd
+    image: mayaguhan/user:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/user
@@ -25,57 +25,12 @@ services:
   ##################################
   homework:
     build:
-      context: ./
+      context: ./homework
       dockerfile: homework.Dockerfile
-    image: yuquanyeo/homework:esd
+    image: mayaguhan/homework:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/homework
       PYTHONUNBUFFERED: 1
     ports:
       - "5100:5100"
-
-  ####################################
-  # RabbitMQ: The messaging broker   
-  ####################################
-  rabbitmq:
-    image: rabbitmq:3-management
-    hostname: esd-rabbit
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes: 
-      - rabbitmq_data:/var/lib/rabbitmq
-      
-  #################################################
-  # Activity Log: The Activity Log microservice
-  #################################################
-  activity_log:
-    build:
-      context: ./
-      dockerfile: activity_log.Dockerfile
-    image: yuquanyeo/activity_log:esd
-    restart: always
-    depends_on:
-      - rabbitmq
-    environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
-      PYTHONUNBUFFERED: 1
-
-  ###################################
-  # Error: The Error microservice
-  ###################################
-  error:
-    build:
-      context: ./
-      dockerfile: error.Dockerfile
-    image: yuquanyeo/error:esd
-    restart: always
-    depends_on:
-      - rabbitmq
-    environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
-      PYTHONUNBUFFERED: 1
