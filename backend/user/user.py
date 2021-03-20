@@ -89,9 +89,8 @@ def create_user(username):
                 "message": "User already exists."
             }
         ), 400
-
     data = request.get_json()
-    user = User(username, **data)
+    user = User(None, **data)
 
     try:
         db.session.add(user)
