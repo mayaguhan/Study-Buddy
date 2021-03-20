@@ -116,8 +116,21 @@ def create_user(username):
 
 @app.route("/user/<string:username>", methods=['PUT'])
 def update_user(username):
-    user = User.query.filter_by(username=username).first()
-    if user:
+    try:
+        user = User.query.filter_by(username=username).first()
+
+        if not user:
+            return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "username": username
+                },
+                "message": "User not found."
+            }
+        ), 404
+
+        
         data = request.get_json()
         if data['username']:
             user.username = data['username']
@@ -135,16 +148,18 @@ def update_user(username):
                 "code": 200,
                 "data": user.json()
             }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "data": {
-                "username": username
-            },
-            "message": "User not found."
-        }
-    ), 404
+        ), 200
+    
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "order_id": order_id
+                },
+                "message": "An error occurred while updating the order. " + str(e)
+            }
+        ), 500  
 
 
 @app.route("/user/<string:username>", methods=['DELETE'])

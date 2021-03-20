@@ -9,9 +9,9 @@ services:
   ##################################
   user:
     build:
-      context: ./user
+      context: user
       dockerfile: user.Dockerfile
-    image: yuquanyeo/user:esd
+    image: mayaguhan/user:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/user
@@ -25,9 +25,9 @@ services:
   ##################################
   homework:
     build:
-      context: ./homework
+      context: homework
       dockerfile: homework.Dockerfile
-    image: yuquanyeo/homework:esd
+    image: mayaguhan/homework:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/homework
