@@ -89,6 +89,9 @@ def create_liaison():
                 "message": "An error occurred creating the Liaison."
             }
         ), 500
+
+
+    result = notifyStudent(data)
     
     return jsonify(
         {
@@ -139,6 +142,38 @@ def update_liaison(liaise_id):
         ), 500
 
 
+@app.route("/liaise/<string:liaise_id>", methods=['DELETE'])
+def delete_liaison(liaise_id):
+    liaison = Liaise.query.filter_by(liaise_id=liaise_id).first()
+
+    if liaison:
+        db.session.delete(liaison)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                "liaise_id": liaise_id
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "liaise_id": liaise_id
+            },
+            "message": "Liaison not found."
+        }
+    )
+
+
+
+def notifyStudent(data):
+
+    # Invoke notification microservice to email student
+
+    print("Please wait")
 
 
 

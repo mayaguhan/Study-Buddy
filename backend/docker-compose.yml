@@ -51,4 +51,27 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5200:5200"
+
+
+  ##################################
+  # Accept Offering: The Accept Offering microservice
+  ##################################
+
+  accept_offering:
+    build:
+      context: accept_offering
+      dockerfile: accept_offering.Dockerfile
+    image: mayaguhan/accept_offering:esd
+    restart: always
+    depends_on:
+      - homework
+      - liaise
+      - user
+    environment:
+      homework_URL: http://localhost:5100/homework
+      user_URL: http://localhost:5000/user
+      liaise_URL: http://localhost:5200/liaise
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5300:5300"
       

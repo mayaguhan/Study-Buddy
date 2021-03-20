@@ -135,5 +135,50 @@ def delete_homework(homework_id):
         }
     ), 404
 
+
+@app.route("/homework/<string:homework_id>", methods=['PUT'])
+def update_status(homework_id):
+    try:
+        homework = Homework.query.filter_by(homework_id=homework_id).first()
+        if not homework:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "homework_id": homework_id
+                    },
+                    "message": "Homework not found."
+                }
+            ), 404
+        
+        # Homework is present. Time to update Status
+        data = request.get_json()
+        if data['status']:
+            homework.status = data['status']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": homework.json()
+                }
+            ), 200
+    
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "order_id": order_id
+                },
+                "message": "An error occurred while updating the order. " + str(e)
+            }
+        ), 500
+
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5100, debug=True)
