@@ -17,19 +17,26 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), nullable=False)
+    telegram_id = db.Column(db.String(20), nullable=False)
     contact = db.Column(db.String(11), nullable=False)
     email = db.Column(db.String(30), nullable=False)
     photo = db.Column(db.String(45), nullable=False)
 
-    def __init__(self, user_id, username, contact, email, photo):
+    def __init__(self, user_id, username, telegram_id, contact, email, photo):
         self.user_id = user_id
         self.username = username
+        self.telegram_id = telegram_id
         self.contact = contact
         self.email = email
         self.photo = photo
 
     def json(self):
-        return {"user_id": self.user_id, "username": self.username, "contact": self.contact, "email": self.email, "photo": self.photo}
+        return {"user_id": self.user_id, 
+                "username": self.username, 
+                "telegram_id": self.telegram_id, 
+                "contact": self.contact, 
+                "email": self.email, 
+                "photo": self.photo}
 
 
 @app.route("/user")
@@ -115,6 +122,8 @@ def update_user(username):
         data = request.get_json()
         if data['username']:
             user.username = data['username']
+        if data['telegram_id']:
+            user.username = data['telegram_id']
         if data['contact']:
             user.contact = data['contact']
         if data['email']:

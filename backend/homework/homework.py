@@ -24,8 +24,9 @@ class Homework(db.Model):
     price = db.Column(db.Float(precision=2), nullable=False)
     deadline = db.Column(db.DateTime, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now())
+    status = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, homework_id, student_id, subject, title, description, price, deadline):
+    def __init__(self, homework_id, student_id, subject, title, description, price, deadline, status):
         self.homework_id = homework_id
         self.student_id = student_id
         self.subject = subject
@@ -33,6 +34,7 @@ class Homework(db.Model):
         self.description = description
         self.price = price
         self.deadline = deadline
+        self.status = status
 
     def json(self):
         return {"homework_id": self.homework_id, 
@@ -42,7 +44,8 @@ class Homework(db.Model):
                 "description": self.description, 
                 "price": self.price, 
                 "deadline": self.deadline, 
-                "created": self.created}
+                "created": self.created,
+                "status": self.status}
 
 
 @app.route("/homework")

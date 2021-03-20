@@ -1,4 +1,4 @@
-var get_all_URL = "http://localhost:5000/user";
+var user_url = "http://localhost:5000/user";
 
 var app = new Vue({
     el: "#app",
@@ -11,8 +11,12 @@ var app = new Vue({
         isbn13: "",
         "users": [],
         message: "There is a problem retrieving users data, please try again later.",
-        newISBN13: "",
-        userAdded: false,
+        userAdded: false, 
+        user_id: "",
+        newUsername: "",
+        newTelegramId: "",
+        newContact: "",
+        newEmail: "",
         addUserError: "",
         orderedUser: "",
         orderPlaced: false,
@@ -21,7 +25,7 @@ var app = new Vue({
     methods: {
         getAllUsers: function () {
             const response =
-                fetch(get_all_URL)
+                fetch(user_url)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -37,9 +41,8 @@ var app = new Vue({
         },
 
         findUser: function () {
-            console.log(this.user_id);
             const response =
-                fetch(`${get_all_URL}/${this.user_id}`)
+                fetch(`${user_url}/${this.user_id}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -61,13 +64,14 @@ var app = new Vue({
 
             let jsonData = JSON.stringify({
                 username: this.newUsername,
+                telegram_id: this.newTelegramId,
                 contact: this.newContact,
                 email: this.newEmail,
                 photo: "none.png"
             });
             console.log(jsonData);
 
-            fetch(`${get_all_URL}/${this.   name}`,
+            fetch(`${user_url}/${this.newUsername}`,
                 {
                     method: "POST",
                     headers: {
@@ -80,13 +84,10 @@ var app = new Vue({
                     console.log(data);
                     result = data.data;
                     console.log(result);
-                    // 3 cases
                     switch (data.code) {
                         case 201:
                             this.userAdded = true;
-                            // refresh user list
                             this.getAllUsers();
-                            // an alternate way is to add this one element into this.users
                             break;
                         case 400:
                         case 500:
@@ -99,7 +100,6 @@ var app = new Vue({
         },
     },
     created: function () {
-        // on Vue instance created, load the user list
         this.getAllUsers();
     }
 });

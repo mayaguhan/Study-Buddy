@@ -1,7 +1,7 @@
 //local storage
 let currentUser_id = 1;
 
-var get_all_URL = "http://localhost:5100/homework";
+var homework_url = "http://localhost:5100/homework";
 
 var app = new Vue({
     el: "#app",
@@ -20,11 +20,17 @@ var app = new Vue({
         orderedHomework: "",
         orderPlaced: false,
         orderSuccessful: false,
+        homework_id: "",
+        newSubject: "",
+        newTitle: "",
+        newDescription: "",
+        newPrice: "",
+        newDeadline: ""
     },
     methods: {
         getAllHomeworks: function () {
             const response =
-                fetch(get_all_URL)
+                fetch(homework_url)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -43,7 +49,7 @@ var app = new Vue({
         findHomework: function () {
             console.log(this.homework_id);
             const response =
-                fetch(`${get_all_URL}/${this.homework_id}`)
+                fetch(`${homework_url}/${this.homework_id}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -74,7 +80,7 @@ var app = new Vue({
             console.log(this.newDeadline);
             console.log(jsonData);
 
-            fetch(`${get_all_URL}/addHomework`, {
+            fetch(`${homework_url}/addHomework`, {
                     method: "POST",
                     headers: {
                         "Content-type": "application/json"
@@ -102,7 +108,6 @@ var app = new Vue({
         },
     },
     created: function () {
-        // on Vue instance created, load the homework list
         this.getAllHomeworks();
     }
 });

@@ -27,6 +27,7 @@
                         <tr>
                             <th>UserID</th>
                             <th>Username</th>
+                            <th>Telegram</th>
                             <th>Contact</th>
                             <th>Email</th>
                             <th>Photo</th>
@@ -35,6 +36,7 @@
                         <tr v-for="user in users">
                             <td>{{ user.user_id }}</td>
                             <td>{{ user.username }}</td>
+                            <td>{{ user.telegram_id }}</td>
                             <td>{{ user.contact }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.photo }}</td>
@@ -54,6 +56,10 @@
                 <div class="form-group">
                     <label for="Username">Username</label>
                     <input v-model="newUsername" type="text" class="form-control" id="username" placeholder="Enter Username">
+                </div>
+                <div class="form-group">
+                    <label for="Telegram _ID">Telegram ID</label>
+                    <input v-model="newTelegramId" type="text" class="form-control" id="telegramId" placeholder="Enter Telegram ID">
                 </div>
                 <div class="form-group">
                     <label for="contact">Contact</label>
