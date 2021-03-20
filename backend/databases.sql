@@ -148,11 +148,11 @@ DROP TABLE IF EXISTS `liaise`.`liaise` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `liaise`.`liaise` (
-  `liaise_id` INT NOT NULL,
+  `liaise_id` INT NOT NULL AUTO_INCREMENT,
   `homework_id` INT NOT NULL,
   `tutor_id` INT NOT NULL,
   `offering` DECIMAL(10,2) NOT NULL,
-  `status` VARCHAR(20) NOT NULL DEFAULT 'pending',
+  `status` VARCHAR(20) NULL DEFAULT 'pending',
   PRIMARY KEY (`liaise_id`))
 ENGINE = InnoDB;
 

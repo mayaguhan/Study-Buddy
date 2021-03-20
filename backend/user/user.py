@@ -114,52 +114,84 @@ def create_user(username):
     ), 201
 
 
-@app.route("/user/<string:username>", methods=['PUT'])
-def update_user(username):
-    try:
-        user = User.query.filter_by(username=username).first()
 
-        if not user:
-            return jsonify(
-            {
-                "code": 404,
-                "data": {
-                    "username": username
-                },
-                "message": "User not found."
-            }
-        ), 404
+# Does not work at the moment
+
+# @app.route("/user/<string:username>", methods=['PUT'])
+# def update_user(username):
+#     try:
+#         user = User.query.filter_by(username=username).first()
+
+#         if not user:
+#             return jsonify(
+#             {
+#                 "code": 404,
+#                 "data": {
+#                     "username": username
+#                 },
+#                 "message": "User not found."
+#             }
+#         ), 404
 
         
-        data = request.get_json()
-        if data['username']:
-            user.username = data['username']
-        if data['telegram_id']:
-            user.username = data['telegram_id']
-        if data['contact']:
-            user.contact = data['contact']
-        if data['email']:
-            user.email = data['email'] 
-        if data['photo']:
-            user.photo = data['photo'] 
-        db.session.commit()
-        return jsonify(
-            {
-                "code": 200,
-                "data": user.json()
-            }
-        ), 200
+#         data = request.get_json()
+#         if data['username']:
+#             user.username = data['username']
+#             db.session.commit()
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "data": user.json()
+#                 }
+#             ), 200
+#         if data['telegram_id']:
+#             user.username = data['telegram_id']
+#             db.session.commit()
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "data": user.json()
+#                 }
+#             ), 200
+#         if data['contact']:
+#             user.contact = data['contact']
+#             db.session.commit()
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "data": user.json()
+#                 }
+#             ), 200
+#         if data['email']:
+#             user.email = data['email'] 
+#             db.session.commit()
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "data": user.json()
+#                 }
+#             ), 200
+#         if data['photo']:
+#             user.photo = data['photo'] 
+#             db.session.commit()
+#             return jsonify(
+#                 {
+#                     "code": 200,
+#                     "data": user.json()
+#                 }
+#             ), 200
+        
     
-    except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "order_id": order_id
-                },
-                "message": "An error occurred while updating the order. " + str(e)
-            }
-        ), 500  
+#     except Exception as e:
+#         return jsonify(
+#             {
+#                 "code": 500,
+#                 "data": {
+#                     "username": username
+#                 },
+#                 "message": "An error occurred while updating the user. " + str(e)
+#             }
+#         ), 500  
 
 
 @app.route("/user/<string:username>", methods=['DELETE'])
@@ -173,7 +205,8 @@ def delete_user(username):
                 "code": 200,
                 "data": {
                     "username": username
-                }
+                },
+                "message": "User " + username + " has been successfully removed"
             }
         )
     return jsonify(

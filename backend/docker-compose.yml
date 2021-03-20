@@ -21,7 +21,7 @@ services:
 
 
   ##################################
-  # User: The Homework  microservice
+  # Homework: The Homework  microservice
   ##################################
   homework:
     build:
@@ -34,3 +34,21 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5100:5100"
+
+
+  ##################################
+  # Liaise: The Liaise  microservice
+  ##################################
+
+  liaise:
+    build:
+      context: liaise
+      dockerfile: liaise.Dockerfile
+    image: mayaguhan/liaise:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/liaise
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5200:5200"
+      
