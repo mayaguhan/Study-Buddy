@@ -11,9 +11,9 @@ app = Flask(__name__)
 CORS(app)
 
 
-user_URL = environ.get('user_URL') or "http://localhost:5000/user"
-homework_URL = environ.get('homework_URL') or "http://localhost:5100/homework"
-liaise_URL = environ.get('liaise_URL') or "http://localhost:5200/liaise"
+user_URL = environ.get('user_URL') or "http://user:5000/user"
+homework_URL = environ.get('homework_URL') or "http://homework:5100/homework"
+liaise_URL = environ.get('liaise_URL') or "http://liaise:5200/liaise"
 
 
 # Homework_id, Liaise_id and status must be passed as JSON.
@@ -55,6 +55,7 @@ def accept_offering():
 
 
 def processAcceptance(offering):
+    #offering --> Homework_id, Liaise_id
 
     #Invoke homework microservice to update status
     print('\n-----Invoking homework microservice-----')
@@ -62,7 +63,13 @@ def processAcceptance(offering):
     print(homework_id)
     updated_homework_URL = homework_URL + '/' + str(homework_id)
     print(updated_homework_URL)
-    homework_result = invoke_http(updated_homework_URL, method='PUT', json=offering)
+
+    update_homework_status = {
+        "homework_id": homework_id,
+        "status": 'Pending'
+    }
+
+    homework_result = invoke_http(updated_homework_URL, method='PUT', json=update_homework_status)
     print('homework_result:', homework_result)
 
     
@@ -84,7 +91,11 @@ def processAcceptance(offering):
     print('\n-----Invoking liaise microservice-----')
     liaise_id = offering['liaise_id']
     updated_liaise_URL = liaise_URL + '/' + str(liaise_id)
-    liaise_result = invoke_http(updated_liaise_URL, method='PUT', json=offering)
+    update_liaise_status = {
+        "liaise_id": liaise_id,
+        "status": "Accepted"
+    }
+    liaise_result = invoke_http(updated_liaise_URL, method='PUT', json=update_liaise_status)
     print('liaise_result:', liaise_result)
 
     
