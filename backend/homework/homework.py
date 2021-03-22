@@ -24,9 +24,9 @@ class Homework(db.Model):
     price = db.Column(db.Float(precision=2), nullable=False)
     deadline = db.Column(db.DateTime, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now())
-    status = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=True, default='Unsolved')
 
-    def __init__(self, homework_id, student_id, subject, title, description, price, deadline, status):
+    def __init__(self, homework_id, student_id, subject, title, description, price, deadline):
         self.homework_id = homework_id
         self.student_id = student_id
         self.subject = subject
@@ -34,7 +34,6 @@ class Homework(db.Model):
         self.description = description
         self.price = price
         self.deadline = deadline
-        self.status = status
 
     def json(self):
         return {"homework_id": self.homework_id, 
@@ -97,9 +96,6 @@ def create_homework():
         return jsonify(
             {
                 "code": 500,
-                "data": {
-                    "homework_id": "ABC"
-                },
                 "message": "An error occurred creating the homework."
             }
         ), 500
@@ -136,6 +132,7 @@ def delete_homework(homework_id):
     ), 404
 
 
+#Update Homework Status
 @app.route("/homework/<string:homework_id>", methods=['PUT'])
 def update_status(homework_id):
     try:
@@ -150,8 +147,6 @@ def update_status(homework_id):
                     "message": "Homework not found."
                 }
             ), 404
-        
-        # Homework is present. Time to update Status
         data = request.get_json()
         if data['status']:
             homework.status = data['status']
@@ -162,7 +157,6 @@ def update_status(homework_id):
                     "data": homework.json()
                 }
             ), 200
-    
     except Exception as e:
         return jsonify(
             {

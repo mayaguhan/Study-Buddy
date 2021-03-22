@@ -11,15 +11,10 @@ var app = new Vue({
         }
     },
     data: {
-        isbn13: "",
         "homeworks": [],
         message: "There is a problem retrieving homeworks data, please try again later.",
-        newISBN13: "",
         homeworkAdded: false,
         addHomeworkError: "",
-        orderedHomework: "",
-        orderPlaced: false,
-        orderSuccessful: false,
         homework_id: "",
         newSubject: "",
         newTitle: "",
@@ -43,7 +38,6 @@ var app = new Vue({
                     .catch(error => {
                         console.log(this.message + error);
                     });
-
         },
 
         findHomework: function () {
@@ -74,8 +68,7 @@ var app = new Vue({
                 title: this.newTitle, 
                 description: this.newDescription, 
                 price: this.newPrice,
-                deadline: this.newDeadline,
-                status: "unsolved"
+                deadline: this.newDeadline
             });
             console.log(this.newDeadline);
             console.log(jsonData);

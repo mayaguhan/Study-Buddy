@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `homework` (
   `price` decimal(10,2) NOT NULL,
   `deadline` timestamp NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` varchar(20) NOT NULL,
+  `status` VARCHAR(20) NULL DEFAULT 'Unsolved',
   PRIMARY KEY (`homework_id`)
 ) 
 ENGINE=InnoDB;
@@ -109,11 +109,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `homework`;
-INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (1, 1, 'Math', 'Help with Math Homework', 'Description of homework', 5.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'unsolved');
-INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (2, 2, 'English', 'English Homework', 'Description of homework', 5.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'unsolved');
-INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (3, 1, 'Science', 'HELP SCIENCE', 'Description of homework', 6.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'unsolved');
-INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (4, 3, 'English', 'English Assignment', 'Description of homework', 10.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'unsolved');
-INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (5, 2, 'Science', 'Science Labs', 'Description of homework', 6.50, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'unsolved');
+INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (1, 1, 'Math', 'Help with Math Homework', 'Description of homework', 5.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (2, 2, 'English', 'English Homework', 'Description of homework', 5.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (3, 1, 'Science', 'HELP SCIENCE', 'Description of homework', 6.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (4, 3, 'English', 'English Assignment', 'Description of homework', 10.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+INSERT INTO `homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (5, 2, 'Science', 'Science Labs', 'Description of homework', 6.50, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
 
 COMMIT;
 
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `liaise`.`liaise` (
   `homework_id` INT NOT NULL,
   `tutor_id` INT NOT NULL,
   `offering` DECIMAL(10,2) NOT NULL,
-  `status` VARCHAR(20) NULL DEFAULT 'pending',
+  `status` VARCHAR(20) NULL DEFAULT 'Pending',
   PRIMARY KEY (`liaise_id`))
 ENGINE = InnoDB;
 
@@ -167,18 +167,18 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `liaise`;
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (1, 1, 2, 6.00, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (2, 1, 3, 5.50, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (3, 1, 4, 7.00, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (4, 2, 1, 5.50, 'accepted');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (5, 2, 3, 6.00, 'rejected');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (6, 2, 4, 6.50, 'rejected');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (7, 3, 1, 6.00, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (8, 3, 4, 6.10, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (9, 3, 5, 6.50, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (10, 4, 3, 11.10, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (11, 4, 5, 11.00, 'pending');
-INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (12, 4, 1, 10.50, 'pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (1, 1, 2, 6.00, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (2, 1, 3, 5.50, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (3, 1, 4, 7.00, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (4, 2, 1, 5.50, 'Accepted');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (5, 2, 3, 6.00, 'Rejected');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (6, 2, 4, 6.50, 'Rejected');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (7, 3, 1, 6.00, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (8, 3, 4, 6.10, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (9, 3, 5, 6.50, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (10, 4, 3, 11.10, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (11, 4, 5, 11.00, 'Pending');
+INSERT INTO `liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (12, 4, 1, 10.50, 'Pending');
 
 COMMIT;
 

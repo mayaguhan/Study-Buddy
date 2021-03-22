@@ -59,7 +59,8 @@ def get_all():
     ), 404
 
 
-@app.route("/user/<string:username>")
+# Get user by Username
+@app.route("/user/username/<string:username>")
 def find_by_username(username):
     user = User.query.filter_by(username=username).first()
     if user:
@@ -76,6 +77,24 @@ def find_by_username(username):
         }
     ), 404
 
+
+# Get User by user_id
+@app.route("/user/user_id/<string:user_id>")
+def find_by_userId(user_id):
+    user = User.query.filter_by(user_id=user_id).first()
+    if user:
+        return jsonify(
+            {
+                "code": 200,
+                "data": user.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "User not found."
+        }
+    ), 404
 
 @app.route("/user/<string:username>", methods=['POST'])
 def create_user(username):
