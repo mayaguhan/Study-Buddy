@@ -68,9 +68,9 @@ services:
       - liaise
       - user
     environment:
-      homework_URL: http://localhost:5100/homework
-      user_URL: http://localhost:5000/user
-      liaise_URL: http://localhost:5200/liaise
+      homework_URL: http://homework:5100/homework
+      user_URL: http://user:5000/user
+      liaise_URL: http://liaise:5200/liaise
       PYTHONUNBUFFERED: 1
     ports:
       - "5300:5300"

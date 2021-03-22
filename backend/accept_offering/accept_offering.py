@@ -16,10 +16,11 @@ homework_URL = environ.get('homework_URL') or "http://localhost:5100/homework"
 liaise_URL = environ.get('liaise_URL') or "http://localhost:5200/liaise"
 
 
+# Homework_id, Liaise_id and status must be passed as JSON.
 
 @app.route("/accept_offering", methods=['POST'])
 def accept_offering():
-    # Check for input format and data of the reques tare JSON
+    # Check for input format and data of the request tare JSON
 
     if request.is_json:
         try:
@@ -57,14 +58,16 @@ def processAcceptance(offering):
 
     #Invoke homework microservice to update status
     print('\n-----Invoking homework microservice-----')
-    homework_id = offering.homework_id
-    homework_URL = homework_URL + '/' + homework_id
-    homework_result = invoke_http(homework_URL, method='PUT', json=offering)
-    print('homework_result:', order_result)
+    homework_id = offering['homework_id']
+    print(homework_id)
+    updated_homework_URL = homework_URL + '/' + str(homework_id)
+    print(updated_homework_URL)
+    homework_result = invoke_http(updated_homework_URL, method='PUT', json=offering)
+    print('homework_result:', homework_result)
 
     
     homework_code = homework_result["code"]
-    if code not in range(200,300):
+    if homework_code not in range(200,300):
         print("Error in updating homework")
         return {
             "code": 400,
@@ -79,15 +82,15 @@ def processAcceptance(offering):
 
     #Invoke user liaise microservice to update status
     print('\n-----Invoking liaise microservice-----')
-    liaise_id = offering.liaise_id
-    liaise_URL = liaise_URL + '/' + liaise_id
-    liaise_result = invoke_http(liaise_URL, method='PUT', json=offering)
+    liaise_id = offering['liaise_id']
+    updated_liaise_URL = liaise_URL + '/' + str(liaise_id)
+    liaise_result = invoke_http(updated_liaise_URL, method='PUT', json=offering)
     print('liaise_result:', liaise_result)
 
     
     
     liaise_code = liaise_result["code"]
-    if code not in range(200,300):
+    if liaise_code not in range(200,300):
         print("Error in updating homework")
         return {
             "code": 400,
@@ -100,10 +103,20 @@ def processAcceptance(offering):
     # Implementation of error handling --> AMQP
 
 
+    # Return update result
+    return {
+        "code": 201,
+        "data": {
+            "homework_result": homework_result,
+            "liaise_result": liaise_result
+        }
+    }
+
+
 
 
 if __name__ == "__main__":
-    print("This is flask " + os.path.basename(__file__) + " for placing an order...")
+    print("This is flask " + os.path.basename(__file__) + " for placing an acceptance request...")
     app.run(host="0.0.0.0", port=5300, debug=True)
 
 
