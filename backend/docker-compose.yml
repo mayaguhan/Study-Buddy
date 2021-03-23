@@ -11,7 +11,7 @@ services:
     build:
       context: user
       dockerfile: user.Dockerfile
-    image: yuquanyeo/user:esd
+    image: mayaguhan/user:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_user
@@ -27,7 +27,7 @@ services:
     build:
       context: homework
       dockerfile: homework.Dockerfile
-    image: yuquanyeo/homework:esd
+    image: mayaguhan/homework:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_homework
@@ -44,7 +44,7 @@ services:
     build:
       context: liaise
       dockerfile: liaise.Dockerfile
-    image: yuquanyeo/liaise:esd
+    image: mayaguhan/liaise:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_liaise
@@ -61,17 +61,50 @@ services:
     build:
       context: accept_offering
       dockerfile: accept_offering.Dockerfile
-    image: yuquanyeo/accept_offering:esd
+    image: mayaguhan/accept_offering:esd
     restart: always
     depends_on:
       - homework
       - liaise
       - user
+      - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       homework_URL: http://homework:5100/homework
       user_URL: http://user:5000/user
       liaise_URL: http://liaise:5200/liaise
       PYTHONUNBUFFERED: 1
     ports:
       - "5300:5300"
+
+
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
       
+  ###################################
+  # Error: The Error microservice
+  ###################################
+  error:
+    build:
+      context: amqp_error
+      dockerfile: error.Dockerfile
+    image: mayaguhan/error:esd
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1

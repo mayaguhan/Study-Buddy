@@ -4,3 +4,4 @@ mysql-connector-python==8.0.22
 Flask-Cors==3.0.10
 requests==2.25.1
 SQLAlchemy<1.4
+pika==1.2.0

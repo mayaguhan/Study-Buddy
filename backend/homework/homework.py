@@ -162,9 +162,9 @@ def update_status(homework_id):
             {
                 "code": 500,
                 "data": {
-                    "order_id": order_id
+                    "homework": homework_id
                 },
-                "message": "An error occurred while updating the order. " + str(e)
+                "message": "An error occurred while updating the homework. " + str(e)
             }
         ), 500
 

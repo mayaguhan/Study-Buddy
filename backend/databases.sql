@@ -45,7 +45,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 START TRANSACTION;
 USE `sb_user`;
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (0, 'studybuddy', 'studybuddy', 87654321, 'studybuddy@email.com', 'none.png');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (1, 'yuquanyeo', 'yuquanyeo', 81254754, 'yuquanyeo@gmail.com', 'none.png');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (1, 'yuquanyeo', 'yuquanyeo', 81254754, 'yuquanyeo@email.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (2, 'student', 'student', 12345678, 'student@email.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (3, 'tutor', 'tutor', 12345678, 'tutor@email.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (4, 'eklum', 'eklum', 12345678, 'eklum@email.com', 'none.png');
