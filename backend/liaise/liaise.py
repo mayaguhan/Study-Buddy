@@ -21,6 +21,11 @@ class Liaise(db.Model):
     tutor_id = db.Column(db.Integer, nullable=False)
     offering = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(20), nullable=True, default='Pending')
+    student_rating = db.Column(db.Integer, nullable=True)
+    tutor_rating = db.Column(db.Integer, nullable=True)
+    student_remark = db.Column(db.String(200), nullable=True)
+    tutor_remark = db.Column(db.String(200), nullable=True)
+    
 
     def __init__(self, liaise_id, homework_id, tutor_id, offering):
         self.liaise_id = liaise_id
@@ -33,7 +38,11 @@ class Liaise(db.Model):
                 "homework_id": self.homework_id,
                 "tutor_id": self.tutor_id,
                 "offering": self.offering,
-                "status": self.status}
+                "status": self.status,
+                "student_rating": self.student_rating,
+                "tutor_rating": self.tutor_rating,
+                "student_remark": self.student_remark,
+                "tutor_remark": self.tutor_remark}
 
 # Get All Liaise Offerings
 @app.route("/liaise")

@@ -11,7 +11,7 @@ services:
     build:
       context: user
       dockerfile: user.Dockerfile
-    image: mayaguhan/user:esd
+    image: yuquanyeo/user:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_user
@@ -27,7 +27,7 @@ services:
     build:
       context: homework
       dockerfile: homework.Dockerfile
-    image: mayaguhan/homework:esd
+    image: yuquanyeo/homework:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_homework
@@ -44,7 +44,7 @@ services:
     build:
       context: liaise
       dockerfile: liaise.Dockerfile
-    image: mayaguhan/liaise:esd
+    image: yuquanyeo/liaise:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_liaise
@@ -61,12 +61,13 @@ services:
     build:
       context: accept_offering
       dockerfile: accept_offering.Dockerfile
-    image: mayaguhan/accept_offering:esd
+    image: yuquanyeo/accept_offering:esd
     restart: always
     depends_on:
       - homework
       - liaise
       - user
+      - payment
       - rabbitmq
     environment:
       rabbit_host: rabbitmq
@@ -74,9 +75,27 @@ services:
       homework_URL: http://homework:5100/homework
       user_URL: http://user:5000/user
       liaise_URL: http://liaise:5200/liaise
+      payment_URL: http://payment:5400/payment
       PYTHONUNBUFFERED: 1
     ports:
       - "5300:5300"
+
+
+  ##################################
+  # Accept Offering: The Payment microservice
+  ##################################
+
+  payment:
+    build:
+      context: payment
+      dockerfile: payment.Dockerfile
+    image: yuquanyeo/payment:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_payment
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5400:5400"
 
 
   ####################################
@@ -100,7 +119,7 @@ services:
     build:
       context: amqp_error
       dockerfile: error.Dockerfile
-    image: mayaguhan/error:esd
+    image: yuquanyeo/error:esd
     restart: always
     depends_on:
       - rabbitmq

@@ -19,43 +19,50 @@ class Homework(db.Model):
     homework_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String(11), nullable=False)
     subject = db.Column(db.String(20), nullable=False)
+    meeting_type = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
+    image = db.Column(db.String(200), nullable=False)
     deadline = db.Column(db.DateTime, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now())
     status = db.Column(db.String(20), nullable=True, default='Unsolved')
 
-    def __init__(self, homework_id, student_id, subject, title, description, price, deadline):
+    def __init__(self, homework_id, student_id, subject, meeting_type, title, description, price, image, deadline):
         self.homework_id = homework_id
         self.student_id = student_id
         self.subject = subject
+        self.meeting_type = meeting_type
         self.title = title
         self.description = description
         self.price = price
+        self.image = image
         self.deadline = deadline
 
     def json(self):
         return {"homework_id": self.homework_id, 
                 "student_id": self.student_id, 
                 "subject": self.subject, 
+                "meeting_type": self.meeting_type,
                 "title": self.title, 
                 "description": self.description, 
                 "price": self.price, 
+                "image": self.image, 
                 "deadline": self.deadline, 
                 "created": self.created,
                 "status": self.status}
 
 
+# Get All Homework
 @app.route("/homework")
 def get_all():
-    homeworklist = Homework.query.all()
-    if len(homeworklist):
+    homework_list = Homework.query.all()
+    if len(homework_list):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "homeworks": [homework.json() for homework in homeworklist]
+                    "homeworks": [homework.json() for homework in homework_list]
                 }
             }
         )
@@ -67,6 +74,7 @@ def get_all():
     ), 404
 
 
+# Get a Single Homework
 @app.route("/homework/<string:homework_id>")
 def find_by_homework_id(homework_id):
     homework = Homework.query.filter_by(homework_id=homework_id).first()
@@ -85,6 +93,46 @@ def find_by_homework_id(homework_id):
     ), 404
 
 
+# Get All Homework by Status
+@app.route("/homework/homeworkByStatus/<string:status>")
+def get_homework_status(status):
+    homework_list = Homework.query.filter_by(status=status).all()
+    if homework_list:
+        return jsonify(
+            {
+                "code": 200,
+                "liaisons": [homework.json() for homework in homework_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no homework for this status."
+        }
+    ), 404
+
+
+# Get All Homework by Student Id
+@app.route("/homework/homeworkByStudentId/<string:student_id>")
+def get_homework_student(student_id):
+    homework_list = Homework.query.filter_by(student_id=student_id).all()
+    if homework_list:
+        return jsonify(
+            {
+                "code": 200,
+                "liaisons": [homework.json() for homework in homework_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no homework for this user."
+        }
+    ), 404
+
+
+
+# Add a Homework
 @app.route("/homework/addHomework", methods=['POST'])
 def create_homework():
     data = request.get_json()
@@ -107,6 +155,7 @@ def create_homework():
     ), 201
 
 
+# Delete a Homework
 @app.route("/homework/<string:homework_id>", methods=['DELETE'])
 def delete_homework(homework_id):
     homework = Homework.query.filter_by(homework_id=homework_id).first()

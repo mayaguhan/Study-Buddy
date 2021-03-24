@@ -79,9 +79,11 @@ CREATE TABLE IF NOT EXISTS `homework` (
   `homework_id` int(11) NOT NULL AUTO_INCREMENT,
   `student_id` int(11) NOT NULL,
   `subject` varchar(20) NOT NULL,
+  `meeting_type` varchar(20) NOT NULL,
   `title` varchar(30) NOT NULL,
   `description` varchar(200) NOT NULL,
   `price` decimal(10,2) NOT NULL,
+  `image` varchar(200) NOT NULL,
   `deadline` timestamp NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `status` VARCHAR(20) NULL DEFAULT 'Unsolved',
@@ -100,53 +102,11 @@ SHOW WARNINGS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_homework`;
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (1, 1, 'Math', 'Help with Math Homework', 'Description of homework', 5.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (2, 2, 'English', 'English Homework', 'Description of homework', 5.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (3, 1, 'Science', 'HELP SCIENCE', 'Description of homework', 6.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (4, 3, 'English', 'English Assignment', 'Description of homework', 10.00, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Solved');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `title`, `description`, `price`, `deadline`, `created`, `status`) VALUES (5, 2, 'Science', 'Science Labs', 'Description of homework', 6.50, '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
-
-COMMIT;
-
-
-
--- -----------------------------------------------------
--- Table `sb_homework`.`image`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `sb_homework`.`image` ;
-
-SHOW WARNINGS;
-CREATE TABLE IF NOT EXISTS `sb_homework`.`image` (
-  `image_id` INT NOT NULL AUTO_INCREMENT,
-  `homework_id` INT NOT NULL,
-  `image_link` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`image_id`),
-  CONSTRAINT `fk_image_homework`
-    FOREIGN KEY (`homework_id`)
-    REFERENCES `sb_homework`.`homework` (`homework_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-SHOW WARNINGS;
-CREATE INDEX `fk_image_homework_idx` ON `sb_homework`.`image` (`homework_id` ASC);
-
-SHOW WARNINGS;
-
--- -----------------------------------------------------
--- Data for table `sb_homework`.`image`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `sb_homework`;
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (1, 1, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (2, 1, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (3, 2, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (4, 2, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (5, 3, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (6, 3, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (7, 4, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (8, 4, 'image_link');
-INSERT INTO `sb_homework`.`image` (`image_id`, `homework_id`, `image_link`) VALUES (9, 5, 'image_link');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`, `deadline`, `created`, `status`) VALUES (1, 1, 'Math', 'Virtual', 'Help with Math Homework', 'Description of homework', 5.00, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (2, 2, 'English', 'Virtual', 'English Homework', 'Description of homework', 5.00, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Progress');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (3, 1, 'Science', 'Non-Virtual', 'HELP SCIENCE', 'Description of homework', 6.00, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (4, 3, 'English', 'Virtual', 'English Assignment', 'Description of homework', 10.00, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Solved');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (5, 2, 'Science', 'Non-Virtual', 'Science Labs', 'Description of homework', 6.50, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
 
 COMMIT;
 
@@ -178,6 +138,10 @@ CREATE TABLE IF NOT EXISTS `sb_liaise`.`liaise` (
   `tutor_id` INT NOT NULL,
   `offering` DECIMAL(10,2) NOT NULL,
   `status` VARCHAR(20) NULL DEFAULT 'Pending',
+  `student_rating` INT NULL,
+  `tutor_rating` INT NULL,
+  `student_remark` varchar(200) NULL,
+  `tutor_remark` varchar(200) NULL,
   PRIMARY KEY (`liaise_id`))
 ENGINE = InnoDB;
 
@@ -191,7 +155,7 @@ USE `sb_liaise`;
 INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (1, 1, 2, 6.00, 'Pending');
 INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (2, 1, 3, 5.50, 'Pending');
 INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (3, 1, 4, 7.00, 'Pending');
-INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (4, 2, 1, 5.50, 'Accepted');
+INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`, `student_rating`, `tutor_rating`, `student_remark`, `tutor_remark`) VALUES (4, 2, 1, 5.50, 'Accepted', 4, 5, 'Student was cooperative', 'Tutor was very experienced');
 INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (5, 2, 3, 6.00, 'Rejected');
 INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (6, 2, 4, 6.50, 'Rejected');
 INSERT INTO `sb_liaise`.`liaise` (`liaise_id`, `homework_id`, `tutor_id`, `offering`, `status`) VALUES (7, 3, 1, 6.00, 'Pending');
@@ -224,11 +188,11 @@ USE `sb_payment` ;
 DROP TABLE IF EXISTS `sb_payment`.`payment` ;
 
 CREATE TABLE IF NOT EXISTS `sb_payment`.`payment` (
-  `payment_code` VARCHAR(100) NOT NULL,
+  `payment_id` VARCHAR(100) NOT NULL,
   `liaise_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
   `receiver_id` INT NOT NULL,
-  PRIMARY KEY (`payment_code`))
+  PRIMARY KEY (`payment_id`))
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -236,8 +200,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_payment`;
-INSERT INTO `sb_payment`.`payment` (`payment_code`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('12345678', 12, 4, 0);
-INSERT INTO `sb_payment`.`payment` (`payment_code`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('87654321', 12, 0, 4);
-INSERT INTO `sb_payment`.`payment` (`payment_code`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('23456789', 4, 1, 0);
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('12345678', 12, 4, 100);
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('87654321', 12, 100, 4);
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('23456789', 4, 1, 100);
 
 COMMIT;
