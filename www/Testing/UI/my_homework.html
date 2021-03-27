@@ -146,7 +146,7 @@
       var sidebar = new Vue ({
         el: "#sidebarMenu",
         data: {
-          username: "yuquanyeo"
+          username: `${localStorage.getItem("username")}`
         }
 
       });
@@ -159,18 +159,10 @@
               }
           },
           data: {
-              username: "yuquanyeo",
+              username: `${localStorage.getItem("username")}`,
               "homework": [],
-              message: "There is a problem retrieving homework data, please try again later.",
-              // newTitle: "",
-              // newISBN13: "",
-              // newPrice: "",
-              // newAvailability: "",
-              // bookAdded: false,
-              // addBookError: "",
-              // orderedBook: "",
-              // orderPlaced: false,
-              // orderSuccessful: false,
+              message: "There is a problem retrieving homework data, please try again later."
+             
           },
           methods: {
               getAllHomework: function () {

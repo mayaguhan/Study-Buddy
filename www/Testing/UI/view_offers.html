@@ -136,7 +136,7 @@
             var sidebar = new Vue ({
               el: "#sidebarMenu",
               data: {
-                username: "yuquanyeo"
+                username: `${localStorage.getItem("username")}`
               }
       
             });
@@ -149,7 +149,7 @@
                     }
                 },
                 data: {
-                    username: "yuquanyeo",
+                    username: `${localStorage.getItem("username")}`,
                     "homework": [],
                     message: "There is a problem retrieving homework data, please try again later.",
                     // newTitle: "",
