@@ -53,51 +53,53 @@
   </head>
   <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Study Buddy</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <ul class="navbar-nav px-3">
-          <li class="nav-item text-nowrap">
-            <a class="nav-link" href="#">Sign out</a>
-          </li>
-        </ul>
-      </header>
-      
-    <div class="container-fluid">
-        <div class="row">
-          <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-            <div class="position-sticky pt-3">
-              <ul class="nav flex-column">
-                <div class="logo-image center">
-                    <span>
-                      <img src="cat.png" class="rounded img_logo">
-                    </span>
-                </div>
-                <li class="nav-item center">
-                  <a class="nav-link">
-                    {{ username }}
-                  </a>
-                </li>
-                <br>
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="homepage.html">
-                    View All Listings
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="my_homework.html">
-                    Your Homework
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="new_listing.html">
-                    Create New Listing
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Study Buddy</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </header>
+    
+  <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+              <div class="logo-image center">
+                  <span>
+                    <img src="cat.png" class="rounded img_logo">
+                  </span>
+              </div>
+              <li class="nav-item center">
+                <a class="nav-link">
+                  @{{ username }}
+                </a>
+              </li>
+              <br>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="homepage.html">
+                  View All Listings
+                </a>
+              </li>
+              <li class="nav-item" style="list-style-type: none">
+                <a class="nav-link" href="my_homework.html">
+                  Your Homework
+                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="new_listing.html">
+                  Create New Listing
+                </a>
+              </li>
+
+              <li class="nav-item text-nowrap">
+                <a class="nav-link" href="#" style="color: red;">Sign out</a>
+              </li> 
+            </ul>
+          </div>
+        </nav>
 
           <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 align-items-center">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
@@ -106,25 +108,40 @@
 
             <div id="app">
                 <img src="cat.png" class="w-100 h-50" >
-                <h1>{{ homework.title }} </h1> 
-                <h2>S${{ homework.price }} </h2>
+                <h2>{{ homework.title }}</h2> 
+                <h3>S${{ homework.price }}</h3>
+                <br>
                 <h4>Description:</h4>
                 {{ homework.description }}
-                <br>
+                <br> <br>
 
                 <h4>Meeting via:</h4>
-                <p>Zoom</p>
+                <p>{{ homework.meeting_type }}</p>
+
+                <h4>Deadline:</h4>
+                <p>{{ homework.deadline }}</p>
 
                 <!-- to edit -->
                 <div class="input-group col-3 mb-3 align-items-right">
                   <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                   </div>
-                  <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                  <input type="text" v-model="offering" class="form-control" aria-label="Amount (to the nearest dollar)">
                   <!-- <input type="text" class="form-control" placeholder="{{homework.price}}" aria-label="Recipient's username" aria-describedby="basic-addon2"> -->
                   <div class="input-group-append">
-                    <a href="#" class="btn btn-outline-secondary" type="button">Make offer</a>
+                    <a @click="makeOffer" class="btn btn-outline-secondary" v-on:submit.prevent="onSubmit">Make offer</a>
                   </div>
+
+                </div>
+                
+                <div class="text-success" v-if="offerAdded">
+                  The liaise has been successfully placed! <br>
+                  <br>
+                </div>
+                <div class="text-danger" v-if="makeOfferError!=''">
+                  There is a problem liaising:<br>
+                  {{ makeOfferError}}
+                  <br>
                 </div>
             </div>
 
@@ -156,27 +173,27 @@
         data: {
             username: `${localStorage.getItem("username")}`,
             "homework": [],
-            message: "There is a problem retrieving homework data, please try again later."
+            message: "There is a problem retrieving homework data, please try again later.",
             // newTitle: "",
             // newISBN13: "",
-            // newPrice: "",
+            offering: "",
             // newAvailability: "",
-            // bookAdded: false,
-            // addBookError: "",
+            offerAdded: false,
+            makeOfferError: ""
             // orderedBook: "",
             // orderPlaced: false,
             // orderSuccessful: false,
         },
         methods: {
             findHomework: function () {
-            console.log(`${homeworkID}`);
+            // console.log(`${homeworkID}`);
             const response =
                 fetch(`http://localhost:5100/homework/${homeworkID}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
                         if (data.code === 404) {
-                            // no book in db
+                            // no homework in db
                             this.message = data.message;
                             this.homework = [];
                         } else {
@@ -191,7 +208,47 @@
 
                     });
 
-                  }
+            },
+
+            makeOffer: function () {
+              // reset data
+              this.offerAdded = false;
+              this.makeOfferError = "";
+
+              let jsonData = JSON.stringify({
+                  homework_id: `${homeworkID}`,
+                  tutor_id: `${localStorage.getItem("user_id")}`,
+                  offering: this.offering
+              });
+
+              fetch('http://localhost:5200/liaise/addLiaison',
+                  {
+                      method: "POST",
+                      headers: {
+                          "Content-type": "application/json"
+                      },
+                      body: jsonData
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      console.log(data);
+                      result = data.data;
+                      console.log(result);
+                      
+                      switch (data.code) {
+                          case 201:
+                              this.offerAdded = true;
+
+                              break;
+                          case 400:
+                          case 500:
+                              this.makeOfferError = data.message;
+                              break;
+                          default:
+                              throw `${data.code}: ${data.message}`;
+                      }
+                  })
+              }
         },
         created: function () {
             // on Vue instance created, load the homework list

@@ -65,11 +65,6 @@
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="navbar-nav px-3">
-          <li class="nav-item text-nowrap">
-            <a class="nav-link" href="#">Sign out</a>
-          </li>
-        </ul>
       </header>
       
     <div class="container-fluid">
@@ -96,9 +91,9 @@
                 <li class="nav-item" style="list-style-type: none">
                   <a class="nav-link" href="my_homework.html">
                     Your Homework
-                         <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="#">Open</a></li>
-                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="#">In Progress</a></li>
-                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="#">Completed</a></li>
+                         <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
+                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -106,6 +101,10 @@
                     Create New Listing
                   </a>
                 </li>
+
+                <li class="nav-item text-nowrap">
+                  <a class="nav-link" href="#" style="color: red;">Sign out</a>
+                </li> 
               </ul>
             </div>
           </nav>
@@ -136,7 +135,7 @@
                 </a>
       
               </div>
-              <!-- <div class="text-danger" v-if="!hasHomework">{{ message }}</div> -->
+              <div class="text-danger" v-if="!hasHomework">{{ message }}</div>
             </div>
             
 
@@ -148,7 +147,7 @@
     
 
           <script>
-            localStorage.username = "studybuddy"
+            localStorage.username = "student"
 
             var sidebar = new Vue ({
               el: "#sidebarMenu",
@@ -172,10 +171,10 @@
 
                 },
                 methods: {
-                    getAllHomework: function () {
+                    getAllOpenHomework: function () {
                         // on Vue instance created, load the book list
                         const response =
-                            fetch("http://localhost:5100/homework")
+                            fetch("http://localhost:5100/homework/homeworkByStatus/Unsolved")
                                 .then(response => response.json())
                                 .then(data => {
                                     console.log(response);
@@ -183,7 +182,7 @@
                                         // no homework in db
                                         this.message = data.message;
                                     } else {
-                                        this.homework = data.data.homeworks;
+                                        this.homework = data.homework;
                                     }
                                 })
                                 .catch(error => {
@@ -208,7 +207,7 @@
                                   localStorage.user_id=data.data.user_id;
                                   localStorage.telegram_id=data.data.telegram_id;
                                   localStorage.photo=data.data.photo;
-                                  //console.log(localStorage.getItem("telegram_id"))
+                                  console.log(localStorage.getItem("user_id"))
                                 }
                             })
                             .catch(error => {
@@ -219,129 +218,11 @@
                             });
 
                     },
-                //     addBook: function () {
-                //         // reset data
-                //         this.bookAdded = false;
-                //         this.addBookError = "";
-    
-                //         let jsonData = JSON.stringify({
-                //             title: this.newTitle,
-                //             price: this.newPrice,
-                //             availability: this.newAvailability
-                //         });
-    
-                //         fetch(`${get_all_URL}/${this.newISBN13}`,
-                //             {
-                //                 method: "POST",
-                //                 headers: {
-                //                     "Content-type": "application/json"
-                //                 },
-                //                 body: jsonData
-                //             })
-                //             .then(response => response.json())
-                //             .then(data => {
-                //                 console.log(data);
-                //                 result = data.data;
-                //                 console.log(result);
-                //                 // 3 cases
-                //                 switch (data.code) {
-                //                     case 201:
-                //                         this.bookAdded = true;
-    
-                //                         // refresh book list
-                //                         this.getAllBooks();
-    
-                //                         // an alternate way is to add this one element into this.books
-                //                         break;
-                //                     case 400:
-                //                     case 500:
-                //                         this.addBookError = data.message;
-                //                         break;
-                //                     default:
-                //                         throw `${data.code}: ${data.message}`;
-                //                 }
-                //             })
-                //     },
-                //     placeOrder: function (book) {
-    
-                //         // use this to trigger an error
-                //         // "customer_id": "ERROR",
-                //         this.orderedBook = book;
-                //         fetch(place_order_URL,
-                //             {
-                //                 method: "POST",
-                //                 headers: {
-                //                     "Content-type": "application/json"
-                //                 },
-                //                 body: JSON.stringify(
-                //                     {
-                //                         "customer_id": "Apple TAN",
-                //                         "cart_item": [{
-                //                             "book_id": book.isbn13,
-                //                             "quantity": 1
-                //                         }]
-                //                     })
-                //             })
-                //             .then(response => response.json())
-                //             .then(data => {
-                //                 console.log(data);
-                //                 result = data.data;
-                //                 console.log(result);
-                //                 // 3 cases
-                //                 switch (data.code) {
-                //                     case 201:
-                //                         // 201
-                //                         this.orderSuccessful = true;
-                //                         orderMessage =
-                //                             `Order placed
-                //                             Order Result:
-                //                             ${result.order_result.code}:${result.order_result.data.status}
-    
-                //                             Shipping Result:
-                //                             ${result.shipping_result.code}:${result.shipping_result.message}`;
-                //                         break;
-    
-                //                     case 400:
-                //                         // 400 
-                //                         this.orderSuccessful = true;
-                //                         orderMessage =
-                //                             `Order placed
-                //                             Order Result:
-                //                             ${result.order_result.code}:${result.order_result.data.status}
-    
-                //                             Shipping Result:
-                //                             ${result.shipping_result.code}:${result.shipping_result.message}
-    
-                //                             Error handling:
-                //                             ${data.message}`;
-                //                         break;
-                //                     case 500:
-                //                         // 500 
-                //                         orderMessage =
-                //                             `Order placed with error:
-                //                             Order Result:
-                //                             ${result.order_result.code}:${result.order_result.message}
-    
-                //                             Error handling:
-                //                             ${data.message}`;
-                //                         break;
-                //                     default:
-                //                         orderMessage = `Unexpected error: ${data.code}`;
-                //                         console.log(`Unknown error code : ${data.code}`);
-                //                         break;
-    
-                //                 } // switch
-                //                 console.log(orderMessage);
-                //                 this.orderPlaced = true;
-                //             })
-                //             .catch(error => {
-                //                 console.log("Problem in placing an order. " + error);
-                //             })
-                //     }
+                
                 },
                 created: function () {
                     // on Vue instance created, load the homework list
-                    this.getAllHomework();
+                    this.getAllOpenHomework();
 
                     // on Vue instance created, store user's info
                     this.getUserDetails();

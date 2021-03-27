@@ -87,11 +87,11 @@
                 </a>
               </li>
               <li class="nav-item" style="list-style-type: none">
-                <a class="nav-link active" href="my_homework.html">
+                <a class="nav-link" href="my_homework.html">
                   Your Homework
-                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
-                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
-                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
+                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="open_homework.html">Open</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
@@ -108,7 +108,7 @@
         </nav>
           <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
-              <h1 class="h2">All My Homework</h1>
+              <h1 class="h2">My Homework - Open</h1>
             </div>
             <!-- <div class = "e-card-horizontal"> -->
             <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" /> -->
@@ -126,8 +126,7 @@
                       <h5 class="card-title">{{ aHomework.title }}</h5>
                       <p class="card-text">{{ aHomework.description }}</p>
                       <p class="card-text">$ {{ aHomework.price }}</p>
-                      <p class="card-text" style="font-style:italic; ">{{ aHomework.status }}</p>
-                      <a href="view_offers.html" class="btn btn-outline-primary" style="text-align: center;">View Offers</a>
+                      <a href="view_offers.html" class="btn btn-outline-primary">View Offers</a>
                     </div>
                   </div>
 
@@ -165,10 +164,10 @@
              
           },
           methods: {
-              getAllHomework: function () {
+              getOpenHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentId/${localStorage.getItem("user_id")}`)
+                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/unsolved`)
                           .then(response => response.json())
                           .then(data => {
                               console.log(response);
@@ -191,7 +190,7 @@
           },
           created: function () {
               // on Vue instance created, load the homework list
-              this.getAllHomework();
+              this.getOpenHomework();
           }
       });
     </script>
