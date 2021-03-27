@@ -93,9 +93,12 @@
                     View All Listings
                   </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" style="list-style-type: none">
                   <a class="nav-link" href="my_homework.html">
                     Your Homework
+                         <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="#">Open</a></li>
+                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="#">In Progress</a></li>
+                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="#">Completed</a></li>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -145,13 +148,12 @@
     
 
           <script>
-            var get_all_URL = "http://localhost:5100/homework";
-            var get_user_URL = "http://localhost:5000/user";
+            localStorage.username = "studybuddy"
 
             var sidebar = new Vue ({
               el: "#sidebarMenu",
               data: {
-                username: "yuquanyeo"
+                username: `${localStorage.getItem("username")}`
               }
 
             });
@@ -164,24 +166,16 @@
                     }
                 },
                 data: {
-                    username: "yuquanyeo",
+                    username: `${localStorage.getItem("username")}`,
                     "homework": [],
-                    message: "There is a problem retrieving homework data, please try again later.",
-                    // newTitle: "",
-                    // newISBN13: "",
-                    // newPrice: "",
-                    // newAvailability: "",
-                    // bookAdded: false,
-                    // addBookError: "",
-                    // orderedBook: "",
-                    // orderPlaced: false,
-                    // orderSuccessful: false,
+                    message: "There is a problem retrieving homework data, please try again later."
+
                 },
                 methods: {
                     getAllHomework: function () {
                         // on Vue instance created, load the book list
                         const response =
-                            fetch(get_all_URL)
+                            fetch("http://localhost:5100/homework")
                                 .then(response => response.json())
                                 .then(data => {
                                     console.log(response);
@@ -200,19 +194,21 @@
                                 });
     
                     },
-                    findUser: function () {
-                    console.log(this.username);
-                    const response =
-                        fetch(`${get_user_URL}/${this.username}`)
+                    getUserDetails: function () {
+                      //console.log(this.username);
+                      const response =
+                        fetch(`http://localhost:5000/user/username/${this.username}`)
                             .then(response => response.json())
                             .then(data => {
                                 console.log(response);
                                 if (data.code === 404) {
-                                    // no book in db
+                                    // no user in db
                                     this.message = data.message;
-                                    this.books = [];
                                 } else {
-                                    this.books = [data.data];
+                                  localStorage.user_id=data.data.user_id;
+                                  localStorage.telegram_id=data.data.telegram_id;
+                                  localStorage.photo=data.data.photo;
+                                  //console.log(localStorage.getItem("telegram_id"))
                                 }
                             })
                             .catch(error => {
@@ -346,6 +342,9 @@
                 created: function () {
                     // on Vue instance created, load the homework list
                     this.getAllHomework();
+
+                    // on Vue instance created, store user's info
+                    this.getUserDetails();
                 }
             });
           </script>

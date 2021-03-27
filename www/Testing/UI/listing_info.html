@@ -135,14 +135,13 @@
 
     <script>
 
-      var get_all_URL = "http://localhost:5100/homework";
       let params = new URLSearchParams(location.search);
       var homeworkID = params.get('homework_id');
       //console.log(homeworkID)
       var sidebar = new Vue ({
         el: "#sidebarMenu",
         data: {
-          username: "yuquanyeo"
+          username: `${localStorage.getItem("username")}`
         }
 
       });
@@ -155,7 +154,7 @@
             }
         },
         data: {
-            username: "yuquanyeo",
+            username: `${localStorage.getItem("username")}`,
             "homework": [],
             message: "There is a problem retrieving homework data, please try again later."
             // newTitle: "",
@@ -172,7 +171,7 @@
             findHomework: function () {
             console.log(`${homeworkID}`);
             const response =
-                fetch(`${get_all_URL}/${homeworkID}`)
+                fetch(`http://localhost:5100/homework/${homeworkID}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
