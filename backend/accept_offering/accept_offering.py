@@ -14,7 +14,6 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-user_URL = environ.get('user_URL') or "http://user:5000/user"
 homework_URL = environ.get('homework_URL') or "http://homework:5100/homework"
 liaise_URL = environ.get('liaise_URL') or "http://liaise:5200/liaise"
 
@@ -55,7 +54,6 @@ def processAcceptance(offering):
     print('\n-----Invoking homework microservice-----')
     homework_id = offering['homework_id']
     liaise_id = offering['liaise_id']
-    tutor_id = offering['tutor_id']
 
     updated_homework_URL = homework_URL + '/' + str(homework_id)
     homework_result = invoke_http(updated_homework_URL, method='PUT', json=offering)
@@ -72,7 +70,6 @@ def processAcceptance(offering):
         message = json.dumps(homework_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="homework.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
         #delivery_mode makes the message persistent
-
         print("\nHomework Error Status ({:d}) published to the RabbitMQ Exchange:".format(homework_code), homework_result)
 
 
@@ -130,51 +127,6 @@ def processAcceptance(offering):
     #         },
     #         "message": "There has been an error in updating the liaison. Error has been sent for error handling."
     #     }
-    
-
-
-    
-    #Invoke user microservice to retrieve email
-    updated_user_URL = user_URL + '/user_id/' + str(tutor_id)
-    tutor_result = invoke_http(updated_user_URL, method='GET', json=offering)
-    tutor_code = tutor_result["code"]
-
-
-    #Error Handling
-    if tutor_code not in range(200,300):
-        #Inform error microservice
-        print("\n-----Publishing the user error with routing_key=user.error-----")
-
-        message = json.dumps(tutor_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-        #delivery_mode makes the message persistent
-
-        print("\nUser Error Status ({:d}) published to the RabbitMQ Exchange:".format(tutor_code), tutor_result)
-
-
-        return {
-            "code": 500,
-            "data": {"tutor_result": tutor_result},
-            "message": "Tutor email retrieval failure has been sent for error handling"
-        }
-
-
-
-    # ERROR HANDLING WITHOUT AMQP
-    # if tutor_code not in range(200,300):
-    #     print("Error in retrieving recipient details")
-    #     return {
-    #         "code": 400,
-    #         "data": {
-    #             "tutor_result": tutor_result
-    #         },
-    #         "message": "There has been an error in retrieving recipient details. Error has been sent for error handling."
-    #     }
-    print(tutor_result)
-    print(tutor_result['data']['email']) #Recipient's email?
-
-
-    # Invoke Notification microservice
 
 
     # Return update result
@@ -182,8 +134,7 @@ def processAcceptance(offering):
         "code": 201,
         "data": {
             "homework_result": homework_result,
-            "liaise_result": liaise_result,
-            "tutor_result": tutor_result
+            "liaise_result": liaise_result
         }
     }
 

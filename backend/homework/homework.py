@@ -101,7 +101,7 @@ def get_homework_status(status):
         return jsonify(
             {
                 "code": 200,
-                "liaisons": [homework.json() for homework in homework_list]
+                "homework": [homework.json() for homework in homework_list]
             }
         )
     return jsonify(
@@ -120,7 +120,7 @@ def get_homework_student(student_id):
         return jsonify(
             {
                 "code": 200,
-                "liaisons": [homework.json() for homework in homework_list]
+                "homework": [homework.json() for homework in homework_list]
             }
         )
     return jsonify(
@@ -130,6 +130,25 @@ def get_homework_student(student_id):
         }
     ), 404
 
+
+
+# Get All Homework by Student Id and Status
+@app.route("/homework/homeworkByStudentIdStatus/<string:student_id>/<string:status>")
+def get_homework_student_status(student_id, status):
+    homework_list = Homework.query.filter_by(student_id=student_id, status=status).all()
+    if homework_list:
+        return jsonify(
+            {
+                "code": 200,
+                "homework": [homework.json() for homework in homework_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no homework of this status for this user."
+        }
+    ), 404
 
 
 # Add a Homework

@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_cors import CORS
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
@@ -20,6 +21,7 @@ class Payment(db.Model):
     liaise_id = db.Column(db.Integer, nullable=False)
     sender_id = db.Column(db.Integer, nullable=False)
     receiver_id = db.Column(db.Integer, nullable=False)
+    created = db.Column(db.DateTime, default=datetime.now())
 
 
     def __init__(self, payment_id, liaise_id, sender_id, receiver_id):
@@ -32,7 +34,8 @@ class Payment(db.Model):
         return {"payment_id": self.payment_id,
                 "liaise_id": self.liaise_id,
                 "sender_id": self.sender_id,
-                "receiver_id": self.receiver_id}
+                "receiver_id": self.receiver_id,
+                "created": self.created}
 
 # Get All Payment
 @app.route("/payment")

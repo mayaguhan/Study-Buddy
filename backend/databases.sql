@@ -44,12 +44,13 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_user`;
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (0, 'studybuddy', 'studybuddy', 87654321, 'studybuddy@email.com', 'none.png');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (1, 'yuquanyeo', 'yuquanyeo', 87654321, 'yuquanyeo@gmail.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (2, 'student', 'student', 12345678, 'student@email.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (3, 'tutor', 'tutor', 12345678, 'tutor@email.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (4, 'eklum', 'eklum', 12345678, 'eklum@email.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (5, 'randall', 'randall', 12345678, 'randall@email.com', 'none.png');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (6, 'durant', 'durant', 12345678, 'durant@email.com', 'none.png');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (100, 'studybuddy', 'studybuddy', 12345678, 'studybuddy@email.com', 'none.png');
 
 COMMIT;
 
@@ -192,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `sb_payment`.`payment` (
   `liaise_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
   `receiver_id` INT NOT NULL,
+  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`payment_id`))
 ENGINE = InnoDB;
 
@@ -200,8 +202,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_payment`;
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('12345678', 12, 4, 100);
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('87654321', 12, 100, 4);
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`) VALUES ('23456789', 4, 1, 100);
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`) VALUES ('12345678', 12, 4, 100, '2021-03-15 00:00:00');
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`) VALUES ('87654321', 12, 100, 4, '2021-03-15 00:00:00');
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`) VALUES ('23456789', 4, 1, 100, '2021-03-15 00:00:00');
 
 COMMIT;
