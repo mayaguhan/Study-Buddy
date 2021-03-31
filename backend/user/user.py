@@ -21,14 +21,20 @@ class User(db.Model):
     contact = db.Column(db.String(11), nullable=False)
     email = db.Column(db.String(30), nullable=False)
     photo = db.Column(db.String(45), nullable=False)
+    account_num = db.Column(db.Integer, nullable=False)
+    account_type = db.Column(db.String(20), nullable=False)
+    bank_name = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, user_id, username, telegram_id, contact, email, photo):
+    def __init__(self, user_id, username, telegram_id, contact, email, photo, account_num, account_type, bank_name):
         self.user_id = user_id
         self.username = username
         self.telegram_id = telegram_id
         self.contact = contact
         self.email = email
         self.photo = photo
+        self.account_num = account_num
+        self.account_type = account_type
+        self.bank_name = bank_name
 
     def json(self):
         return {"user_id": self.user_id, 
@@ -36,7 +42,10 @@ class User(db.Model):
                 "telegram_id": self.telegram_id, 
                 "contact": self.contact, 
                 "email": self.email, 
-                "photo": self.photo}
+                "photo": self.photo, 
+                "account_num": self.account_num, 
+                "account_type": self.account_type, 
+                "bank_name": self.bank_name}
 
 
 @app.route("/user")

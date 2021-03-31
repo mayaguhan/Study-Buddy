@@ -22,20 +22,29 @@ class Payment(db.Model):
     sender_id = db.Column(db.Integer, nullable=False)
     receiver_id = db.Column(db.Integer, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now())
+    account_num = db.Column(db.Integer, nullable=False)
+    account_type = db.Column(db.String(20), nullable=False)
+    bank_name = db.Column(db.String(20), nullable=False)
 
 
-    def __init__(self, payment_id, liaise_id, sender_id, receiver_id):
+    def __init__(self, payment_id, liaise_id, sender_id, receiver_id, account_num, account_type, bank_name):
         self.payment_id = payment_id
         self.liaise_id = liaise_id
         self.sender_id = sender_id
         self.receiver_id = receiver_id
+        self.account_num = account_num
+        self.account_type = account_type
+        self.bank_name = bank_name
     
     def json(self):
         return {"payment_id": self.payment_id,
                 "liaise_id": self.liaise_id,
                 "sender_id": self.sender_id,
                 "receiver_id": self.receiver_id,
-                "created": self.created}
+                "created": self.created,
+                "account_num": self.account_num, 
+                "account_type": self.account_type, 
+                "bank_name": self.bank_name}
 
 # Get All Payment
 @app.route("/payment")

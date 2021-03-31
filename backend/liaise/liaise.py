@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 from os import environ
 from flask_cors import CORS
+import json
+from decimal import Decimal
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
@@ -102,6 +105,26 @@ def get_homework_all(homework_id):
         }
     ), 404
 
+
+
+# Get All Liaise Offerings by Homework ID
+@app.route("/liaise/averageRating/<string:tutor_id>")
+def get_average_rating(tutor_id):
+    rating = db.session.query(func.avg(Liaise.tutor_rating)).filter_by(tutor_id=tutor_id).first()[0]
+
+    if rating:
+        return jsonify(
+            {
+                "code": 200,
+                "average": str(rating)
+            }
+        )
+    return jsonify(
+        {
+            "code": 200,
+            "average": 0
+        }
+    ), 404
 
 # Submit Liaise Offering
 @app.route("/liaise/addLiaison", methods=['POST'])

@@ -30,6 +30,9 @@ CREATE TABLE IF NOT EXISTS `sb_user`.`user` (
   `contact` INT NOT NULL,
   `email` VARCHAR(30) NOT NULL,
   `photo` VARCHAR(45) NOT NULL,
+  `account_num` VARCHAR(20) NOT NULL, 
+  `account_type` VARCHAR(20) NOT NULL, 
+  `bank_name` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`user_id`))
 ENGINE = InnoDB;
 
@@ -44,13 +47,13 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_user`;
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (1, 'yuquanyeo', 'yuquanyeo', 87654321, 'yuquanyeo@gmail.com', 'none.png');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (2, 'student', 'student', 12345678, 'student@email.com', 'none.png');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (3, 'tutor', 'tutor', 12345678, 'tutor@email.com', 'none.png');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (4, 'eklum', 'eklum', 12345678, 'eklum@email.com', 'none.png');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (5, 'randall', 'randall', 12345678, 'randall@email.com', 'none.png');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (6, 'durant', 'durant', 12345678, 'durant@email.com', 'none.png');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`) VALUES (100, 'studybuddy', 'studybuddy', 12345678, 'studybuddy@email.com', 'none.png');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (1, 'yuquanyeo', 'yuquanyeo', 87654321, 'yuquanyeo@gmail.com', 'none.png', '214748364711', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (2, 'student', 'student', 12345678, 'student@email.com', 'none.png', '214748364712', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (3, 'tutor', 'tutor', 12345678, 'tutor@email.com', 'none.png', '214748364713', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (4, 'eklum', 'eklum', 12345678, 'eklum@email.com', 'none.png', '214748364714', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (5, 'randall', 'randall', 12345678, 'randall@email.com', 'none.png', '214748364715', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (6, 'durant', 'durant', 12345678, 'durant@email.com', 'none.png', '214748364716', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (100, 'studybuddy', 'studybuddy', 12345678, 'studybuddy@email.com', 'none.png', '214748364717', 'Personal', 'POSB');
 
 COMMIT;
 
@@ -108,6 +111,10 @@ INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `m
 INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (3, 1, 'Science', 'Non-Virtual', 'HELP SCIENCE', 'Description of homework', 6.00, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
 INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (4, 3, 'English', 'Virtual', 'English Assignment', 'Description of homework', 10.00, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Solved');
 INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (5, 2, 'Science', 'Non-Virtual', 'Science Labs', 'Description of homework', 6.50, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (6, 2, 'English', 'Non-Virtual', 'HELP pls', 'Description of homework', 5.00, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Solved');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (7, 2, 'Math', 'Virtual', 'Math question', 'Description of homework', 4.50, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Solved');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (8, 2, 'Science', 'Non-Virtual', 'Science practical', 'Description of homework', 7.50, 'homework.png', '2021-04-01 00:00:00', '2021-03-15 00:00:00', 'Unsolved');
+
 
 COMMIT;
 
@@ -194,6 +201,9 @@ CREATE TABLE IF NOT EXISTS `sb_payment`.`payment` (
   `sender_id` INT NOT NULL,
   `receiver_id` INT NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `account_num` INT NOT NULL, 
+  `account_type` VARCHAR(20) NOT NULL, 
+  `bank_name` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`payment_id`))
 ENGINE = InnoDB;
 
@@ -202,8 +212,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_payment`;
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`) VALUES ('12345678', 12, 4, 100, '2021-03-15 00:00:00');
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`) VALUES ('87654321', 12, 100, 4, '2021-03-15 00:00:00');
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`) VALUES ('23456789', 4, 1, 100, '2021-03-15 00:00:00');
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `account_num`, `account_type`, `bank_name`) VALUES ('12345678', 12, 4, 100, '2021-03-15 00:00:00', '214748364714', 'Personal', 'POSB');
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `account_num`, `account_type`, `bank_name`) VALUES ('87654321', 12, 100, 4, '2021-03-15 00:00:00', '214748364700', 'Personal', 'DBS');
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `account_num`, `account_type`, `bank_name`) VALUES ('23456789', 4, 1, 100, '2021-03-15 00:00:00', '214748364711', 'Personal', 'POSB');
 
 COMMIT;

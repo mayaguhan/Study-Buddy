@@ -116,6 +116,29 @@ services:
       - "5500:5500"
 
 
+  ##################################
+  # Liaise Details: The Liaise Detail microservice
+  ##################################
+  liaise_detail:
+    build:
+      context: liaise_detail
+      dockerfile: liaise_detail.Dockerfile
+    image: yuquanyeo/liaise_detail:esd
+    restart: always
+    depends_on:
+      - user
+      - liaise
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      user_URL: http://user:5000/user
+      payment_URL: http://payment:5200/liaise
+      liaise_detail_URL: http://liaise_detail:5600/liaise_detail
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5600:5600"
+
 
   ####################################
   # RabbitMQ: The messaging broker   
