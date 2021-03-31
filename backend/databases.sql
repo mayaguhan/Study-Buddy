@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `sb_payment`.`payment` (
   `sender_id` INT NOT NULL,
   `receiver_id` INT NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `account_num` INT NOT NULL, 
+  `account_num` VARCHAR(20) NOT NULL, 
   `account_type` VARCHAR(20) NOT NULL, 
   `bank_name` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`payment_id`))
