@@ -24,9 +24,7 @@ class Liaise(db.Model):
     tutor_id = db.Column(db.Integer, nullable=False)
     offering = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(20), nullable=True, default='Pending')
-    student_rating = db.Column(db.Integer, nullable=True)
     tutor_rating = db.Column(db.Integer, nullable=True)
-    student_remark = db.Column(db.String(200), nullable=True)
     tutor_remark = db.Column(db.String(200), nullable=True)
     
 
@@ -42,9 +40,7 @@ class Liaise(db.Model):
                 "tutor_id": self.tutor_id,
                 "offering": self.offering,
                 "status": self.status,
-                "student_rating": self.student_rating,
                 "tutor_rating": self.tutor_rating,
-                "student_remark": self.student_remark,
                 "tutor_remark": self.tutor_remark}
 
 # Get All Liaise Offerings
@@ -141,7 +137,6 @@ def create_liaison():
                 "message": "An error occurred creating the Liaison."
             }
         ), 500
-    result = notifyStudent(data)
     return jsonify(
         {
             "code": 201,
@@ -223,44 +218,88 @@ def accept_liaison(liaise_id, homework_id):
 
 
 # Reject Liaise Offering
-@app.route("/liaise/reject/<string:liaise_id>", methods=['PUT'])
-def reject_liaison(liaise_id):
+@app.route("/liaise/reject", methods=['PUT'])
+def reject_liaison():
+    data = request.get_json()
+    if data['liaise_id']:
+        liaise_id = data['liaise_id']
+        try:
+            rejectLiaison = Liaise.query.filter_by(liaise_id=liaise_id).first()
+            if not rejectLiaison:
+                return jsonify(
+                    {
+                        "code": 404,
+                        "data": {
+                            "liase_id": liaise_id
+                        },
+                        "message": "Liaison not found"
+                    }
+                ), 404
+            
+            rejectLiaison.status = "Rejected"
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": rejectLiaison.json()
+                }
+            ), 200
+
+        except Exception as e:
+            return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "liaise_id": liaise_id
+                    },
+                    "message": "An error occurred while updating the Liaison. " + str(e)
+                }
+            ), 500
+    else:
+        return jsonify(
+            {
+                "code": 400,
+                "message": "An error occurred while updating the Liaison"
+            }
+        ), 400
+
+
+@app.route("/liaise/confirmHomework/<string:liaise_id>", methods=['PUT'])
+def confirm_homework(liaise_id):
     try:
-        rejectLiaison = Liaise.query.filter_by(liaise_id=liaise_id).first()
-        if not rejectLiaison:
+        liaise = Liaise.query.filter_by(liaise_id=liaise_id).first()
+        if not liaise:
             return jsonify(
                 {
                     "code": 404,
                     "data": {
-                        "liase_id": liaise_id
+                        "liaise_id": liaise
                     },
-                    "message": "Liaison not found"
+                    "message": "Liaise not found."
                 }
             ), 404
-        rejectLiaison.status = "Rejected"
-        db.session.commit()
-        return jsonify(
-            {
-                "code": 200,
-                "data": rejectLiaison.json()
-            }
-        ), 200
+        data = request.get_json()
+        if data['status'] and data['tutor_rating'] and data['tutor_remark']:
+            liaise.status = data['status']
+            liaise.tutor_rating = data['tutor_rating']
+            liaise.tutor_remark = data['tutor_remark']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": liaise.json()
+                }
+            ), 200
     except Exception as e:
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "liaise_id": liaise_id
+                    "liaise": liaise_id
                 },
-                "message": "An error occurred while updating the Liaison. " + str(e)
+                "message": "An error occurred while updating the liaise. " + str(e)
             }
         ), 500
-
-
-def notifyStudent(data):
-    # Invoke notification microservice to email student
-    print("Please wait")
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5200, debug=True)

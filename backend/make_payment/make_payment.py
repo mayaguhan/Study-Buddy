@@ -63,7 +63,8 @@ def processPayment(payment):
         "payment_id": 999999, #To Change to payment_id from Stripe API
         "liaise_id": payment['liaise_id'], 
         "sender_id": payment['student_id'], 
-        "receiver_id": 100 #user_id of StudyBuddy account
+        "receiver_id": 100, #user_id of StudyBuddy account
+        "status": "Hold"
     }
     payment_result =  invoke_http(payment_URL + '/addPayment', method='POST', json=payment_json)
     payment_code = payment_result["code"]

@@ -24,12 +24,7 @@ def accept_offering():
     if request.is_json:
         try:
             offering = request.get_json()
-            print("\nReceived a request to accept offering in JSON:", offering)
-            
-            # Activate processAcceptance function to update Homework & Liaise
             result = processAcceptance(offering)
-            print('\n-------------------------')
-            print('\nresult: ', result)
             return jsonify(result), result['code']
         
         except Exception as e:
@@ -51,11 +46,10 @@ def accept_offering():
 
 def processAcceptance(offering):
     #Updating Homework Microservice, status = Progress
-    print('\n-----Invoking homework microservice-----')
     homework_id = offering['homework_id']
     liaise_id = offering['liaise_id']
 
-    updated_homework_URL = homework_URL + '/' + str(homework_id)
+    updated_homework_URL = homework_URL + '/updateStatus/' + str(homework_id)
     homework_result = invoke_http(updated_homework_URL, method='PUT', json=offering)
     homework_code = homework_result["code"]
 

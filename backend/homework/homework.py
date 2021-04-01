@@ -26,7 +26,7 @@ class Homework(db.Model):
     image = db.Column(db.String(200), nullable=False)
     deadline = db.Column(db.DateTime, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now())
-    status = db.Column(db.String(20), nullable=True, default='Unsolved')
+    status = db.Column(db.String(20), nullable=True, default='Unsolve')
 
     def __init__(self, homework_id, student_id, subject, meeting_type, title, description, price, image, deadline):
         self.homework_id = homework_id
@@ -201,7 +201,7 @@ def delete_homework(homework_id):
 
 
 #Update Homework Status
-@app.route("/homework/<string:homework_id>", methods=['PUT'])
+@app.route("/homework/updateStatus/<string:homework_id>", methods=['PUT'])
 def update_status(homework_id):
     try:
         homework = Homework.query.filter_by(homework_id=homework_id).first()

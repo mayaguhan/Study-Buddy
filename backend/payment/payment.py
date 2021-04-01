@@ -25,9 +25,10 @@ class Payment(db.Model):
     account_num = db.Column(db.Integer, nullable=False)
     account_type = db.Column(db.String(20), nullable=False)
     bank_name = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False)
 
 
-    def __init__(self, payment_id, liaise_id, sender_id, receiver_id, account_num, account_type, bank_name):
+    def __init__(self, payment_id, liaise_id, sender_id, receiver_id, account_num, account_type, bank_name, status):
         self.payment_id = payment_id
         self.liaise_id = liaise_id
         self.sender_id = sender_id
@@ -35,6 +36,7 @@ class Payment(db.Model):
         self.account_num = account_num
         self.account_type = account_type
         self.bank_name = bank_name
+        self.status = status
     
     def json(self):
         return {"payment_id": self.payment_id,
@@ -44,7 +46,8 @@ class Payment(db.Model):
                 "created": self.created,
                 "account_num": self.account_num, 
                 "account_type": self.account_type, 
-                "bank_name": self.bank_name}
+                "bank_name": self.bank_name,
+                "status": self.status}
 
 # Get All Payment
 @app.route("/payment")
@@ -68,7 +71,7 @@ def get_all():
 
 
 # Get a Single Payment
-@app.route("/payment/<string:payment_id>")
+@app.route("/payment/payment_id/<string:payment_id>")
 def find_by_payment_id(payment_id):
     payment = Payment.query.filter_by(payment_id=payment_id).first()
     if payment:
@@ -85,6 +88,24 @@ def find_by_payment_id(payment_id):
         }
     ), 404
 
+
+# Get a Payment by Liaise ID
+@app.route("/payment/liaise_id/<string:liaise_id>")
+def find_by_liase_id(liaise_id):
+    payment = Payment.query.filter_by(liaise_id=liaise_id).first()
+    if payment:
+        return jsonify(
+            {
+                "code": 200,
+                "data": payment.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Payment not found."
+        }
+    ), 404
 
 # Get All Payment by Liaise ID
 @app.route("/payment/paymentByLiaiseId/<string:liaise_id>")
@@ -126,6 +147,43 @@ def create_payment():
             "data": payment.json()
         }
     ), 201
+
+
+#Update Payment Status by Liaise Id
+@app.route("/payment/updateStatus/<string:liaise_id>", methods=['PUT'])
+def update_status(liaise_id):
+    try:
+        payment = Payment.query.filter_by(liaise_id=liaise_id).first()
+        if not payment:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "liaise_id": liaise_id
+                    },
+                    "message": "Payment not found."
+                }
+            ), 404
+        data = request.get_json()
+        if data['status']:
+            payment.status = data['status']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": payment.json()
+                }
+            ), 200
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "payment": liaise_id
+                },
+                "message": "An error occurred while updating the payment. " + str(e)
+            }
+        ), 500
 
 
 # Delete Payment
