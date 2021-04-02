@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from os import environ
 from flask_cors import CORS
 from datetime import datetime
@@ -22,20 +23,14 @@ class Payment(db.Model):
     sender_id = db.Column(db.Integer, nullable=False)
     receiver_id = db.Column(db.Integer, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now())
-    account_num = db.Column(db.Integer, nullable=False)
-    account_type = db.Column(db.String(20), nullable=False)
-    bank_name = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(20), nullable=False)
 
 
-    def __init__(self, payment_id, liaise_id, sender_id, receiver_id, account_num, account_type, bank_name, status):
+    def __init__(self, payment_id, liaise_id, sender_id, receiver_id, status):
         self.payment_id = payment_id
         self.liaise_id = liaise_id
         self.sender_id = sender_id
         self.receiver_id = receiver_id
-        self.account_num = account_num
-        self.account_type = account_type
-        self.bank_name = bank_name
         self.status = status
     
     def json(self):
@@ -44,9 +39,6 @@ class Payment(db.Model):
                 "sender_id": self.sender_id,
                 "receiver_id": self.receiver_id,
                 "created": self.created,
-                "account_num": self.account_num, 
-                "account_type": self.account_type, 
-                "bank_name": self.bank_name,
                 "status": self.status}
 
 # Get All Payment
@@ -66,6 +58,25 @@ def get_all():
         {
             "code": 404,
             "message": "There are no payments."
+        }
+    ), 404
+
+
+# Get All Payout
+@app.route("/payment/payout")
+def get_payout():
+    payment_list = Payment.query.filter(or_(Payment.status=="confirm", Payment.status=="cancel")).all()
+    if payment_list:
+        return jsonify(
+            {
+                "code": 200,
+                "payments": [payment.json() for payment in payment_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no Payouts available."
         }
     ), 404
 
