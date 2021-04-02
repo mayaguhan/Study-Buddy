@@ -199,9 +199,6 @@ CREATE TABLE IF NOT EXISTS `sb_payment`.`payment` (
   `sender_id` INT NOT NULL,
   `receiver_id` INT NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `account_num` VARCHAR(20) NOT NULL, 
-  `account_type` VARCHAR(20) NOT NULL, 
-  `bank_name` VARCHAR(20) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`payment_id`))
 ENGINE = InnoDB;
@@ -211,8 +208,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_payment`;
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `account_num`, `account_type`, `bank_name`, `status`) VALUES ('12345678', 12, 4, 100, '2021-03-15 00:00:00', '214748364714', 'Personal', 'POSB', "Complete");
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `account_num`, `account_type`, `bank_name`, `status`) VALUES ('23456789', 12, 100, 4, '2021-03-15 00:00:00', '214748364700', 'Personal', 'DBS', "Complete");
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `account_num`, `account_type`, `bank_name`, `status`) VALUES ('87654321', 4, 1, 100, '2021-03-15 00:00:00', '214748364711', 'Personal', 'POSB', "Hold");
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('12345678', 12, 4, 100, '2021-03-15 00:00:00', "Complete");
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('23456789', 12, 100, 4, '2021-03-15 00:00:00', "Complete");
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('87654321', 4, 1, 100, '2021-03-15 00:00:00', "Hold");
 
 COMMIT;
