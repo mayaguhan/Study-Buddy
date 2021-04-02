@@ -106,61 +106,70 @@
               <h1 class="h2">Create New Homework Listing</h1>
             </div>
             
+            <div id="app">
 
-            <form class="py-3" id="new_homework">
-
-              <div class="form-group pb-3">
-                  <label for="homework_image">Select image of Homework:</label>
-                  <input type="file" class="form-control form-control-sm" id="homework_image">
-              </div>
-
-              <div class="form-group pb-3">
-                  Subject of Homework:
-                  <br>
-                  <input type="checkbox" class="custom-control-input" id="subject">
-                  <label class="custom-control-label" for="subject">Science</label> &nbsp;
-                  <input type="checkbox" class="custom-control-input" id="subject"> 
-                  <label class="custom-control-label" for="subject">Maths</label> &nbsp;
-                  <input type="checkbox" class="custom-control-input" id="subject">
-                  <label class="custom-control-label" for="subject">English</label> &nbsp;
-                  <input type="checkbox" class="custom-control-input" id="subject">
-                  <label class="custom-control-label" for="subject">Social Science</label> &nbsp;
-                  
-              </div>
+                <div class="form-group pb-3">
+                    <label for="homework_image">Select image of Homework:</label>
+                    <input type="file" class="form-control form-control-sm" id="homework_image">
+                    <!-- <input type="file" v-model="newImage" class="form-control form-control-sm" id="homework_image"> -->
+                </div>
   
-              <div class="form-group pb-3">
-                  <label for="listing_title">Listing Title</label>
-                  <input type="text" class="form-control form-control-sm" id="listing_title">
-              </div>
+                <div class="form-group pb-3">
+                    Subject of Homework:
+                    <br>
+                    <input type="radio" v-model="newSubject" name="subject" value="English"> English
+                    &nbsp;
+                    <input type="radio" v-model="newSubject" name="subject" value="Math"> Math
+                    &nbsp;
+                    <input type="radio" v-model="newSubject" name="subject" value="Science"> Science
+                    &nbsp;
+                    
+                </div>
+    
+                <div class="form-group pb-3">
+                    <label for="listing_title">Listing Title</label>
+                    <input type="text" v-model="newTitle" class="form-control form-control-sm" id="listing_title" placeholder="Enter Title">
+                </div>
+    
+                <div class="form-group pb-3">
+                    <label for="price">Price of Homework ($)</label>
+                    <input type="number" v-model="newPrice" class="form-control form-control-sm" id="price" placeholder="Enter Price">
+                </div>
   
-              <div class="form-group pb-3">
-                  <label for="price">Price of Homework ($)</label>
-                  <input type="number" class="form-control form-control-sm" id="price">
+                <div class="form-group pb-3">
+                    Description of Homework:
+                    <br>
+                    <textarea name="description" v-model="newDescription" rows="4" cols="50"></textarea>
+                </div>
+  
+                <div class="form-group pb-3">
+                  <label for="deadline">Deadline</label>
+                  <input type="date" v-model="newDeadline" class="form-control form-control-sm" id="deadline">
+                </div>
+                
+                
+                    Choice of Meeting:
+                    <br>
+                    <input type="radio" name="meetings" v-model="newMeeting" value="Non-Virtual"> Chat
+                    <br>
+                    <input type="radio" name="meetings" v-model="newMeeting" value="Virtual"> Zoom
+                    <br>
+                
+  
+  
+                <button @click="addHomework" class="btn btn-primary my-3" v-on:submit.prevent="onSubmit" style="float:right;">Create New Homework Listing</button>
+  
+              <div class="text-success" v-if="homeworkAdded">
+                The homework has been successfully placed! <br>
+                <br>
               </div>
-
-              <div class="form-group pb-3">
-                  Description of Homework:
+              <div class="text-danger" v-if="addHomeworkError!=''">
+                  There is a problem adding this new homework:<br>
+                  {{ addHomeworkError}}
                   <br>
-                  <textarea name="description" rows="4" cols="50"></textarea>
               </div>
-
-              <div class="form-group pb-3">
-                <label for="deadline">Deadline</label>
-                <input type="date" class="form-control form-control-sm" id="deadline">
-              </div>
-              
-              <div class="form-group pb-3">
-                  Choice of Meeting:
-                  <br>
-                  <input type="checkbox" class="custom-control-input" id="meeting">
-                  <label class="custom-control-label" for="meeting">Zoom</label> <br>
-                  <input type="checkbox" class="custom-control-input" id="meeting"> 
-                  <label class="custom-control-label" for="meeting">Chat</label> <br>
-              </div>
-
-
-              <button type="submit" class="btn btn-primary my-3" style="float:right;">Create New Homework Listing</button>
-            </form>
+            </div>
+            
           </main>
         </div>
     </div>
@@ -181,163 +190,92 @@
                 el: "#app",
                 
                 data: {
-                    username: `${localStorage.getItem("username")}`,
+                    user_id: `${localStorage.getItem("user_id")}`,
                     "homework": [],
                     message: "There is a problem retrieving homework data, please try again later.",
-                    // newTitle: "",
-                    // newISBN13: "",
-                    // newPrice: "",
-                    // newAvailability: "",
-                    // bookAdded: false,
-                    // addBookError: "",
+                    newImage: "homework.png",
+                    newSubject: "",
+                    newTitle: "",
+                    newPrice: "",
+                    newDescription: "",
+                    newDeadline: "",
+                    newMeeting: "",
+                    homeworkAdded: false,
+                    addHomeworkError: ""
                     // orderedBook: "",
                     // orderPlaced: false,
                     // orderSuccessful: false,
                 },
                 methods: {
                     
-                    findUser: function () {
-                    console.log(this.username);
-                    const response =
-                        fetch(`${get_user_URL}/${this.username}`)
+                    // findUser: function () {
+                    // console.log(this.username);
+                    // const response =
+                    //     fetch(`${get_user_URL}/${this.username}`)
+                    //         .then(response => response.json())
+                    //         .then(data => {
+                    //             console.log(response);
+                    //             if (data.code === 404) {
+                    //                 // no book in db
+                    //                 this.message = data.message;
+                    //                 this.books = [];
+                    //             } else {
+                    //                 this.books = [data.data];
+                    //             }
+                    //         })
+                    //         .catch(error => {
+                    //             // Errors when calling the service; such as network error, 
+                    //             // service offline, etc
+                    //             console.log(this.message + error);
+
+                    //         });
+
+                    // },
+                    addHomework: function () {
+                        // reset data
+                        this.homeworkAdded = false;
+                        this.addHomeworkError = "";
+                        console.log(this.newMeeting)
+    
+                        let jsonData = JSON.stringify({
+                            student_id: this.user_id,
+                            subject: this.newSubject,
+                            meeting_type: this.newMeeting,
+                            title: this.newTitle,
+                            description: this.newDescription,
+                            price: this.newPrice,
+                            image: this.newImage,
+                            deadline: this.newDeadline
+                        });
+    
+                        fetch(`http://localhost:5100/homework/addHomework`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-type": "application/json"
+                                },
+                                body: jsonData
+                            })
                             .then(response => response.json())
                             .then(data => {
-                                console.log(response);
-                                if (data.code === 404) {
-                                    // no book in db
-                                    this.message = data.message;
-                                    this.books = [];
-                                } else {
-                                    this.books = [data.data];
+                                console.log(data);
+                                result = data.data;
+                                console.log(result);
+                                // 3 cases
+                                switch (data.code) {
+                                    case 201:
+                                        this.homeworkAdded = true;
+    
+                                        break;
+                                    case 400:
+                                    case 500:
+                                        this.addHomeworkError = data.message;
+                                        break;
+                                    default:
+                                        throw `${data.code}: ${data.message}`;
                                 }
                             })
-                            .catch(error => {
-                                // Errors when calling the service; such as network error, 
-                                // service offline, etc
-                                console.log(this.message + error);
-
-                            });
-
-                    },
-                //     addBook: function () {
-                //         // reset data
-                //         this.bookAdded = false;
-                //         this.addBookError = "";
-    
-                //         let jsonData = JSON.stringify({
-                //             title: this.newTitle,
-                //             price: this.newPrice,
-                //             availability: this.newAvailability
-                //         });
-    
-                //         fetch(`${get_all_URL}/${this.newISBN13}`,
-                //             {
-                //                 method: "POST",
-                //                 headers: {
-                //                     "Content-type": "application/json"
-                //                 },
-                //                 body: jsonData
-                //             })
-                //             .then(response => response.json())
-                //             .then(data => {
-                //                 console.log(data);
-                //                 result = data.data;
-                //                 console.log(result);
-                //                 // 3 cases
-                //                 switch (data.code) {
-                //                     case 201:
-                //                         this.bookAdded = true;
-    
-                //                         // refresh book list
-                //                         this.getAllBooks();
-    
-                //                         // an alternate way is to add this one element into this.books
-                //                         break;
-                //                     case 400:
-                //                     case 500:
-                //                         this.addBookError = data.message;
-                //                         break;
-                //                     default:
-                //                         throw `${data.code}: ${data.message}`;
-                //                 }
-                //             })
-                //     },
-                //     placeOrder: function (book) {
-    
-                //         // use this to trigger an error
-                //         // "customer_id": "ERROR",
-                //         this.orderedBook = book;
-                //         fetch(place_order_URL,
-                //             {
-                //                 method: "POST",
-                //                 headers: {
-                //                     "Content-type": "application/json"
-                //                 },
-                //                 body: JSON.stringify(
-                //                     {
-                //                         "customer_id": "Apple TAN",
-                //                         "cart_item": [{
-                //                             "book_id": book.isbn13,
-                //                             "quantity": 1
-                //                         }]
-                //                     })
-                //             })
-                //             .then(response => response.json())
-                //             .then(data => {
-                //                 console.log(data);
-                //                 result = data.data;
-                //                 console.log(result);
-                //                 // 3 cases
-                //                 switch (data.code) {
-                //                     case 201:
-                //                         // 201
-                //                         this.orderSuccessful = true;
-                //                         orderMessage =
-                //                             `Order placed
-                //                             Order Result:
-                //                             ${result.order_result.code}:${result.order_result.data.status}
-    
-                //                             Shipping Result:
-                //                             ${result.shipping_result.code}:${result.shipping_result.message}`;
-                //                         break;
-    
-                //                     case 400:
-                //                         // 400 
-                //                         this.orderSuccessful = true;
-                //                         orderMessage =
-                //                             `Order placed
-                //                             Order Result:
-                //                             ${result.order_result.code}:${result.order_result.data.status}
-    
-                //                             Shipping Result:
-                //                             ${result.shipping_result.code}:${result.shipping_result.message}
-    
-                //                             Error handling:
-                //                             ${data.message}`;
-                //                         break;
-                //                     case 500:
-                //                         // 500 
-                //                         orderMessage =
-                //                             `Order placed with error:
-                //                             Order Result:
-                //                             ${result.order_result.code}:${result.order_result.message}
-    
-                //                             Error handling:
-                //                             ${data.message}`;
-                //                         break;
-                //                     default:
-                //                         orderMessage = `Unexpected error: ${data.code}`;
-                //                         console.log(`Unknown error code : ${data.code}`);
-                //                         break;
-    
-                //                 } // switch
-                //                 console.log(orderMessage);
-                //                 this.orderPlaced = true;
-                //             })
-                //             .catch(error => {
-                //                 console.log("Problem in placing an order. " + error);
-                //             })
-                //     }
+                    }
                 }
             });
           </script>

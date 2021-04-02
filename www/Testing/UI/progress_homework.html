@@ -115,25 +115,24 @@
             
             <br> 
 
-            <div class="row col-12">
-              <!-- include cards -->
-              <div id="app" v-if="hasHomework">
+            
+            <div id="app" v-if="hasHomework">
+              <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div v-for="aHomework in homework">
-                
-                  <div class="card col-3" style = "padding: 0px; margin: 0px 6px;">
-                    <img class="card-img-top" src="cat.png" alt="Card image cap">
-                    <div class="card-body">
-                      <h5 class="card-title">{{ aHomework.title }}</h5>
-                      <p class="card-text">{{ aHomework.description }}</p>
-                      <p class="card-text">$ {{ aHomework.price }}</p>
-                      <a href="#" class="btn btn-outline-success" style="text-align: center;">Mark as Completed</a>
+                  <div class="col">
+                    <div class="card h-100">
+                      <img src="./cat.png" class="w-100 h-100">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ aHomework.title }}</h5>
+                        <p class="card-text">{{ aHomework.description }}</p>
+                        <p class="card-text">$ {{ aHomework.price }}</p>
+                        <a @click="markCompleted(aHomework.homework_id)" class="btn btn-outline-success" style="text-align: center;">Mark as Completed</a>
+                      </div>
                     </div>
                   </div>
-
-                
+              
                 </div>
               </div>
-            
             </div>
             
           </main>
@@ -160,7 +159,11 @@
           data: {
               username: `${localStorage.getItem("username")}`,
               "homework": [],
-              message: "There is a problem retrieving homework data, please try again later."
+              message: "There is a problem retrieving homework data, please try again later.",
+              markAdded: false,
+              markCompletedError: ''
+
+
              
           },
           methods: {
@@ -185,6 +188,46 @@
 
                           });
 
+              },
+
+              markCompleted: function (homework_id) {
+                // reset data
+                this.markAdded = false;
+                this.markCompletedError = "";
+
+                let jsonData = JSON.stringify({
+                    homework_id: 'homework_id',
+                    status: "Solved"
+                    
+                });
+
+                fetch(`http://localhost:5100/homework/${homework_id}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: jsonData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        result = data.data;
+                        console.log(result);
+                        
+                        switch (data.code) {
+                            case 201:
+                                this.markAdded = true;
+
+                                break;
+                            case 400:
+                            case 500:
+                                this.markCompletedError = data.message;
+                                break;
+                            default:
+                                throw `${data.code}: ${data.message}`;
+                        }
+                    })
               }
           
           },
