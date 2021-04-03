@@ -61,7 +61,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
   </head>
-  <body>
+  <body onload="updateSuccess()">
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Study Buddy</a>
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,6 +120,10 @@
                 <p>
                     We appreciate your business! If you have any questions, please email
                     <a href="mailto:orders@example.com">orders@example.com</a>.
+
+                    <br>
+
+                    <strong>FOR UI TEAM: IMPLEMENT THIS PLZ "Click on this link to view all listings. You will be redirected in 30 seconds. Find out how to redirect</strong>
                   </p>
 
             </div>
@@ -143,6 +147,28 @@
         }
 
       });
+
+
+      function updateSuccess() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const session_id = urlParams.get('session_id');
+        console.log(session_id);
+
+        url = "http://localhost:5400/success?session_id=" + session_id
+
+        console.log(url)
+
+        fetch(url, {
+        method: "GET",
+        })  
+        .then(response=>console.log(response))
+        .then(data => console.log(data))
+        .catch(error => {
+          console.log(error)
+        })
+
+
+      }
     </script>
     <!-- Optional JavaScript; choose one of the two! -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
