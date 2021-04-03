@@ -13,26 +13,34 @@ app = Flask(__name__)
 CORS(app)
 
 # Send Email
-@app.route("/notification")
+@app.route("/notification/email", methods=['POST'])
 def send_notification():
-    print("A")
+    data = request.get_json()
+
+    emailSubject = "Offer Acceptance from " + data["tutor_name"]
+    emailContent = "You have accepted an offer from " + data["tutor_name"] + " for " + data["homework_title"] + "."
+
     message = Mail(
-        from_email='studybuddyapp@outlook.com',
-        to_emails='studybuddyapp@outlook.com',
-        subject='Sending with Twilio SendGrid is Fun',
-        html_content='<strong>and easy to do anywhere, even with Python</strong>')
-    print(message)
+        from_email= 'studybuddyapp@outlook.com',
+        to_emails= data["receiver"],
+        subject= emailSubject,
+        html_content= emailContent)
     try:
         sendgrid_client = SendGridAPIClient('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')
         response = sendgrid_client.send(message)
-        ###
-        print("Hello")
-        ###
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        return jsonify(
+            {
+            "code": 200,
+            "message": "Successfully sent email"
+            }
+        )
     except Exception as e:
-        print(e)
+        return jsonify(
+            {
+                "code": 500,
+                "message": e
+            }
+        )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5800, debug=True)
