@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import and_
+from datetime import timedelta
 from os import environ
 from flask_cors import CORS
 from datetime import datetime
@@ -73,6 +75,28 @@ def get_all():
         }
     ), 404
 
+
+# Get All Available Homework
+@app.route("/homework/availableHomework/<string:student_id>")
+def get_all_available(student_id):
+    todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+    homework_list = Homework.query.filter(and_(Homework.student_id != student_id, Homework.status == "Progress", Homework.deadline > todays_datetime)).all()
+    print(homework_list)
+    if len(homework_list):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "homeworks": [homework.json() for homework in homework_list]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no homeworks."
+        }
+    ), 404
 
 # Get a Single Homework
 @app.route("/homework/<string:homework_id>")

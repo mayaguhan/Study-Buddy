@@ -58,7 +58,7 @@ def modifyHomework(homework, action):
         liaise_code = liaise_result["code"]
 
         homework["status"] = "Hold"
-        payment_result = invoke_http(payment_URL + '/updateStatus/' + str(liaise_id), method='PUT', json=homework)
+        payment_result = invoke_http(payment_URL + '/updateStatusByLiaiseId/' + str(liaise_id), method='PUT', json=homework)
         payment_code = payment_result["code"]
 
     elif action == "cancel":
@@ -69,7 +69,7 @@ def modifyHomework(homework, action):
         liaise_result = invoke_http(liaise_URL + '/reject', method='PUT', json=homework)
         liaise_code = liaise_result["code"]
 
-        payment_result = invoke_http(payment_URL + '/updateStatus/' + str(liaise_id), method='PUT', json=homework)
+        payment_result = invoke_http(payment_URL + '/updateStatusByLiaiseId/' + str(liaise_id), method='PUT', json=homework)
         payment_code = payment_result["code"]
 
     else:

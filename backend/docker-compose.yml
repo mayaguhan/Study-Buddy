@@ -127,12 +127,14 @@ services:
     restart: always
     depends_on:
       - user
+      - homework
       - liaise
       - rabbitmq
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
       user_URL: http://user:5000/user
+      homework_URL: http://homework:5100/homework
       liaise_URL: http://liaise:5200/liaise
       liaise_detail_URL: http://liaise_detail:5600/liaise_detail
       PYTHONUNBUFFERED: 1
