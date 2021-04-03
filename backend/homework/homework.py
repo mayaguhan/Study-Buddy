@@ -86,9 +86,7 @@ def get_all_available(student_id):
         return jsonify(
             {
                 "code": 200,
-                "data": {
-                    "homeworks": [homework.json() for homework in homework_list]
-                }
+                "homework": [homework.json() for homework in homework_list]
             }
         )
     return jsonify(

@@ -91,9 +91,9 @@
                 <li class="nav-item" style="list-style-type: none">
                   <a class="nav-link" href="my_homework.html">
                     Your Homework
-                         <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
-                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
-                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
+                        <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
+                        <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                        <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -133,81 +133,49 @@
                     </div>
                   </div>
                 </a>
-      
               </div>
               <div class="text-danger" v-if="!hasHomework">{{ message }}</div>
             </div>
-            
-
           </main>
-
         </div>
     </div>
+      <script>
+        localStorage.username = "yuquanyeo"
+        localStorage.user_id = "1"
 
-    
+        var sidebar = new Vue ({
+          el: "#sidebarMenu",
+          data: {
+            username: `${localStorage.getItem("username")}`
+          }
 
-          <script>
-            localStorage.username = "student"
+        });
 
-            var sidebar = new Vue ({
-              el: "#sidebarMenu",
-              data: {
-                username: `${localStorage.getItem("username")}`
-              }
-
-            });
-
-            var app = new Vue({
-                el: "#app",
-                computed: {
-                    hasHomework: function () {
-                        return this.homework.length > 0;
-                    }
-                },
-                data: {
-                    username: `${localStorage.getItem("username")}`,
-                    "homework": [],
-                    message: "There is a problem retrieving homework data, please try again later."
-
-                },
-                methods: {
-                    getAllOpenHomework: function () {
-                        // on Vue instance created, load the book list
-                        const response =
-                            fetch("http://localhost:5100/homework/homeworkByStatus/Unsolve")
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(response);
-                                    if (data.code === 404) {
-                                        // no homework in db
-                                        this.message = data.message;
-                                    } else {
-                                        this.homework = data.homework;
-                                    }
-                                })
-                                .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
-                                    console.log(this.message + error);
-    
-                                });
-    
-                    },
-                    getUserDetails: function () {
-                      //console.log(this.username);
-                      const response =
-                        fetch(`http://localhost:5000/user/username/${this.username}`)
+        var app = new Vue({
+            el: "#app",
+            computed: {
+                hasHomework: function () {
+                    return this.homework.length > 0;
+                }
+            },
+            data: {
+                username: `${localStorage.getItem("username")}`,
+                "homework": [],
+                message: "There is a problem retrieving homework data, please try again later."
+            },
+            methods: {
+                getAllOpenHomework: function () {
+                    // on Vue instance created, load the book list
+                    const response =
+                        fetch("http://localhost:5100/homework/availableHomework/" + localStorage.getItem("user_id"))
                             .then(response => response.json())
                             .then(data => {
                                 console.log(response);
                                 if (data.code === 404) {
-                                    // no user in db
+                                    // no homework in db
                                     this.message = data.message;
                                 } else {
-                                  localStorage.user_id=data.data.user_id;
-                                  localStorage.telegram_id=data.data.telegram_id;
-                                  localStorage.photo=data.data.photo;
-                                  console.log(localStorage.getItem("user_id"))
+                                    this.homework = data.homework;
                                 }
                             })
                             .catch(error => {
@@ -217,18 +185,43 @@
 
                             });
 
-                    },
-                
                 },
-                created: function () {
-                    // on Vue instance created, load the homework list
-                    this.getAllOpenHomework();
+                getUserDetails: function () {
+                  //console.log(this.username);
+                  const response =
+                    fetch(`http://localhost:5000/user/username/${this.username}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(response);
+                            if (data.code === 404) {
+                                // no user in db
+                                this.message = data.message;
+                            } else {
+                              localStorage.user_id=data.data.user_id;
+                              localStorage.telegram_id=data.data.telegram_id;
+                              localStorage.photo=data.data.photo;
+                              console.log(localStorage.getItem("user_id"))
+                            }
+                        })
+                        .catch(error => {
+                            // Errors when calling the service; such as network error, 
+                            // service offline, etc
+                            console.log(this.message + error);
 
-                    // on Vue instance created, store user's info
-                    this.getUserDetails();
-                }
-            });
-          </script>
+                        });
+
+                },
+            
+            },
+            created: function () {
+                // on Vue instance created, load the homework list
+                this.getAllOpenHomework();
+
+                // on Vue instance created, store user's info
+                this.getUserDetails();
+            }
+        });
+      </script>
     <!-- Optional JavaScript; choose one of the two! -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
   </body>
