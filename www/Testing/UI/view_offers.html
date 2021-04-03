@@ -107,12 +107,12 @@
               <h1 class="h2">Offerings for Homework </h1>
             </div>
 
-            <div id="app" v-if="hasLiaise">
-              <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="row col-12">
+              <div id="app" v-if="hasLiaise">
                 <div v-for="aLiaise in getEachLiaise">
-                  <div class="col">
-                    <div class="card h-100">
-                      <img class="w-100 h-100" v-bind:src="aLiaise.photo" alt="Card image cap">
+              
+                  <div class="card col-3" style = "padding: 0px; margin: 0px 6px;">
+                    <img class="card-img-top" v-bind:src="aLiaise.photo" alt="Card image cap">
                     <div class="card-body">
                       
                       <h5 class="card-title"> {{ aLiaise.tutor_id }} </h5>
@@ -121,13 +121,10 @@
                       
                       <div class="row">
                         <div class="col">
-                          <a v-bind:href="'checkout.html?liaise_id=' + aLiaise.liaise_id" class="btn btn-outline-success btn-block">Accept</a>
-                          
-                          <!-- <a @click="acceptOffering(aLiaise.homework_id, aLiaise.liaise_id)" class="btn btn-outline-success btn-block">Accept</a> -->
-                          
+                          <a @click="acceptOffering(aLiaise.homework_id, aLiaise.liaise_id)" class="btn btn-outline-success btn-block">Accept</a>
                         </div>
                         <div class="col">
-                          <a @click="declineOffering(aLiaise.liaise_id)" class="btn btn-outline-danger btn-block" style="float:right;">Decline</a>
+                          <a @click="declineOffering(aLiaise.liaise_id)" class="btn btn-outline-danger btn-block ms-4">Decline</a>
                         </div>
                       </div>
                       
@@ -138,6 +135,7 @@
                 </div>
               </div>
             </div>
+            
           </main>
 
         </div>

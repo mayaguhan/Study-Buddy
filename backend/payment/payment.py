@@ -160,46 +160,9 @@ def create_payment():
     ), 201
 
 
-#Update Payment Status by Payment Id
-@app.route("/payment/updateStatusByPaymentId/<string:payment_id>", methods=['PUT'])
-def update_status_payment(payment_id):
-    try:
-        payment = Payment.query.filter_by(payment_id=payment_id).first()
-        if not payment:
-            return jsonify(
-                {
-                    "code": 404,
-                    "data": {
-                        "payment_id": payment_id
-                    },
-                    "message": "Payment not found."
-                }
-            ), 404
-        data = request.get_json()
-        if data['status']:
-            payment.status = data['status']
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": payment.json()
-                }
-            ), 200
-    except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "payment": payment_id
-                },
-                "message": "An error occurred while updating the payment. " + str(e)
-            }
-        ), 500
-
-
 #Update Payment Status by Liaise Id
-@app.route("/payment/updateStatusByLiaiseId/<string:liaise_id>", methods=['PUT'])
-def update_status_liaise(liaise_id):
+@app.route("/payment/updateStatus/<string:liaise_id>", methods=['PUT'])
+def update_status(liaise_id):
     try:
         payment = Payment.query.filter_by(liaise_id=liaise_id).first()
         if not payment:
