@@ -303,6 +303,7 @@ def create_checkout_session():
 def order_success():
     session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+    payment_id = session.payment_intent
 
     print(session.payment_intent)
 
@@ -326,7 +327,10 @@ def order_success():
         return jsonify(
             {
                 "code": 200,
-                "data": payment.json()
+                "data": {
+                    "payment": payment.json(),
+                    "payment_id": payment_id
+                }
             }
         ), 200
     except Exception as e:
@@ -346,6 +350,7 @@ def order_success():
 def order_failure():
     session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+    payment_id = session.payment_intent
 
     print(session.payment_intent)
 
@@ -369,7 +374,10 @@ def order_failure():
         return jsonify(
             {
                 "code": 200,
-                "data": payment.json()
+                "data": {
+                    "payment": payment.json(),
+                    "payment_id": payment_id
+                }
             }
         ), 200
     except Exception as e:
