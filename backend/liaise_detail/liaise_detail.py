@@ -199,6 +199,7 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         liaisons_result["data"]["homework_title"] = homework_result["data"]["title"]
         liaisons_result["data"]["homework_description"] = homework_result["data"]["description"]
         liaisons_result["data"]["homework_subject"] = homework_result["data"]["subject"]
+        liaisons_result["data"]["homework_image"] = homework_result["data"]["image"]
 
         print(liaisons_result, user_result, homework_result)
         #     user_code = user_result["code"]
