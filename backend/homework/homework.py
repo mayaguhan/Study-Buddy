@@ -80,7 +80,7 @@ def get_all():
 @app.route("/homework/availableHomework/<string:student_id>")
 def get_all_available(student_id):
     todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
-    homework_list = Homework.query.filter(and_(Homework.student_id != student_id, Homework.status == "Progress", Homework.deadline > todays_datetime)).all()
+    homework_list = Homework.query.filter(and_(Homework.student_id != student_id, Homework.status == "Unsolve", Homework.deadline > todays_datetime)).all()
     print(homework_list)
     if len(homework_list):
         return jsonify(
