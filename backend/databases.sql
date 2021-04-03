@@ -47,13 +47,17 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_user`;
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (1, 'yuquanyeo', 'yuquanyeo', 87654321, 'yuquanyeo@gmail.com', 'none.png', '214748364711', 'Personal', 'POSB');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (2, 'student', 'student', 12345678, 'student@email.com', 'none.png', '214748364712', 'Personal', 'POSB');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (3, 'tutor', 'tutor', 12345678, 'tutor@email.com', 'none.png', '214748364713', 'Personal', 'POSB');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (4, 'eklum', 'eklum', 12345678, 'eklum@email.com', 'none.png', '214748364714', 'Personal', 'POSB');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (5, 'randall', 'randall', 12345678, 'randall@email.com', 'none.png', '214748364715', 'Personal', 'POSB');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (6, 'durant', 'durant', 12345678, 'durant@email.com', 'none.png', '214748364716', 'Personal', 'POSB');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (100, 'studybuddy', 'studybuddy', 12345678, 'studybuddy@email.com', 'none.png', '214748364717', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (1, 'yuquanyeo', 'yuquanyeo', 81254754, 'yuquan.yeo.2019@sis.smu.edu.sg', 'https://i.imgur.com/cQlCJBi.jpg', '214748364711', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (2, 'davidlyj', 'davidlyj', 98623227, 'david.lim.2019@sis.smu.edu.sg', 'https://i.imgur.com/bYC0VFF.jpg', '214748364712', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (3, 'mayazhagug', 'Myz_ghn', 93805496, 'mayazhagug.2019@sis.smu.edu.sg', 'https://i.imgur.com/Me2bsCz.jpg', '214748364713', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (4, 'avanthikaa', 'avan_thatgirl', 92345678, 'avanthikaa.2019@sis.smu.edu.sg', 'https://i.imgur.com/1hwNhh6.jpg', '214748364714', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (5, 'ayeshass', 'shasha_123', 82345678, 'ayeshass.2019@sis.smu.edu.sg', 'https://i.imgur.com/nIiqi7E.jpg', '214748364715', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (6, 'parveenkaur', 'parveen1812', 98345678, 'parveenkaur.2019@sis.smu.edu.sg', 'https://i.imgur.com/oYVAHky.jpg', '214748364716', 'Personal', 'POSB');
+
+
+
+
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (100, 'studybuddy', 'studybuddy', 98765432, 'studybuddyapp@outlook.com', 'none.png', '214748364711', 'Personal', 'POSB');
 
 COMMIT;
 
@@ -80,16 +84,16 @@ DROP TABLE IF EXISTS `sb_homework`.`homework` ;
 
 SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `homework` (
-  `homework_id` int(11) NOT NULL AUTO_INCREMENT,
-  `student_id` int(11) NOT NULL,
-  `subject` varchar(20) NOT NULL,
-  `meeting_type` varchar(20) NOT NULL,
-  `title` varchar(30) NOT NULL,
-  `description` varchar(200) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `image` varchar(200) NOT NULL,
-  `deadline` timestamp NOT NULL,
-  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `homework_id` INT NOT NULL AUTO_INCREMENT,
+  `student_id` INT NOT NULL,
+  `subject` VARCHAR(20) NOT NULL,
+  `meeting_type` VARCHAR(20) NOT NULL,
+  `title` VARCHAR(30) NOT NULL,
+  `description` VARCHAR(200) NOT NULL,
+  `price` DECIMAL(10,2) NOT NULL,
+  `image` VARCHAR(200) NOT NULL,
+  `deadline` TIMESTAMP NOT NULL,
+  `created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `status` VARCHAR(20) NULL DEFAULT 'Unsolve',
   PRIMARY KEY (`homework_id`)
 ) 
@@ -147,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `sb_liaise`.`liaise` (
   `offering` DECIMAL(10,2) NOT NULL,
   `status` VARCHAR(20) NULL DEFAULT 'Pending',
   `tutor_rating` INT NULL,
-  `tutor_remark` varchar(200) NULL,
+  `tutor_remark` VARCHAR(200) NULL,
   PRIMARY KEY (`liaise_id`))
 ENGINE = InnoDB;
 
@@ -198,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `sb_payment`.`payment` (
   `liaise_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
   `receiver_id` INT NOT NULL,
-  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `status` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`payment_id`))
 ENGINE = InnoDB;

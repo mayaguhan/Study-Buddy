@@ -111,7 +111,8 @@ def processPayment(payment):
             "accept_offering_result": accept_offering_result,
             "student_email": student_result,
             "tutor_email": tutor_result, 
-            "student_email_result": student_email_result
+            "student_email_result": student_email_result,
+            "tutor_email_result": tutor_email_result
         }
     }
 
