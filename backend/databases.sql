@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS `sb_user`.`user` (
   `username` VARCHAR(20) NOT NULL,
   `telegram_id` VARCHAR(20) NOT NULL,
   `contact` INT NOT NULL,
-  `email` VARCHAR(30) NOT NULL,
-  `photo` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `photo` VARCHAR(100) NOT NULL,
   `account_num` VARCHAR(20) NOT NULL, 
   `account_type` VARCHAR(20) NOT NULL, 
   `bank_name` VARCHAR(20) NOT NULL,
@@ -52,11 +52,11 @@ INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (3, 'mayazhagug', 'Myz_ghn', 93805496, 'mayazhagug.2019@sis.smu.edu.sg', 'https://i.imgur.com/Me2bsCz.jpg', '214748364713', 'Personal', 'POSB');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (4, 'avanthikaa', 'avan_thatgirl', 92345678, 'avanthikaa.2019@sis.smu.edu.sg', 'https://i.imgur.com/1hwNhh6.jpg', '214748364714', 'Personal', 'POSB');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (5, 'ayeshass', 'shasha_123', 82345678, 'ayeshass.2019@sis.smu.edu.sg', 'https://i.imgur.com/nIiqi7E.jpg', '214748364715', 'Personal', 'POSB');
-INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (6, 'parveenkaur', 'parveen1812', 98345678, 'parveenkaur.2019@sis.smu.edu.sg', 'https://i.imgur.com/oYVAHky.jpg', '214748364716', 'Personal', 'POSB');
-
-
-
-
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (6, 'randallduran', 'rduran', 98345678, 'rduran@smu.edu.sg', 'https://i.imgur.com/VCOE8to.jpg', '214748364700', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (7, 'engkitlum', 'eklum', 91234567, 'eklum@smu.edu.sg', 'https://i.imgur.com/PrEl2GA.png', '214748364700', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (8, 'username', 'telegram', 91234567, '@gmail.com', 'image', '214748364700', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (9, 'username', 'telegram', 91234567, '@gmail.com', 'image', '214748364700', 'Personal', 'POSB');
+INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (10, 'username', 'telegram', 91234567, '@gmail.com', 'image', '214748364700', 'Personal', 'POSB');
 INSERT INTO `sb_user`.`user` (`user_id`, `username`, `telegram_id`, `contact`, `email`, `photo`, `account_num`, `account_type`, `bank_name`) VALUES (100, 'studybuddy', 'studybuddy', 98765432, 'studybuddyapp@outlook.com', 'none.png', '214748364711', 'Personal', 'POSB');
 
 COMMIT;
@@ -110,14 +110,14 @@ SHOW WARNINGS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_homework`;
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`, `deadline`, `created`, `status`) VALUES (1, 1, 'Math', 'Virtual', 'Help with Math Homework', 'Description of homework', 5.00, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Unsolve');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (2, 2, 'English', 'Virtual', 'English Homework', 'Description of homework', 5.00, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Progress');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (3, 1, 'Science', 'Non-Virtual', 'HELP SCIENCE', 'Description of homework', 6.00, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Unsolve');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (4, 3, 'English', 'Virtual', 'English Assignment', 'Description of homework', 10.00, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Solve');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (5, 2, 'Science', 'Non-Virtual', 'Science Labs', 'Description of homework', 6.50, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Unsolve');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (6, 2, 'English', 'Non-Virtual', 'HELP pls', 'Description of homework', 5.00, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Solve');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (7, 2, 'Math', 'Virtual', 'Math question', 'Description of homework', 4.50, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Solve');
-INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (8, 2, 'Science', 'Non-Virtual', 'Science practical', 'Description of homework', 7.50, 'homework.png', '2021-04-15 00:00:00', '2021-03-15 00:00:00', 'Unsolve');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`, `deadline`, `created`, `status`) VALUES (1, 1, 'Math', 'Virtual', 'Help with Math Homework', 'Description of homework', 5.00, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Unsolve');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (2, 2, 'English', 'Virtual', 'English Homework', 'Description of homework', 5.00, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Progress');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (3, 1, 'Science', 'Non-Virtual', 'HELP SCIENCE', 'Description of homework', 6.00, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Unsolve');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (4, 3, 'English', 'Virtual', 'English Assignment', 'Description of homework', 10.00, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Solve');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (5, 2, 'Science', 'Non-Virtual', 'Science Labs', 'Description of homework', 6.50, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Unsolve');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (6, 2, 'English', 'Non-Virtual', 'HELP pls', 'Description of homework', 5.00, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Solve');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (7, 2, 'Math', 'Virtual', 'Math question', 'Description of homework', 4.50, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Solve');
+INSERT INTO `sb_homework`.`homework` (`homework_id`, `student_id`, `subject`, `meeting_type`, `title`, `description`, `price`, `image`,  `deadline`, `created`, `status`) VALUES (8, 2, 'Science', 'Non-Virtual', 'Science practical', 'Description of homework', 7.50, 'homework.png', '2021-04-15 00:00:00', '2021-04-01 00:00:00', 'Unsolve');
 
 
 COMMIT;
@@ -212,8 +212,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `sb_payment`;
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('12345678', 12, 4, 100, '2021-03-15 00:00:00', "Complete");
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('23456789', 12, 100, 4, '2021-03-15 00:00:00', "Complete");
-INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('87654321', 4, 1, 100, '2021-03-15 00:00:00', "Hold");
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('12345678', 12, 4, 100, '2021-04-01 00:00:00', "Complete");
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('23456789', 12, 100, 4, '2021-04-01 00:00:00', "Complete");
+INSERT INTO `sb_payment`.`payment` (`payment_id`, `liaise_id`, `sender_id`, `receiver_id`, `created`, `status`) VALUES ('87654321', 4, 1, 100, '2021-04-01 00:00:00', "Hold");
 
 COMMIT;
