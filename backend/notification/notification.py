@@ -17,14 +17,14 @@ CORS(app)
 def send_notification():
     data = request.get_json()
 
-    emailSubject = "Offer Acceptance from " + data["tutor_name"]
-    emailContent = "You have accepted an offer from " + data["tutor_name"] + " for " + data["homework_title"] + "."
+    # emailSubject = "Offer Acceptance from " + data["tutor_name"]
+    # emailContent = "You have accepted an offer from " + data["tutor_name"] + " for " + data["homework_title"] + "."
 
     message = Mail(
         from_email= 'studybuddyapp@outlook.com',
         to_emails= data["receiver"],
-        subject= emailSubject,
-        html_content= emailContent)
+        subject= data["subject"],
+        html_content= data["content"])
     try:
         sendgrid_client = SendGridAPIClient('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')
         response = sendgrid_client.send(message)

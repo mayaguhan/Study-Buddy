@@ -11,7 +11,7 @@ services:
     build:
       context: user
       dockerfile: user.Dockerfile
-    image: davidlyj/user:esd
+    image: yuquanyeo/user:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_user
@@ -27,7 +27,7 @@ services:
     build:
       context: homework
       dockerfile: homework.Dockerfile
-    image: davidlyj/homework:esd
+    image: yuquanyeo/homework:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_homework
@@ -43,7 +43,7 @@ services:
     build:
       context: liaise
       dockerfile: liaise.Dockerfile
-    image: davidlyj/liaise:esd
+    image: yuquanyeo/liaise:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_liaise
@@ -59,7 +59,7 @@ services:
     build:
       context: accept_offering
       dockerfile: accept_offering.Dockerfile
-    image: davidlyj/accept_offering:esd
+    image: yuquanyeo/accept_offering:esd
     restart: always
     depends_on:
       - homework
@@ -82,7 +82,7 @@ services:
     build:
       context: payment
       dockerfile: payment.Dockerfile
-    image: davidlyj/payment:esd
+    image: yuquanyeo/payment:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_payment
@@ -98,12 +98,13 @@ services:
     build:
       context: make_payment
       dockerfile: make_payment.Dockerfile
-    image: davidlyj/make_payment:esd
+    image: yuquanyeo/make_payment:esd
     restart: always
     depends_on:
       - user
       - payment
       - accept_offering
+      - notification
       - rabbitmq
     environment:
       rabbit_host: rabbitmq
@@ -111,6 +112,7 @@ services:
       user_URL: http://user:5000/user
       payment_URL: http://payment:5400/payment
       accept_offering_URL: http://accept_offering:5300/accept_offering
+      notification_URL: http://notification:5800/notification
       PYTHONUNBUFFERED: 1
     ports:
       - "5500:5500"
@@ -123,7 +125,7 @@ services:
     build:
       context: liaise_detail
       dockerfile: liaise_detail.Dockerfile
-    image: davidlyj/liaise_detail:esd
+    image: yuquanyeo/liaise_detail:esd
     restart: always
     depends_on:
       - user
@@ -149,7 +151,7 @@ services:
     build:
       context: modify_homework
       dockerfile: modify_homework.Dockerfile
-    image: davidlyj/modify_homework:esd
+    image: yuquanyeo/modify_homework:esd
     restart: always
     depends_on:
       - homework
@@ -188,7 +190,7 @@ services:
     build:
       context: amqp_error
       dockerfile: error.Dockerfile
-    image: davidlyj/error:esd
+    image: yuquanyeo/error:esd
     restart: always
     depends_on:
       - rabbitmq
@@ -204,7 +206,9 @@ services:
     build:
       context: notification
       dockerfile: notification.Dockerfile
-    image: davidlyj/notification:esd
+    image: yuquanyeo/notification:esd
     restart: always
     ports:
       - "5800:5800"
+    environment:
+      PYTHONUNBUFFERED: 1
