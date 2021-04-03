@@ -104,33 +104,36 @@
 
           <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
-              <h1 class="h2">Offerings for *Homework* </h1>
+              <h1 class="h2">Offerings for Homework </h1>
             </div>
 
             <div class="row col-12">
-              <!-- include cards -->
+              <div id="app" v-if="hasLiaise">
+                <div v-for="aLiaise in getEachLiaise">
               
-                <div class="card col-3" style = "padding: 0px; margin: 0px 6px;">
-                  <img class="card-img-top" src="cat.png" alt="Card image cap">
-                  <div class="card-body">
-                    <h5 class="card-title">Tutor Name</h5>
-                    <p class="card-text">Tutor Rating</p>
-                    <p class="card-text">Offered Price: $</p>
-                    <div class="row">
-                      <div class="col">
-                        <a href="#" class="btn btn-outline-success btn-block">Accept</a>
+                  <div class="card col-3" style = "padding: 0px; margin: 0px 6px;">
+                    <img class="card-img-top" v-bind:src="aLiaise.photo" alt="Card image cap">
+                    <div class="card-body">
+                      
+                      <h5 class="card-title"> {{ aLiaise.tutor_id }} </h5>
+                      <p class="card-text">Tutor Rating: {{ aLiaise.rating }}</p>
+                      <p class="card-text">Offered Price: ${{ aLiaise.offering }}</p>
+                      
+                      <div class="row">
+                        <div class="col">
+                          <a @click="acceptOffering(aLiaise.homework_id, aLiaise.liaise_id)" class="btn btn-outline-success btn-block">Accept</a>
+                        </div>
+                        <div class="col">
+                          <a @click="declineOffering(aLiaise.liaise_id)" class="btn btn-outline-danger btn-block ms-4">Decline</a>
+                        </div>
                       </div>
-                      <div class="col">
-                        <a href="#" class="btn btn-outline-danger btn-block ms-4">Decline</a>
-                      </div>
+                      
+                      <br>
+                      <a class="btn btn-outline-primary" style="justify-content: center; display: flex;" v-on:click.stop.prevent="openWindow('https://t.me/' + aLiaise.telegram_id)">Chat</a>
                     </div>
-                    
-                    <br>
-                    <a href="#" class="btn btn-outline-primary" style="justify-content: center; display: flex;">Chat</a>
                   </div>
                 </div>
-                
-              
+              </div>
             </div>
             
           </main>
@@ -140,8 +143,8 @@
     </div>
 
           <script>
-            var get_all_URL = "http://localhost:5100/homework";
-            var get_user_URL = "http://localhost:5000/user";
+            let params = new URLSearchParams(location.search);
+            var homeworkID = params.get('homework_id');
       
             var sidebar = new Vue ({
               el: "#sidebarMenu",
@@ -154,29 +157,35 @@
             var app = new Vue({
                 el: "#app",
                 computed: {
-                    hasHomework: function () {
-                        return this.homework.length > 0;
+                    hasLiaise: function () {
+                        return this.liaise.length > 0;
+                    },
+
+                    getEachLiaise: function () {
+                      result = []
+                      for (let i = 0; i < this.liaise.length; i++) {
+                        result.push(this.liaise[i].data)
+                      }
+                      return result
                     }
                 },
                 data: {
                     username: `${localStorage.getItem("username")}`,
-                    "homework": [],
-                    message: "There is a problem retrieving homework data, please try again later.",
-                    // newTitle: "",
-                    // newISBN13: "",
-                    // newPrice: "",
-                    // newAvailability: "",
-                    // bookAdded: false,
-                    // addBookError: "",
-                    // orderedBook: "",
-                    // orderPlaced: false,
-                    // orderSuccessful: false,
+                    "liaise": [],
+                    message: "There is a problem retrieving liaise data, please try again later.",
+                    acceptAdded: false,
+                    acceptOfferingError: '',
+                    rejectAdded: false,
+                    rejectOfferingError: '',
+                    markAdded: false,
+                    markProgressError: ''
+                    
                 },
                 methods: {
-                    getAllHomework: function () {
+                    getLiaiseByHomework: function () {
                         // on Vue instance created, load the book list
                         const response =
-                            fetch(get_all_URL)
+                            fetch(`http://localhost:5600/liaise_detail/${homeworkID}`)
                                 .then(response => response.json())
                                 .then(data => {
                                     console.log(response);
@@ -184,7 +193,8 @@
                                         // no homework in db
                                         this.message = data.message;
                                     } else {
-                                        this.homework = data.data.homeworks;
+                                        this.liaise = data.data.liaisons_result;
+                                        console.log(this.liaise)
                                     }
                                 })
                                 .catch(error => {
@@ -195,34 +205,132 @@
                                 });
       
                     },
-                    findUser: function () {
-                    console.log(this.username);
-                    const response =
-                        fetch(`${get_user_URL}/${this.username}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(response);
-                                if (data.code === 404) {
-                                    // no book in db
-                                    this.message = data.message;
-                                    this.books = [];
-                                } else {
-                                    this.books = [data.data];
-                                }
-                            })
-                            .catch(error => {
-                                // Errors when calling the service; such as network error, 
-                                // service offline, etc
-                                console.log(this.message + error);
-      
-                            });
-      
+
+                    acceptOffering: function (homework_id, liaise_id) {
+                      // reset data
+                      this.acceptAdded = false;
+                      this.acceptOfferingError = "";
+
+                      let jsonData = JSON.stringify({
+                          liaise_id: 'liaise_id',
+                          homework_id: 'homework_id'
+                          
+                      });
+
+                      fetch(`http://localhost:5200/liaise/accept/${liaise_id}/${homework_id}`,
+                          {
+                              method: "PUT",
+                              headers: {
+                                  "Content-type": "application/json"
+                              },
+                              body: jsonData
+                          })
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log(data);
+                              result = data.data;
+                              console.log(result);
+                              this.markProgress(homework_id);
+                              
+                              switch (data.code) {
+                                  case 201:
+                                      this.acceptAdded = true;
+                                      break;
+                                  case 400:
+                                  case 500:
+                                      this.acceptOfferingError = data.message;
+                                      break;
+                                  default:
+                                      throw `${data.code}: ${data.message}`;
+                              }
+                          })
                     },
+
+                    declineOffering: function (liaise_id) {
+                      // reset data
+                      this.rejectAdded = false;
+                      this.rejectOfferingError = "";
+
+                      let jsonData = JSON.stringify({
+                          liaise_id: 'liaise_id'
+                          
+                      });
+
+                      fetch(`http://localhost:5200/liaise/reject/${liaise_id}`,
+                          {
+                              method: "PUT",
+                              headers: {
+                                  "Content-type": "application/json"
+                              },
+                              body: jsonData
+                          })
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log(data);
+                              result = data.data;
+                              console.log(result);
+                              
+                              switch (data.code) {
+                                  case 201:
+                                      this.rejectAdded = true;
+                                      break;
+                                  case 400:
+                                  case 500:
+                                      this.rejectOfferingError = data.message;
+                                      break;
+                                  default:
+                                      throw `${data.code}: ${data.message}`;
+                              }
+                          })
+                    },
+
+                    markProgress: function (homework_id) {
+                      // reset data
+                      this.markAdded = false;
+                      this.markProgressError = "";
+
+                      let jsonData = JSON.stringify({
+                          homework_id: 'homework_id',
+                          status: "Progress"
+                          
+                      });
+
+                      fetch(`http://localhost:5100/homework/${homework_id}`,
+                          {
+                              method: "PUT",
+                              headers: {
+                                  "Content-type": "application/json"
+                              },
+                              body: jsonData
+                          })
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log(data);
+                              result = data.data;
+                              console.log(result);
+                              
+                              switch (data.code) {
+                                  case 201:
+                                      this.markAdded = true;
+
+                                      break;
+                                  case 400:
+                                  case 500:
+                                      this.markProgressError = data.message;
+                                      break;
+                                  default:
+                                      throw `${data.code}: ${data.message}`;
+                              }
+                          })
+                    },
+                    openWindow: function (link) {
+                      window.open(link ,'_blank');
+                    }
                 
                 },
                 created: function () {
                     // on Vue instance created, load the homework list
-                    this.getAllHomework();
+                    this.getLiaiseByHomework();
                 }
             });
           </script>

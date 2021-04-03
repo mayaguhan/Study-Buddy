@@ -115,25 +115,23 @@
             
             <br> 
 
-            <div class="row col-12">
-              <!-- include cards -->
-              <div id="app" v-if="hasHomework">
+            <div id="app" v-if="hasHomework">
+              <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div v-for="aHomework in homework">
-                
-                  <div class="card col-3" style = "padding: 0px; margin: 0px 6px;">
-                    <img class="card-img-top" src="cat.png" alt="Card image cap">
-                    <div class="card-body">
-                      <h5 class="card-title">{{ aHomework.title }}</h5>
-                      <p class="card-text">{{ aHomework.description }}</p>
-                      <p class="card-text">$ {{ aHomework.price }}</p>
-                      
+                  <div class="col">
+                    <div class="card h-100">
+                      <img src="./cat.png" class="w-100 h-100">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ aHomework.title }}</h5>
+                        <p class="card-text">{{ aHomework.description }}</p>
+                        <p class="card-text">$ {{ aHomework.price }}</p>
+                    
+                      </div>
                     </div>
-                  </div>
 
-                
+                  </div>
                 </div>
               </div>
-            
             </div>
             
           </main>
@@ -167,7 +165,7 @@
               getAllHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/solved`)
+                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/solve`)
                           .then(response => response.json())
                           .then(data => {
                               console.log(response);
