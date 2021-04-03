@@ -56,6 +56,7 @@
 
     <!-- NEW SCRIPT FOR VUE -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="./imgur.js"></script>
 
   </head>
   <body>
@@ -116,8 +117,10 @@
 
                 <div class="form-group pb-3">
                     <label for="homework_image">Select image of Homework:</label>
-                    <input type="file" class="form-control form-control-sm" id="homework_image">
-                    <!-- <input type="file" v-model="newImage" class="form-control form-control-sm" id="homework_image"> -->
+                    <br>
+                    <input type="file" id="file"><br>
+                    <img id="img" height="300"><br>
+                    <p id="url"></p>
                 </div>
   
                 <div class="form-group pb-3">
@@ -187,6 +190,22 @@
 
 
           <script>
+            
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1; //January is 0 so need to add 1 to make it 1!
+            var yyyy = today.getFullYear();
+            if(dd<10){
+              dd='0'+dd
+            } 
+            if(mm<10){
+              mm='0'+mm
+            } 
+
+            today = yyyy+'-'+mm+'-'+dd;
+            document.getElementById("deadline").setAttribute("min", today);
+
             var get_all_URL = "http://localhost:5100/homework";
             var get_user_URL = "http://localhost:5000/user";
 

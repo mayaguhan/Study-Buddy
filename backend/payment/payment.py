@@ -1,9 +1,16 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from os import environ
 from flask_cors import CORS
 from datetime import datetime
+import stripe
+
+
+
+# This is your real test secret API key.
+stripe.api_key = 'sk_test_51IYNsbAnXlfn6Qey2xQsssmxk06NgRtbg5Nsju1nxxhir40QVZe49xU5ZmuEdIKOGKhnPtqlPUzFVdP8UIwJBAWY002ooSpSYA'
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
@@ -15,10 +22,14 @@ db = SQLAlchemy(app)
 CORS(app)
 
 
+#This part will have to be modified
+YOUR_DOMAIN = 'http://localhost/study_buddy/www/Testing/UI'
+
+
 class Payment(db.Model):
     __tablename__ = 'payment'
 
-    payment_id = db.Column(db.Integer, primary_key=True)
+    payment_id = db.Column(db.String(100), nullable=False, primary_key=True)
     liaise_id = db.Column(db.Integer, nullable=False)
     sender_id = db.Column(db.Integer, nullable=False)
     receiver_id = db.Column(db.Integer, nullable=False)
@@ -140,7 +151,7 @@ def get_homework_liaise_id(liaise_id):
 # Submit Payment
 @app.route("/payment/addPayment", methods=['POST'])
 def create_payment():
-    data = request.get_json()
+    data = json.loads(request.get_data())
     payment = Payment(**data)
     try:
         db.session.add(payment)
@@ -160,9 +171,46 @@ def create_payment():
     ), 201
 
 
+#Update Payment Status by Payment Id
+@app.route("/payment/updateStatusByPaymentId/<string:payment_id>", methods=['PUT'])
+def update_status_payment(payment_id):
+    try:
+        payment = Payment.query.filter_by(payment_id=payment_id).first()
+        if not payment:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "payment_id": payment_id
+                    },
+                    "message": "Payment not found."
+                }
+            ), 404
+        data = request.get_json()
+        if data['status']:
+            payment.status = data['status']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": payment.json()
+                }
+            ), 200
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "payment": payment_id
+                },
+                "message": "An error occurred while updating the payment. " + str(e)
+            }
+        ), 500
+
+
 #Update Payment Status by Liaise Id
-@app.route("/payment/updateStatus/<string:liaise_id>", methods=['PUT'])
-def update_status(liaise_id):
+@app.route("/payment/updateStatusByLiaiseId/<string:liaise_id>", methods=['PUT'])
+def update_status_liaise(liaise_id):
     try:
         payment = Payment.query.filter_by(liaise_id=liaise_id).first()
         if not payment:
@@ -211,7 +259,7 @@ def delete_payment(payment_id):
                     "payment_id": payment_id
                 }
             }
-        )
+        ), 200
     return jsonify(
         {
             "code": 404,
@@ -220,7 +268,133 @@ def delete_payment(payment_id):
             },
             "message": "Payment not found."
         }
-    )
+    ), 404
+
+
+
+# EXTERNAL API CALLS
+
+# Creating checkout session
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    data = json.loads(request.get_data())
+    data_list = []
+    data_list.append(data)
+    print(data_list)
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=data_list,
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/success' + "?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=YOUR_DOMAIN + '/cancel' + "?session_id={CHECKOUT_SESSION_ID}",
+        )
+
+        # Update database with PK --> Payment ID and DateTime on top of existing data attributes to be updated
+
+        return jsonify({'id': checkout_session.id,
+                        'payment_id': checkout_session.payment_intent})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
+
+
+# On success, update status of payment to be on HOLD
+@app.route('/success', methods=['GET'])
+def order_success():
+    session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+    payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+    payment_id = session.payment_intent
+
+    print(session.payment_intent)
+
+    try:
+        payment = Payment.query.filter_by(payment_id=session.payment_intent).first()
+        if not payment:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "payment_id": payment_intent
+                    },
+                    "message": "Payment not found."
+                }
+            ), 404
+
+        
+        payment.status = "Hold"
+        db.session.commit()
+
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "payment": payment.json(),
+                    "payment_id": payment_id
+                }
+            }
+        ), 200
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "payment": payment_intent
+                },
+                "message": "An error occurred while updating the payment. " + str(e)
+            }
+        ), 500
+
+
+# On Failure, update status of payment to be FAILED
+@app.route('/cancel', methods=['GET'])
+def order_failure():
+    session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+    payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+    payment_id = session.payment_intent
+
+    print(session.payment_intent)
+
+    try:
+        payment = Payment.query.filter_by(payment_id=session.payment_intent).first()
+        if not payment:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "payment_id": payment_intent
+                    },
+                    "message": "Payment not found."
+                }
+            ), 404
+
+        
+        payment.status = "Failed"
+        db.session.commit()
+
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "payment": payment.json(),
+                    "payment_id": payment_id
+                }
+            }
+        ), 200
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "payment": payment_intent
+                },
+                "message": "An error occurred while updating the payment. " + str(e)
+            }
+        ), 500
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5400, debug=True)

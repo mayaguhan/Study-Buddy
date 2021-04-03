@@ -15,6 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 user_URL = environ.get('user_URL') or "http://user:5000/user"
+homework_URL = environ.get('homework_URL') or "http://homework:5100/homework"
 liaise_URL = environ.get('liaise_URL') or "http://liaise:5200/liaise"
 
 
@@ -46,23 +47,29 @@ def user_liaise_detail(homework_id):
     })
 
 
-# # Get All Liaise Offerings by Homework ID
-# @app.route("/liaise/liaiseByHomework/<string:homework_id>")
-# def get_homework_all(homework_id):
-#     liaise_list = Liaise.query.filter_by(homework_id=homework_id).all()
-#     if liaise_list:
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "liaisons": [liaise.json() for liaise in liaise_list]
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "message": "There are no Liaisons for this homework."
-#         }
-#     ), 404
+@app.route("/liaise_detail/liaiseId/<string:liaise_id>")
+def user_liaise_detail_by_liaiseId(liaise_id):
+    if liaise_id:
+        try:
+            result = retrieveLiaiseDetailByLiaiseId(liaise_id)
+            print('\nresult: ', result)
+            return jsonify(result), result['code']
+        
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "accept_offering.py internal error: " + ex_str
+            }), 500
+    
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " +str(request.get_data())
+    })
 
 def retrieveLiaiseDetail(homework_id):
     #Updating Homework Microservice, status = Progress
@@ -167,6 +174,43 @@ def retrieveLiaiseDetail(homework_id):
     }
 
 
+def retrieveLiaiseDetailByLiaiseId(liaise_id):
+    return_list = []
+
+    liaisons_result = invoke_http(liaise_URL + "/" + str(liaise_id), method='GET')
+    liaisons_code = liaisons_result["code"]
+
+    if len(liaisons_result["data"]) > 0:
+        tutor_id = liaisons_result["data"]["tutor_id"]
+        homework_id = liaisons_result["data"]["homework_id"]
+        print(tutor_id, homework_id)
+
+        user_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
+        user_code = user_result["code"]
+
+        homework_result = invoke_http(homework_URL + '/' + str(homework_id), method='GET')
+        homework_code = homework_result["code"]
+
+        liaisons_result["data"]["tutor_username"] = user_result["data"]["username"]
+        liaisons_result["data"]["tutor_contact"] = user_result["data"]["contact"]
+        liaisons_result["data"]["tutor_email"] = user_result["data"]["email"]
+        liaisons_result["data"]["tutor_telegram_id"] = user_result["data"]["telegram_id"]
+        liaisons_result["data"]["tutor_photo"] = user_result["data"]["photo"]
+
+        liaisons_result["data"]["homework_title"] = homework_result["data"]["title"]
+        liaisons_result["data"]["homework_description"] = homework_result["data"]["description"]
+        liaisons_result["data"]["homework_subject"] = homework_result["data"]["subject"]
+        liaisons_result["data"]["homework_image"] = homework_result["data"]["image"]
+
+        print(liaisons_result, user_result, homework_result)
+        #     user_code = user_result["code"]
+
+
+    # Return liaise result
+    return {
+        "code": 201,
+        "data": liaisons_result
+    }
 
 
 if __name__ == "__main__":
