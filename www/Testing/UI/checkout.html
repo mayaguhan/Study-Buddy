@@ -199,7 +199,7 @@
           'unit_amount': 5000,
           'product_data': {
               'name': 'FK DAVID',
-              'images': ['https://i.imgur.com/EHyR2nP.png'],
+              'images': [],
             },
         },
         'quantity': 1,
@@ -208,7 +208,7 @@
       
       img_arr = []
       //Image must be dynamically changed
-      img_arr.push('https://i.imgur.com/EHyR2nP.png')
+      img_arr.push(localStorage.getItem("homework_image"))
       console.log(img_arr)
 
       unit_amount = localStorage.getItem("offering")*100;
