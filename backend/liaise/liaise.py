@@ -280,7 +280,7 @@ def confirm_homework(liaise_id):
             ), 404
         data = request.get_json()
         if data['status'] and data['tutor_rating'] and data['tutor_remark']:
-            liaise.status = data['status']
+            liaise.status = "Confirm"
             liaise.tutor_rating = data['tutor_rating']
             liaise.tutor_remark = data['tutor_remark']
             db.session.commit()

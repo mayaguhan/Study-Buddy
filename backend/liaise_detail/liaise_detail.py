@@ -195,6 +195,7 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         liaisons_result["data"]["tutor_contact"] = user_result["data"]["contact"]
         liaisons_result["data"]["tutor_email"] = user_result["data"]["email"]
         liaisons_result["data"]["tutor_telegram_id"] = user_result["data"]["telegram_id"]
+        liaisons_result["data"]["tutor_photo"] = user_result["data"]["photo"]
 
         liaisons_result["data"]["homework_title"] = homework_result["data"]["title"]
         liaisons_result["data"]["homework_description"] = homework_result["data"]["description"]
