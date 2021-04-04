@@ -119,9 +119,14 @@
                   <div class="card col-3" style = "padding: 0px; margin: 0px 6px;">
                     <img class="card-img-top" v-bind:src="aLiaise.photo" alt="Card image cap">
                     <div class="card-body">
-                      
-                      <h5 class="card-title"> {{ aLiaise.tutor_id }} </h5>
-                      <p class="card-text">Tutor Rating: {{ aLiaise.rating }}</p>
+                      <h5 class="card-title"> {{ aLiaise.username }} </h5>
+                      <p class="card-text">Tutor Rating: {{ Math.round(aLiaise.rating * 100) / 100 }} / 5
+                        <div style="width: 100px; height: 30px;"> 
+                          <div style="background-color: yellow;" v-bind:style="{width: aLiaise.rating * 20 + '%' }">
+                            <img src="assets/stars.png" style="display: block;"/>
+                          </div>
+                        </div>
+                      </p>
                       <p class="card-text">Offered Price: ${{ aLiaise.offering }}</p>
                       
                       <div class="row">
@@ -175,6 +180,7 @@
                       result = []
                       for (let i = 0; i < this.liaise.length; i++) {
                         result.push(this.liaise[i].data)
+                        console.log(this.liaise[i].data);
                       }
                       return result
                     }
