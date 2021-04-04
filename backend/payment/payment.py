@@ -23,7 +23,7 @@ CORS(app)
 
 
 #This part will have to be modified
-YOUR_DOMAIN = 'http://localhost/study_buddy/www/Testing/UI'
+YOUR_DOMAIN = 'http://localhost/study_buddy/www/UI'
 
 
 class Payment(db.Model):

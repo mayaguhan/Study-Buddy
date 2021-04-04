@@ -127,6 +127,9 @@
                       <p class="card-text">Offered Price: ${{ aLiaise.offering }}</p>
                       
                       <div class="row">
+                        <!-- <a v-bind:href="'checkout.html?liaise_id=' + aLiaise.liaise_id + '&tutor_id=' + aLiaise.tutor_id" class="btn btn-outline-success btn-block d-block w-50">Accept</a>
+                        <a @click="declineOffering(aLiaise.liaise_id)" class="btn btn-outline-danger btn-block d-block w-50" style="float:right;">Decline</a>
+                        <a class="btn btn-outline-primary d-block w-100" style="justify-content: center; display: flex;" v-on:click.stop.prevent="openWindow('https://t.me/' + aLiaise.telegram_id)">Chat</a> -->
                         <div class="col">
                           <a v-bind:href="'checkout.html?liaise_id=' + aLiaise.liaise_id + '&tutor_id=' + aLiaise.tutor_id" class="btn btn-outline-success btn-block">Accept</a>
                           
