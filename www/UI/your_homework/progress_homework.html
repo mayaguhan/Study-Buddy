@@ -1,0 +1,371 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <title>Study Buddy</title>
+    <style>
+    .logo-image {
+        /* padding-top: 10px;
+        position: relative; */
+        width: 100px;
+        height: 100px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 50%;
+      } 
+      
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        /* border-radius: 50%; 
+        overflow: hidden;
+        width: 125px; 
+        height: 125px; */
+      }
+
+    .img_logo {
+        display: inline;
+        margin: 0 auto;
+        height: 100%;
+        width: auto;
+    }
+    
+    .line{
+        display:inline-block;
+        border-bottom:2px #5B3400 solid;
+        margin-left:5px;
+        width:80%;
+    }
+    a.custom-card,
+    a.custom-card:hover {
+      color: inherit;
+      text-decoration: none;
+    }
+    </style>
+    <link href="../css/dashboard.css" rel="stylesheet">
+
+    <!-- NEW SCRIPT FOR VUE -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+  </head>
+  <body>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Study Buddy</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </header>
+    
+  <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+              <div class="logo-image center">
+                  <span>
+                    <img v-bind:src="profilePhoto" class="rounded img_logo">
+                  </span>
+              </div>
+              <li class="nav-item center">
+                <a class="nav-link">
+                  @{{ username }}
+                </a>
+              </li>
+              <br>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="../homepage.html">
+                  View All Listings
+                </a>
+              </li>
+              <li class="nav-item" style="list-style-type: none">
+                <a class="nav-link" href="./my_homework.html">
+                  Your Homework
+                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="./open_homework.html">Open</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link active" href="./open_homework.html">In Progress</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./completed_homework.html">Completed</a></li>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="../new_listing.html">
+                  Create New Listing
+                </a>
+              </li>
+
+              <li class="nav-item text-nowrap">
+                <a class="nav-link" href="#" style="color: red;">Sign out</a>
+              </li> 
+            </ul>
+          </div>
+        </nav>
+          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
+              <h1 class="h2">My Homework - In Progress</h1>
+            </div>
+            
+            <br> 
+
+            <div id="app" v-if="hasHomework" class="mb-3">
+              <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div v-for="aHomework in homework">
+                  <div class="col">
+                    <div class="card h-100">
+                      <img v-bind:src="aHomework.image" class="w-100 h-100">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ aHomework.title }}</h5>
+                        <p class="card-text">{{ aHomework.description }}</p>
+                        <p class="card-text">$ {{ aHomework.price }}</p>
+                        <div class="row">
+                          <div class="col">
+                            <button type="button" class="btn btn-outline-success btn-block" id='feedback-btn' data-toggle="modal" data-target="#feedbackModal">
+                              Mark as Completed
+                            </button>
+                          </div>
+                            
+                          <div class="col">
+                            <button type="button" class="btn btn-outline-danger btn-block" id='cancel-btn' data-toggle="modal" data-target="#cancelModal">
+                              Cancel Homework
+                            </button>
+                          </div>
+                          
+                        </div>
+
+                        <!-- Feedback Modal -->
+                        <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModal" aria-hidden="true">
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="feedbackModal">Feedback Form</h5>
+                              </div>
+                              <div class="modal-body">
+                                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                                  <div id="app">
+                                    <div class="mb-3">
+                                      <label for="tutor_rating" class="form-label">Tutor Rating: </label>
+                                      <input type="number" v-model="newTutor_rating" class="form-control" id="tutor_rating" placeholder="">
+                                    </div>
+                                    <div class="mb-3">
+                                      <label for="tutor_remark" class="form-label">Remarks about Tutor</label>
+                                      <textarea class="form-control" v-model="newTutor_remark" id="tutor_remark" rows="3"></textarea>
+                                    </div>
+                                    <div>
+                                      <button type="button" class="btn btn-outline-success" @click="markCompleted(aHomework.homework_id)">
+                                        Submit Feedback
+                                      </button>
+                                    </div>
+                                    <br>
+                                    <div class="text-success" v-if="remarkAdded">
+                                      The Feedback has been successfully placed! <br><br>
+                                    </div>
+                                    <div class="text-danger" v-if="addRemarkError != ''">
+                                      There is a problem adding this Feedback:<br>
+                                      {{ addRemarkError}}
+                                      <br>
+                                    </div>
+                                  </div>
+                                </main>
+                              </div>
+                            </div>
+                            <footer class="footer mt-auto py-3 bg-dark">
+                              <div class="container">
+                                <span class="text-muted">If you face any issues, please contact studybuddy@outlook.com</span>
+                              </div>
+                            </footer>
+                          </div>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModal" aria-hidden="true">
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="cancelModal">Cancel Confirmation</h5>
+                              </div>
+                              <div class="modal-body">
+                                <p>
+                                  Are you sure you want to cancel this homework? You will be refunded with the amount you paid.
+                                </p>
+                                <button type="button" class="btn btn-outline-danger" @click="markCancel(aHomework.homework_id)">
+                                  Yes
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>    
+      </div>
+    </div>
+  </div>
+
+    <script>
+
+      var sidebar = new Vue ({
+        el: "#sidebarMenu",
+        data: {
+          username: `${localStorage.getItem("username")}`,
+          profilePhoto: `${localStorage.getItem("photo")}`,
+        }
+
+      });
+
+      var app = new Vue({
+          el: "#app",
+          computed: {
+              hasHomework: function () {
+                  return this.homework.length > 0;
+              }
+          },
+          data: {
+              username: `${localStorage.getItem("username")}`,
+              "homework": [],
+              message: "There is a problem retrieving homework data, please try again later.",
+              markAdded: false,
+              markCompletedError: '',
+              newTutor_rating : "",
+              newTutor_remark:"",
+              remarkAdded: false,
+              addRemarkError: "",
+          },
+          methods: {
+              addRemark: function() {
+                    this.remarkAdded = false;
+                    this.addRemarkError = "";
+                    let jsonData = JSON.stringify({
+                      tutor_rating: this.newTutor_rating,
+                      tutor_remark: this.newTutor_remark
+                    });
+              },
+              onSubmit: function() {
+                    //this.remarkAdded = true;
+                    if (this.newTutor_remark == "") {
+                      this.addRemarkError = "Please do not leave remarks empty!";
+                    }
+                    else {
+                      this.addRemark();
+
+                      
+                      this.remarkAdded = true;
+                      this.newTutor_rating = "";
+                      this.newTutor_remark = "";
+                    }
+
+              },
+              getAllHomework: function () {
+                  // on Vue instance created, load the book list
+                  const response =
+                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/progress`)
+                          .then(response => response.json())
+                          .then(data => {
+                              if (data.code === 404) {
+                                  // no homework in db
+                                  this.message = data.message;
+                              } else {
+                                  this.homework = data.homework;
+                              }
+                          })
+                          .catch(error => {
+                              // Errors when calling the service; such as network error, 
+                              // service offline, etc
+                              console.log(this.message + error);
+                          });
+              },
+
+              markCompleted: function (homework_id) {
+                this.markAdded = false;
+                this.markCompletedError = "";
+
+                if (this.newTutor_remark == "") {
+                  this.addRemarkError = "Please do not leave remarks empty!";
+                }
+                else {
+                  this.addRemark();
+                  this.remarkAdded = true;
+                  let jsonData = JSON.stringify({
+                      homework_id: homework_id,
+                      tutor_rating: this.newTutor_rating,
+                      tutor_remark: this.newTutor_remark
+                  });
+                  fetch(`http://localhost:5700/modify_homework/confirm`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-type": "application/json"
+                      },
+                      body: jsonData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                      result = data.data;
+                      switch (data.code) {
+                        case 201:
+                          this.markAdded = true;
+                          break;
+                        case 400:
+                        case 500:
+                          this.getAllHomework();
+                          break;
+                        default:
+                          throw `${data.code}: ${data.message}`;
+                      }
+                    })
+                  }
+              },
+
+              markCancel: function (homework_id) {
+                let jsonData = JSON.stringify({
+                    homework_id: homework_id
+                });
+                fetch(`http://localhost:5700/modify_homework/cancel`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-type": "application/json"
+                    },
+                    body: jsonData
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                    result = data.data;
+                    switch (data.code) {
+                      case 201:
+                        this.markAdded = true;
+                        break;
+                      case 400:
+                      case 500:
+                        this.getAllHomework();
+                        break;
+                      default:
+                        throw `${data.code}: ${data.message}`;
+                    }
+                  })
+              }
+
+
+          },
+          created: function () {
+              this.getAllHomework();
+          }
+      });
+    </script>
+  
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
