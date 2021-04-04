@@ -34,7 +34,6 @@
     img{
         display: inline;
         margin: 0 auto;
-        margin-left: -25%;
         height: 100%;
         width: auto;
     }
@@ -46,12 +45,12 @@
         width:80%;
     }
     </style>
-    <link href="dashboard.css" rel="stylesheet">
+    <link href="./css/dashboard.css" rel="stylesheet">
 
     <!-- NEW SCRIPT FOR VUE -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="./imgur.js"></script>
-
+    <script src="./new_listing.js"></script>
+ 
   </head>
   <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -68,7 +67,7 @@
             <ul class="nav flex-column">
               <div class="logo-image center">
                   <span>
-                    <img src="cat.png" class="rounded img_logo">
+                    <img v-bind:src="imageSRC" class="rounded img_logo">
                   </span>
               </div>
               <li class="nav-item center">
@@ -78,20 +77,20 @@
               </li>
               <br>
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="homepage.html">
+                <a class="nav-link" aria-current="page" href="./homepage.html">
                   View All Listings
                 </a>
               </li>
               <li class="nav-item" style="list-style-type: none">
-                <a class="nav-link" href="my_homework.html">
+                <a class="nav-link" href="./your_homework/my_homework.html">
                   Your Homework
-                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
+                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="./your_homework/open_homework.html">Open</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="new_listing.html">
+                <a class="nav-link active" href="./new_listing.html">
                   Create New Listing
                 </a>
               </li>
@@ -108,57 +107,51 @@
             </div>
             
             <div id="app">
-
+                
                 <div class="form-group pb-3">
                     <label for="homework_image">Select image of Homework:</label>
                     <br>
                     <input type="file" id="file"><br>
-                    <img id="img" height="300"><br>
-                    <p id="url"></p>
+                    <input type="hidden" id="url">
+
                 </div>
   
                 <div class="form-group pb-3">
                     Subject of Homework:
                     <br>
-                    <input type="radio" v-model="newSubject" name="subject" value="English"> English
-                    &nbsp;
-                    <input type="radio" v-model="newSubject" name="subject" value="Math"> Math
-                    &nbsp;
-                    <input type="radio" v-model="newSubject" name="subject" value="Science"> Science
-                    &nbsp;
+                   <input type="text" v-model="newSubject" class="form-control form-control-sm" name="subject"  placeholder="Enter Subject of Homework" required>
                     
                 </div>
     
                 <div class="form-group pb-3">
                     <label for="listing_title">Listing Title</label>
-                    <input type="text" v-model="newTitle" class="form-control form-control-sm" id="listing_title" placeholder="Enter Title">
+                    <input type="text" v-model="newTitle" class="form-control form-control-sm" id="listing_title" placeholder="Enter Title" required>
                 </div>
     
                 <div class="form-group pb-3">
                     <label for="price">Price of Homework ($)</label>
-                    <input type="number" v-model="newPrice" class="form-control form-control-sm" id="price" placeholder="Enter Price">
+                    <input type="number" v-model="newPrice" class="form-control form-control-sm" id="price" min=0 placeholder="Enter Price" required>
                 </div>
   
                 <div class="form-group pb-3">
                     Description of Homework:
                     <br>
-                    <textarea name="description" v-model="newDescription" rows="4" cols="50"></textarea>
+                    <textarea name="description" v-model="newDescription" rows="4" cols="50" required></textarea>
                 </div>
   
                 <div class="form-group pb-3">
                   <label for="deadline">Deadline</label>
-                  <input type="date" v-model="newDeadline" class="form-control form-control-sm" id="deadline">
+                  <input type="date" v-model="newDeadline" class="form-control form-control-sm" id="deadline" required>
                 </div>
                 
-                
-                    Choice of Meeting:
-                    <br>
-                    <input type="radio" name="meetings" v-model="newMeeting" value="Non-Virtual"> Chat
-                    <br>
-                    <input type="radio" name="meetings" v-model="newMeeting" value="Virtual"> Zoom
-                    <br>
-                
-  
+                <div class="form-group pb-3">
+                  Choice of Meeting:
+                  <br>
+                  <input type="radio" name="meetings" v-model="newMeeting" value="Non-Virtual"> Chat
+                  <br>
+                  <input type="radio" name="meetings" v-model="newMeeting" value="Virtual"> Zoom
+                  <br>
+                </div>                
   
                 <button @click="addHomework" class="btn btn-primary my-3" v-on:submit.prevent="onSubmit" style="float:right;">Create New Homework Listing</button>
   
@@ -167,8 +160,11 @@
                 <br>
               </div>
               <div class="text-danger" v-if="addHomeworkError!=''">
-                  There is a problem adding this new homework:<br>
-                  {{ addHomeworkError}}
+                  There is a problem adding this homework:<br>
+                  <div v-for="error in addHomeworkError">
+                    {{ error}}
+                  </div>
+                  
                   <br>
               </div>
             </div>
@@ -194,13 +190,11 @@
             today = yyyy+'-'+mm+'-'+dd;
             document.getElementById("deadline").setAttribute("min", today);
 
-            var get_all_URL = "http://localhost:5100/homework";
-            var get_user_URL = "http://localhost:5000/user";
-
             var sidebar = new Vue ({
               el: "#sidebarMenu",
               data: {
-                username: `${localStorage.getItem("username")}`
+                username: `${localStorage.getItem("username")}`,
+                imageSRC: `${localStorage.getItem("photo")}`,
               }
 
             });
@@ -212,49 +206,32 @@
                     user_id: `${localStorage.getItem("user_id")}`,
                     "homework": [],
                     message: "There is a problem retrieving homework data, please try again later.",
-                    newImage: "homework.png",
                     newSubject: "",
                     newTitle: "",
                     newPrice: "",
                     newDescription: "",
                     newDeadline: "",
                     newMeeting: "",
+                    newImage: `${localStorage.getItem("newHomeworkImage")}`,
                     homeworkAdded: false,
-                    addHomeworkError: ""
-                    // orderedBook: "",
-                    // orderPlaced: false,
-                    // orderSuccessful: false,
+                    addHomeworkError: []
                 },
                 methods: {
                     
-                    // findUser: function () {
-                    // console.log(this.username);
-                    // const response =
-                    //     fetch(`${get_user_URL}/${this.username}`)
-                    //         .then(response => response.json())
-                    //         .then(data => {
-                    //             console.log(response);
-                    //             if (data.code === 404) {
-                    //                 // no book in db
-                    //                 this.message = data.message;
-                    //                 this.books = [];
-                    //             } else {
-                    //                 this.books = [data.data];
-                    //             }
-                    //         })
-                    //         .catch(error => {
-                    //             // Errors when calling the service; such as network error, 
-                    //             // service offline, etc
-                    //             console.log(this.message + error);
-
-                    //         });
-
-                    // },
+                   
                     addHomework: function () {
                         // reset data
                         this.homeworkAdded = false;
-                        this.addHomeworkError = "";
-                        console.log(this.newMeeting)
+                        this.addHomeworkError = [];
+
+                        if (this.newMeeting != "") {
+
+                          if (parseInt(this.newPrice) < 0) {
+                            this.addHomeworkError.push("Please enter a price greater than $0");
+                             clearInterval(this);
+                          }
+                         
+                        }
     
                         let jsonData = JSON.stringify({
                             student_id: this.user_id,
@@ -288,7 +265,7 @@
                                         break;
                                     case 400:
                                     case 500:
-                                        this.addHomeworkError = data.message;
+                                        this.addHomeworkError.push(data.message);
                                         break;
                                     default:
                                         throw `${data.code}: ${data.message}`;
