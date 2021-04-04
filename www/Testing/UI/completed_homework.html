@@ -1,0 +1,224 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <title>Study Buddy</title>
+    <style>
+    .logo-image {
+        /* padding-top: 10px;
+        position: relative; */
+        width: 100px;
+        height: 100px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 50%;
+      } 
+      
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        /* border-radius: 50%; 
+        overflow: hidden;
+        width: 125px; 
+        height: 125px; */
+      }
+
+    .img_logo {
+        display: inline;
+        margin: 0 auto;
+        margin-left: -25%;
+        height: 100%;
+        width: auto;
+    }
+    
+    .line{
+        display:inline-block;
+        border-bottom:2px #5B3400 solid;
+        margin-left:5px;
+        width:80%;
+    }
+    a.custom-card,
+    a.custom-card:hover {
+      color: inherit;
+      text-decoration: none;
+    }
+    </style>
+    <link href="dashboard.css" rel="stylesheet">
+
+    <!-- NEW SCRIPT FOR VUE -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+  </head>
+  <body>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Study Buddy</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </header>
+    
+  <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+              <div class="logo-image center">
+                  <span>
+                    <img src="cat.png" class="rounded img_logo">
+                  </span>
+              </div>
+              <li class="nav-item center">
+                <a class="nav-link">
+                  @{{ username }}
+                </a>
+              </li>
+              <br>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="homepage.html">
+                  View All Listings
+                </a>
+              </li>
+              <li class="nav-item" style="list-style-type: none">
+                <a class="nav-link" href="my_homework.html">
+                  Your Homework
+                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link active" href="completed_homework.html">Completed</a></li>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="new_listing.html">
+                  Create New Listing
+                </a>
+              </li>
+
+              <li class="nav-item text-nowrap">
+                <a class="nav-link" href="#" style="color: red;">Sign out</a>
+              </li> 
+            </ul>
+          </div>
+        </nav>
+          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
+              <h1 class="h2">My Homework - Completed</h1>
+            </div>
+            <!-- <div class = "e-card-horizontal"> -->
+            <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" /> -->
+            
+            <br> 
+
+            <div id="app" v-if="hasHomework">
+              <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div v-for="aHomework in homework">
+                  <div class="col">
+                    <div class="card h-100">
+                      <img src="./cat.png" class="w-100 h-100">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ aHomework.title }}</h5>
+                        <p class="card-text">{{ aHomework.description }}</p>
+                        <p class="card-text">$ {{ aHomework.price }}</p>
+                    
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </main>
+        </div>
+    </div>
+
+    <script>
+
+      var sidebar = new Vue ({
+        el: "#sidebarMenu",
+        data: {
+          username: `${localStorage.getItem("username")}`
+        }
+
+      });
+
+      var app = new Vue({
+          el: "#app",
+          computed: {
+              hasHomework: function () {
+                  return this.homework.length > 0;
+              }
+          },
+          data: {
+              username: `${localStorage.getItem("username")}`,
+              "homework": [],
+              message: "There is a problem retrieving homework data, please try again later."
+             
+          },
+          methods: {
+              getAllHomework: function () {
+                  // on Vue instance created, load the book list
+                  const response =
+                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/solve`)
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log(response);
+                              if (data.code === 404) {
+                                  // no homework in db
+                                  this.message = data.message;
+                              } else {
+                                  this.homework = data.homework;
+                              }
+                          })
+                          .catch(error => {
+                              // Errors when calling the service; such as network error, 
+                              // service offline, etc
+                              console.log(this.message + error);
+
+                          });
+
+              },
+              findUser: function () {
+              console.log(this.username);
+              const response =
+                  fetch(`${get_user_URL}/${this.username}`)
+                      .then(response => response.json())
+                      .then(data => {
+                          console.log(response);
+                          if (data.code === 404) {
+                              // no book in db
+                              this.message = data.message;
+                              this.books = [];
+                          } else {
+                              this.books = [data.data];
+                          }
+                      })
+                      .catch(error => {
+                          // Errors when calling the service; such as network error, 
+                          // service offline, etc
+                          console.log(this.message + error);
+
+                      });
+
+              },
+          
+          },
+          created: function () {
+              // on Vue instance created, load the homework list
+              this.getAllHomework();
+          }
+      });
+    </script>
+    
+
+    
+    <!-- Optional JavaScript; choose one of the two! -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  </body>
+</html>
