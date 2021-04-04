@@ -208,10 +208,10 @@
                                     }
                                 })
                                 .catch(error => {
-                                    // Errors when calling the service; such as network error, 
-                                    // service offline, etc
                                     console.log(this.message + error);
-      
+                                    // Display No Liaise Available
+
+
                                 });
       
                     },
@@ -265,11 +265,11 @@
                       this.rejectOfferingError = "";
 
                       let jsonData = JSON.stringify({
-                          liaise_id: 'liaise_id'
+                          liaise_id: liaise_id
                           
                       });
 
-                      fetch(`http://localhost:5200/liaise/reject/${liaise_id}`,
+                      fetch(`http://localhost:5200/liaise/reject`,
                           {
                               method: "PUT",
                               headers: {
@@ -279,6 +279,7 @@
                           })
                           .then(response => response.json())
                           .then(data => {
+                              this.getLiaiseByHomework();
                               console.log(data);
                               result = data.data;
                               console.log(result);

@@ -199,7 +199,7 @@
           'unit_amount': 5000,
           'product_data': {
               'name': 'FK DAVID',
-              'images': ['https://i.imgur.com/EHyR2nP.png'],
+              'images': [],
             },
         },
         'quantity': 1,
@@ -208,7 +208,7 @@
       
       img_arr = []
       //Image must be dynamically changed
-      img_arr.push('https://i.imgur.com/EHyR2nP.png')
+      img_arr.push(localStorage.getItem("homework_image"))
       console.log(img_arr)
 
       unit_amount = localStorage.getItem("offering")*100;
@@ -231,15 +231,11 @@
           // console.log("HELLO")
           payment_details = {
             'payment_id': session.payment_id,
-            'liaise_id': 9,
-            'sender_id': 12,
+            'liaise_id': new URLSearchParams(window.location.search).get('liaise_id'), 
+            'sender_id': localStorage.getItem("user_id"),
             "receiver_id": 100,
             "status": "Pending"
           }
-
-          // console.log(payment_details)
-
-          //Insert payment into database with STATUS = Pending
 
           fetch("http://localhost:5400/payment/addPayment", {
             method: "POST",
