@@ -81,19 +81,21 @@ def retrieveLiaiseDetail(homework_id):
         for liaise in liaisons_result["liaisons"]:
 
             tutor_id = liaise["tutor_id"]
-            user_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
-            user_code = user_result["code"]
+            tutor_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
+            tutor_code = tutor_result["code"]
 
             tutor_rating_result = invoke_http(liaise_URL + '/averageRating/' + str(tutor_id), method='GET')
             tutor_rating_code = tutor_rating_result["code"]
 
-            user_result["data"]["rating"] = tutor_rating_result["average"]
-            user_result["data"]["liaise_id"] = liaise["liaise_id"]
-            user_result["data"]["homework_id"] = liaise["homework_id"]
-            user_result["data"]["offering"] = liaise["offering"]
-            user_result["data"]["status"] = liaise["status"]
 
-            return_list.append(user_result)
+            tutor_result["data"]["rating"] = tutor_rating_result["average"]
+            tutor_result["data"]["tutor_id"] = liaise["tutor_id"]
+            tutor_result["data"]["liaise_id"] = liaise["liaise_id"]
+            tutor_result["data"]["homework_id"] = liaise["homework_id"]
+            tutor_result["data"]["offering"] = liaise["offering"]
+            tutor_result["data"]["status"] = liaise["status"]
+
+            return_list.append(tutor_result)
 
     return {
         "code": 201,
@@ -114,22 +116,30 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         homework_id = liaisons_result["data"]["homework_id"]
         print(tutor_id, homework_id)
 
-        user_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
-        user_code = user_result["code"]
-
         homework_result = invoke_http(homework_URL + '/' + str(homework_id), method='GET')
         homework_code = homework_result["code"]
-
-        liaisons_result["data"]["tutor_username"] = user_result["data"]["username"]
-        liaisons_result["data"]["tutor_contact"] = user_result["data"]["contact"]
-        liaisons_result["data"]["tutor_email"] = user_result["data"]["email"]
-        liaisons_result["data"]["tutor_telegram_id"] = user_result["data"]["telegram_id"]
-        liaisons_result["data"]["tutor_photo"] = user_result["data"]["photo"]
-
+        student_id = homework_result["data"]["student_id"]
         liaisons_result["data"]["homework_title"] = homework_result["data"]["title"]
         liaisons_result["data"]["homework_description"] = homework_result["data"]["description"]
         liaisons_result["data"]["homework_subject"] = homework_result["data"]["subject"]
         liaisons_result["data"]["homework_image"] = homework_result["data"]["image"]
+        liaisons_result["data"]["student_id"] = student_id
+
+        tutor_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
+        tutor_code = tutor_result["code"]
+        liaisons_result["data"]["tutor_username"] = tutor_result["data"]["username"]
+        liaisons_result["data"]["tutor_contact"] = tutor_result["data"]["contact"]
+        liaisons_result["data"]["tutor_email"] = tutor_result["data"]["email"]
+        liaisons_result["data"]["tutor_telegram_id"] = tutor_result["data"]["telegram_id"]
+        liaisons_result["data"]["tutor_photo"] = tutor_result["data"]["photo"]
+
+        student_result = invoke_http(user_URL + '/user_id/' + str(student_id), method='GET')
+        student_code = student_result["code"]
+        liaisons_result["data"]["student_username"] = student_result["data"]["username"]
+        liaisons_result["data"]["student_contact"] = student_result["data"]["contact"]
+        liaisons_result["data"]["student_email"] = student_result["data"]["email"]
+        liaisons_result["data"]["student_telegram_id"] = student_result["data"]["telegram_id"]
+        liaisons_result["data"]["student_photo"] = student_result["data"]["photo"]
 
 
     # Return liaise result
