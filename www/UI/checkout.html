@@ -108,11 +108,11 @@
               <h1 class="h2">Checkout</h1>
             </div> 
 
-            <div id="app" class="row col-12">
-                <img v-bind:src="liaise.homework_image" alt="No Image Found">
+            <div id="app" class="row col-12 ms-1 mb-3">
+                <img v-bind:src="liaise.homework_image" alt="No Image Found" style="width: 50%; height:50%;">
                 <p>Homework Name: {{ liaise.homework_title}}</p>
                 <p>Tutor Name: {{ liaise.tutor_username }} </p>
-                <p>Price: $ {{ liaise.offering }}</p>
+                <p>Price: ${{ liaise.offering }}</p>
                 
                 <button type="button" class="btn btn-info" id="checkout-button" onclick="createCheckoutSession()">Checkout</button>
             </div>
