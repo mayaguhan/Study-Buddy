@@ -45,6 +45,9 @@
         margin-left:5px;
         width:80%;
     }
+
+
+    
     </style>
     <link href="dashboard.css" rel="stylesheet">
 
@@ -116,7 +119,13 @@
                     <div class="card-body">
                       
                       <h5 class="card-title"> {{ aLiaise.tutor_id }} </h5>
-                      <p class="card-text">Tutor Rating: {{ aLiaise.rating }}</p>
+                      <p class="card-text">Tutor Rating: {{ Math.round(aLiaise.rating * 100) / 100 }} / 5
+                        <div style="width: 100px; height: 30px;"> 
+                          <div style="background-color: yellow;" v-bind:style="{width: aLiaise.rating * 20 + '%' }">
+                            <img src="assets/stars3.png" style="display: block;"/>
+                          </div>
+                        </div>
+                      </p>
                       <p class="card-text">Offered Price: ${{ aLiaise.offering }}</p>
                       
                       <div class="row">
