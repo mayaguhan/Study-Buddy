@@ -19,10 +19,10 @@ class Homework(db.Model):
     __tablename__ = 'homework'
 
     homework_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    student_id = db.Column(db.String(11), nullable=False)
+    student_id = db.Column(db.Integer, nullable=False)
     subject = db.Column(db.String(20), nullable=False)
     meeting_type = db.Column(db.String(20), nullable=False)
-    title = db.Column(db.String(30), nullable=False)
+    title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     image = db.Column(db.String(200), nullable=False)

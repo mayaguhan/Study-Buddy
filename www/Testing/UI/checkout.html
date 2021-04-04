@@ -233,7 +233,7 @@
             'payment_id': session.payment_id,
             'liaise_id': new URLSearchParams(window.location.search).get('liaise_id'), 
             'sender_id': localStorage.getItem("user_id"),
-            "receiver_id": 100,
+            "receiver_id": new URLSearchParams(window.location.search).get('tutor_id'), 
             "status": "Pending"
           }
 
