@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_, and_
+from sqlalchemy import or_
 from os import environ
 from flask_cors import CORS
 from datetime import datetime
@@ -76,7 +76,7 @@ def get_all():
 # Get All Payout
 @app.route("/payment/payout")
 def get_payout():
-    payment_list = Payment.query.filter(or_(Payment.status=="Confirm", Payment.status=="Cancel")).all()
+    payment_list = Payment.query.filter(or_(Payment.status=="confirm", Payment.status=="cancel")).all()
     if payment_list:
         return jsonify(
             {
@@ -209,10 +209,10 @@ def update_status_payment(payment_id):
 
 
 #Update Payment Status by Liaise Id
-@app.route("/payment/updateStatusByLiaiseId/<string:liaise_id>/<string:status>", methods=['PUT'])
-def update_status_liaise(liaise_id, status):
+@app.route("/payment/updateStatusByLiaiseId/<string:liaise_id>", methods=['PUT'])
+def update_status_liaise(liaise_id):
     try:
-        payment = Payment.query.filter(and_(Payment.liaise_id == liaise_id, Payment.status == status)).first()
+        payment = Payment.query.filter_by(liaise_id=liaise_id).first()
         if not payment:
             return jsonify(
                 {

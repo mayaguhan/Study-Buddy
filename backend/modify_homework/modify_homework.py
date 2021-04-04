@@ -19,6 +19,7 @@ liaise_URL = environ.get('liaise_URL') or "http://liaise:5200/liaise"
 payment_URL = environ.get('payment_URL') or" http://payment:5400/payment"
 
 
+# homework_id, liaise_id, tutor_id, status must be passed as JSON.
 @app.route("/modify_homework/<string:action>", methods=['POST'])
 def modify_homework(action):
     if request.is_json:
@@ -45,109 +46,31 @@ def modify_homework(action):
 
 
 def modifyHomework(homework, action):
-    amqp_setup.check_setup()
-
     homework_id = homework['homework_id']
     liaise_id = homework['liaise_id']
     if action == "confirm":
-        # Update Homework Status = Confirm
-        homework_result = invoke_http(homework_URL + '/updateStatus/' + str(homework_id), method='PUT', json={"status" : "Solve"})
+        print(homework)
+        homework["status"] = "Solve"
+        homework_result = invoke_http(homework_URL + '/updateStatus/' + str(homework_id), method='PUT', json=homework)
         homework_code = homework_result["code"]
 
-        if homework_code not in range(200,300):
-            print("\n-----Publishing the Homework update error message with routing_key=homework.error-----")
-            message = json.dumps(homework_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="homework.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-            print("\nHomework Error ({:d}) published to the RabbitMQ Exchange:".format(homework_code), homework_result)
-            return {
-                "code": 500,
-                "data": {"homework_result": homework_result},
-                "message": "Homework has been sent for error handling"
-            }
-
-
-        # Update Liaise with tutor ratings & remark
-        homework['status'] = 'Confirm'
         liaise_result = invoke_http(liaise_URL + '/confirmHomework/' + str(liaise_id), method='PUT', json=homework)
         liaise_code = liaise_result["code"]
 
-        if liaise_code not in range(200,300):
-            print("\n-----Publishing the Liaise error message with routing_key=liaise.error-----")
-            message = json.dumps(liaise_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="liaise.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-            print("\nLiaise Error ({:d}) published to the RabbitMQ Exchange:".format(liaise_code), liaise_result)
-            return {
-                "code": 500,
-                "data": {"liaise_result": liaise_result},
-                "message": "Liaise has been sent for error handling"
-            }
-
-
-        # Update Payment Status = Confirm
-        homework["status"] = "Confirm"
-        payment_result = invoke_http(payment_URL + '/updateStatusByLiaiseId/' + str(liaise_id) + '/Hold', method='PUT', json=homework)
+        homework["status"] = "Hold"
+        payment_result = invoke_http(payment_URL + '/updateStatusByLiaiseId/' + str(liaise_id), method='PUT', json=homework)
         payment_code = payment_result["code"]
-        
-        if payment_code not in range(200,300):
-            print("\n-----Publishing the Payment error message with routing_key=payment.error-----")
-            message = json.dumps(payment_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="payment.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-            print("\nPayment Error ({:d}) published to the RabbitMQ Exchange:".format(payment_code), payment_result)
-            return {
-                "code": 500,
-                "data": {"payment_result": payment_result},
-                "message": "Payment insertion failure has been sent for error handling"
-            }
 
     elif action == "cancel":
-        # Update Homework Status = Cancel
         homework["status"] = "Cancel"
         homework_result = invoke_http(homework_URL + '/updateStatus/' + str(homework_id), method='PUT', json=homework)
         homework_code = homework_result["code"]
 
-        if homework_code not in range(200,300):
-            print("\n-----Publishing the Homework update error message with routing_key=homework.error-----")
-            message = json.dumps(homework_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="homework.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-            print("\nHomework Error ({:d}) published to the RabbitMQ Exchange:".format(homework_code), homework_result)
-            return {
-                "code": 500,
-                "data": {"homework_result": homework_result},
-                "message": "Homework has been sent for error handling"
-            }
-
-
-        # Update Liaise as Rejected
         liaise_result = invoke_http(liaise_URL + '/reject', method='PUT', json=homework)
         liaise_code = liaise_result["code"]
 
-        if liaise_code not in range(200,300):
-            print("\n-----Publishing the Liaise error message with routing_key=liaise.error-----")
-            message = json.dumps(liaise_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="liaise.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-            print("\nLiaise Error ({:d}) published to the RabbitMQ Exchange:".format(liaise_code), liaise_result)
-            return {
-                "code": 500,
-                "data": {"liaise_result": liaise_result},
-                "message": "Liaise has been sent for error handling"
-            }
-
-
-        # Update Payment Status = Cancel
-        payment_result = invoke_http(payment_URL + '/updateStatusByLiaiseId/' + str(liaise_id) + '/Hold', method='PUT', json=homework)
+        payment_result = invoke_http(payment_URL + '/updateStatusByLiaiseId/' + str(liaise_id), method='PUT', json=homework)
         payment_code = payment_result["code"]
-
-        if payment_code not in range(200,300):
-            print("\n-----Publishing the Payment error message with routing_key=payment.error-----")
-            message = json.dumps(payment_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="payment.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-            print("\nPayment Error ({:d}) published to the RabbitMQ Exchange:".format(payment_code), payment_result)
-            return {
-                "code": 500,
-                "data": {"payment_result": payment_result},
-                "message": "Payment insertion failure has been sent for error handling"
-            }
-
 
     else:
         return {
@@ -155,6 +78,73 @@ def modifyHomework(homework, action):
             "message": "Invalid action executed"
         }
     
+
+    # updated_homework_URL = homework_URL + '/' + str(homework_id)
+    # homework_result = invoke_http(updated_homework_URL, method='PUT', json=homework)
+    # homework_code = homework_result["code"]
+
+    # #Check if AMQP is setup
+    # amqp_setup.check_setup()
+
+    # #Error handling
+    # if homework_code not in range(200,300):
+    #     #Inform error microservice
+    #     print("\n-----Publishing the homework error message with routing_key=homework.error-----")
+        
+    #     message = json.dumps(homework_result)
+    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="homework.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
+    #     #delivery_mode makes the message persistent
+    #     print("\nHomework Error Status ({:d}) published to the RabbitMQ Exchange:".format(homework_code), homework_result)
+
+
+    #     return {
+    #         "code": 500,
+    #         "data": {"homework_result": homework_result},
+    #         "message": "Homework status update failure has been sent for error handling"
+    #     }
+
+
+    #     # ERROR HANDLING WITHOUT AMQP
+    #     # print("Error in updating homework")
+    #     # return {
+    #     #     "code": 400,
+    #     #     "data": {
+    #     #         "homework_result": homework_result
+    #     #     },
+    #     #     "message": "There has been an error in updating the homework. Error has been sent for error handling."
+    #     # }
+    
+
+
+    # #Error Handling
+    # if liaise_code not in range(200,300):
+    #     #Inform error microservice
+    #     print("\n-----Publishing the liaise error with routing_key=liaise.error-----")
+
+    #     message = json.dumps(liaise_result)
+    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="liaise.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
+    #     #delivery_mode makes the message persistent
+
+    #     print("\nLiaise Error Status ({:d}) published to the RabbitMQ Exchange:".format(liaise_code), liaise_result)
+
+
+    #     return {
+    #         "code": 500,
+    #         "data": {"liaise_result": liaise_result},
+    #         "message": "Liaise status update failure has been sent for error handling"
+    #     }
+
+
+    #ERROR HANDLING WITHOUT AMQP
+    # if liaise_code not in range(200,300):
+    #     print("Error in updating homework")
+    #     return {
+    #         "code": 400,
+    #         "data": {
+    #             "liaise_result": liaise_result
+    #         },
+    #         "message": "There has been an error in updating the liaison. Error has been sent for error handling."
+    #     }
 
 
     # Return update result
