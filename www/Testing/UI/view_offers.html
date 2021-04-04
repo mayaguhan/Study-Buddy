@@ -117,12 +117,11 @@
                     <div class="card h-100">
                       <img class="w-100 h-100" v-bind:src="aLiaise.photo" alt="Card image cap">
                     <div class="card-body">
-                      
-                      <h5 class="card-title"> {{ aLiaise.tutor_id }} </h5>
+                      <h5 class="card-title"> {{ aLiaise.username }} </h5>
                       <p class="card-text">Tutor Rating: {{ Math.round(aLiaise.rating * 100) / 100 }} / 5
                         <div style="width: 100px; height: 30px;"> 
                           <div style="background-color: yellow;" v-bind:style="{width: aLiaise.rating * 20 + '%' }">
-                            <img src="assets/stars3.png" style="display: block;"/>
+                            <img src="assets/stars.png" style="display: block;"/>
                           </div>
                         </div>
                       </p>
@@ -176,6 +175,7 @@
                       result = []
                       for (let i = 0; i < this.liaise.length; i++) {
                         result.push(this.liaise[i].data)
+                        console.log(this.liaise[i].data);
                       }
                       return result
                     }
