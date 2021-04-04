@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-from sqlalchemy import and_
 from os import environ
 from flask_cors import CORS
 import json
@@ -87,8 +86,7 @@ def find_by_liaise_id(liaise_id):
 # Get All Liaise Offerings by Homework ID
 @app.route("/liaise/liaiseByHomework/<string:homework_id>")
 def get_homework_all(homework_id):
-    liaise_list = Liaise.query.filter(and_(Liaise.homework_id == homework_id, Liaise.status == "Pending")).all()
-    
+    liaise_list = Liaise.query.filter_by(homework_id=homework_id).all()
     if liaise_list:
         return jsonify(
             {

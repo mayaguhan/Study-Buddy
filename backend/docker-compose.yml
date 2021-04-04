@@ -62,20 +62,14 @@ services:
     image: yuquanyeo/accept_offering:esd
     restart: always
     depends_on:
-      - user
       - homework
       - liaise
-      - payment
-      - notification
       - rabbitmq
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
-      user_URL: http://user:5000/user
       homework_URL: http://homework:5100/homework
       liaise_URL: http://liaise:5200/liaise
-      payment_URL: http://payment:5400/payment
-      notification_URL: http://notification:5800/notification
       PYTHONUNBUFFERED: 1
     ports:
       - "5300:5300"
@@ -100,28 +94,28 @@ services:
   ##################################
   # Make Payment: The Make Payment microservice
   ##################################
-  # make_payment:
-  #   build:
-  #     context: make_payment
-  #     dockerfile: make_payment.Dockerfile
-  #   image: yuquanyeo/make_payment:esd
-  #   restart: always
-  #   depends_on:
-  #     - user
-  #     - payment
-  #     - accept_offering
-  #     - notification
-  #     - rabbitmq
-  #   environment:
-  #     rabbit_host: rabbitmq
-  #     rabbit_port: 5672
-  #     user_URL: http://user:5000/user
-  #     payment_URL: http://payment:5400/payment
-  #     accept_offering_URL: http://accept_offering:5300/accept_offering
-  #     notification_URL: http://notification:5800/notification
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5500:5500"
+  make_payment:
+    build:
+      context: make_payment
+      dockerfile: make_payment.Dockerfile
+    image: yuquanyeo/make_payment:esd
+    restart: always
+    depends_on:
+      - user
+      - payment
+      - accept_offering
+      - notification
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      user_URL: http://user:5000/user
+      payment_URL: http://payment:5400/payment
+      accept_offering_URL: http://accept_offering:5300/accept_offering
+      notification_URL: http://notification:5800/notification
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5500:5500"
 
 
   ##################################
