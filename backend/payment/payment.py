@@ -147,6 +147,23 @@ def get_homework_liaise_id(liaise_id):
         }
     ), 404
 
+# Get All Payment by Status ID
+@app.route("/payment/paymentByStatus/<string:status>")
+def get_payment_status(status):
+    payment_list = Payment.query.filter_by(status=status).all()
+    if payment_list:
+        return jsonify(
+            {
+                "code": 200,
+                "payments": [payment.json() for payment in payment_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no Payments for this status."
+        }
+    ), 404
 
 # Submit Payment
 @app.route("/payment/addPayment", methods=['POST'])

@@ -126,7 +126,27 @@ def get_homework_all(homework_id):
 
 
 
-# Get All Liaise Offerings by Homework ID
+# Get All Liaise Offerings by user ID
+@app.route("/liaise/liaiseByUserId/<string:tutor_id>")
+def get_liaise_by_userId(tutor_id):
+    liaise_list = Liaise.query.filter_by(tutor_id=tutor_id).all()
+    
+    if liaise_list:
+        return jsonify(
+            {
+                "code": 200,
+                "liaisons": [liaise.json() for liaise in liaise_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no Liaisons for this User."
+        }
+    ), 404
+
+
+# Get All Liaise Average Rating by Tutor Id
 @app.route("/liaise/averageRating/<string:tutor_id>")
 def get_average_rating(tutor_id):
     rating = db.session.query(func.avg(Liaise.tutor_rating)).filter_by(tutor_id=tutor_id).first()[0]
@@ -144,6 +164,7 @@ def get_average_rating(tutor_id):
             "average": 0
         }
     ), 404
+
 
 # Submit Liaise Offering
 @app.route("/liaise/addLiaison", methods=['POST'])

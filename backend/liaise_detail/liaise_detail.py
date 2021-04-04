@@ -71,6 +71,31 @@ def user_liaise_detail_by_liaiseId(liaise_id):
         "message": "Invalid JSON input: " +str(request.get_data())
     })
 
+
+@app.route("/liaise_detail/userId/<string:user_id>")
+def user_liaise_detail_by_userId(user_id):
+    if user_id:
+        try:
+            result = retrieveLiaiseDetailByUserId(user_id)
+            print('\nresult: ', result)
+            return jsonify(result), result['code']
+        
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "accept_offering.py internal error: " + ex_str
+            }), 500
+    
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " +str(request.get_data())
+    })
+
 def retrieveLiaiseDetail(homework_id):
     return_list = []
 
@@ -106,8 +131,6 @@ def retrieveLiaiseDetail(homework_id):
 
 
 def retrieveLiaiseDetailByLiaiseId(liaise_id):
-    return_list = []
-
     liaisons_result = invoke_http(liaise_URL + "/" + str(liaise_id), method='GET')
     liaisons_code = liaisons_result["code"]
 
@@ -141,11 +164,34 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         liaisons_result["data"]["student_telegram_id"] = student_result["data"]["telegram_id"]
         liaisons_result["data"]["student_photo"] = student_result["data"]["photo"]
 
-
-    # Return liaise result
     return {
         "code": 201,
         "data": liaisons_result
+    }
+
+
+def retrieveLiaiseDetailByUserId(user_id):
+    return_list = []
+
+    liaisons_result = invoke_http(liaise_URL + "/liaiseByUserId/" + str(user_id), method='GET')
+    liaisons_code = liaisons_result["code"]
+
+    if len(liaisons_result["liaisons"]) > 0:
+        for liaison in liaisons_result["liaisons"]:
+            homework_id = liaison['homework_id']
+            homework_result = invoke_http(homework_URL + '/' + str(homework_id), method='GET')
+            homework_code = homework_result["code"]
+
+            liaison["title"] = homework_result["data"]["title"]
+            liaison["description"] = homework_result["data"]["description"]
+            liaison["image"] = homework_result["data"]["image"]
+
+            return_list.append(liaison)
+
+
+    return {
+        "code": 201,
+        "data": return_list
     }
 
 
