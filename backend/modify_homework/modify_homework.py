@@ -48,7 +48,23 @@ def modifyHomework(homework, action):
     amqp_setup.check_setup()
 
     homework_id = homework['homework_id']
-    liaise_id = homework['liaise_id']
+    liaise_id_result = invoke_http(liaise_URL + '/getAccepted/' + str(homework_id), method='GET')
+    liaise_id_code = liaise_id_result["code"]
+
+    if liaise_id_code not in range(200,300):
+        print("\n-----Publishing the Liaise error message with routing_key=liaise.error-----")
+        message = json.dumps(liaise_id_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="liaise.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
+        print("\nLiaise Error ({:d}) published to the RabbitMQ Exchange:".format(liaise_id_code), liaise_id_result)
+        return {
+            "code": 500,
+            "data": {"liaise_id_result": liaise_id_result},
+            "message": "Liaise has been sent for error handling"
+        }
+    print(liaise_id_result)
+    liaise_id = liaise_id_result['data']['liaise_id']
+
+
     if action == "confirm":
         # Update Homework Status = Confirm
         homework_result = invoke_http(homework_URL + '/updateStatus/' + str(homework_id), method='PUT', json={"status" : "Solve"})
@@ -67,7 +83,6 @@ def modifyHomework(homework, action):
 
 
         # Update Liaise with tutor ratings & remark
-        homework['status'] = 'Confirm'
         liaise_result = invoke_http(liaise_URL + '/confirmHomework/' + str(liaise_id), method='PUT', json=homework)
         liaise_code = liaise_result["code"]
 
@@ -161,6 +176,7 @@ def modifyHomework(homework, action):
     return {
         "code": 201,
         "data": {
+            "liaise_id_result": liaise_id_result,
             "homework_result": homework_result,
             "liaise_result": liaise_result,
             "payment_result": payment_result

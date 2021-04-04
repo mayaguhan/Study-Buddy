@@ -84,6 +84,27 @@ def find_by_liaise_id(liaise_id):
     ), 404
 
 
+# Get a Liaise by Homework ID and Accepted
+@app.route("/liaise/getAccepted/<string:homework_id>")
+def get_accepted_liaise(homework_id):
+    liaison = Liaise.query.filter(and_(Liaise.homework_id == homework_id, Liaise.status == "Accept")).first()
+    
+    if liaison:
+        return jsonify(
+            {
+                "code": 200,
+                "data": liaison.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Liaise not found."
+        }
+    ), 404
+
+
+
 # Get All Liaise Offerings by Homework ID
 @app.route("/liaise/liaiseByHomework/<string:homework_id>")
 def get_homework_all(homework_id):
@@ -188,13 +209,13 @@ def accept_liaison(liaise_id, homework_id):
                     "message": "Liaison not found"
                 }
             ), 404
-        acceptLiaison.status = "Accepted"
+        acceptLiaison.status = "Accept"
         db.session.commit()
 
         rejectLiaison = Liaise.query.filter_by(homework_id=homework_id, status="Pending").all()
         if rejectLiaison:
             for row in rejectLiaison:
-                row.status = "Rejected"
+                row.status = "Reject"
             db.session.commit()
         
         return jsonify(
@@ -238,7 +259,7 @@ def reject_liaison():
                     }
                 ), 404
             
-            rejectLiaison.status = "Rejected"
+            rejectLiaison.status = "Reject"
             db.session.commit()
             return jsonify(
                 {
@@ -281,8 +302,7 @@ def confirm_homework(liaise_id):
                 }
             ), 404
         data = request.get_json()
-        if data['status'] and data['tutor_rating'] and data['tutor_remark']:
-            liaise.status = "Confirm"
+        if data['tutor_rating'] and data['tutor_remark']:
             liaise.tutor_rating = data['tutor_rating']
             liaise.tutor_remark = data['tutor_remark']
             db.session.commit()
