@@ -34,7 +34,6 @@
     .img_logo {
         display: inline;
         margin: 0 auto;
-        margin-left: -25%;
         height: 100%;
         width: auto;
     }
@@ -57,7 +56,7 @@
       padding: 0 0px;
     }
     </style>
-    <link href="dashboard.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
 
     <!-- NEW SCRIPT FOR VUE -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -78,7 +77,7 @@
             <ul class="nav flex-column">
               <div class="logo-image center">
                   <span>
-                    <img src="cat.png" class="rounded img_logo">
+                    <img v-bind:src="imageSRC" class="rounded img_logo">
                   </span>
               </div>
               <li class="nav-item center">
@@ -88,20 +87,20 @@
               </li>
               <br>
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="homepage.html">
+                <a class="nav-link" aria-current="page" href="../homepage.html">
                   View All Listings
                 </a>
               </li>
               <li class="nav-item" style="list-style-type: none">
                 <a class="nav-link" href="my_homework.html">
                   Your Homework
-                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="open_homework.html">Open</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
+                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./open_homework.html">Open</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./progress_homework.html">In Progress</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="new_listing.html">
+                <a class="nav-link" href="../new_listing.html">
                   Create New Listing
                 </a>
               </li>
@@ -116,23 +115,21 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
               <h1 class="h2">My Homework - Open</h1>
             </div>
-            <!-- <div class = "e-card-horizontal"> -->
-            <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" /> -->
             
             
 
             
-            <div id="app" v-if="hasHomework">
+            <div id="app" v-if="hasHomework" class="mb-3">
               <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div v-for="aHomework in homework">
                   <div class="col">
                     <div class="card h-100">
-                      <img src="./cat.png" class="w-100 h-100">
+                      <img v-bind:src="aHomework.image" class="w-100 h-100">
                       <div class="card-body">
                         <h5 class="card-title">{{ aHomework.title }}</h5>
                         <p class="card-text">{{ aHomework.description }}</p>
                         <p class="card-text">$ {{ aHomework.price }}</p>
-                        <a v-bind:href="'view_offers.html?homework_id=' + aHomework.homework_id" class="btn btn-outline-primary">View Offers</a>
+                        <a v-bind:href="'../view_offers.html?homework_id=' + aHomework.homework_id" class="btn btn-outline-primary">View Offers</a>
                       </div>
                     </div>
                   </div>
@@ -156,7 +153,8 @@
       var sidebar = new Vue ({
         el: "#sidebarMenu",
         data: {
-          username: `${localStorage.getItem("username")}`
+          username: `${localStorage.getItem("username")}`,
+          imageSRC: `${localStorage.getItem("photo")}`,
         }
 
       });
