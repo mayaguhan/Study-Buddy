@@ -113,8 +113,10 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
               <h1 class="h2">Offerings for Homework </h1>
             </div>
+      
+            <div id="app">
 
-            <div id="app" v-if="hasLiaise" class="mb-3">
+            <div v-if= "hasLiaise" class="mb-3">
               <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div v-for="aLiaise in getEachLiaise">
                   <div class="col">
@@ -145,10 +147,18 @@
                   </div>
                 </div>
               </div>
-              <div v-if="!hasLiaise">
-                {{ message }}
-              </div>
             </div>
+            </div> 
+            
+            <div v-else>
+              {{ message }}
+            </div>
+
+          </div> 
+            </div>
+          </div> 
+            </div>
+          </div> 
           </main>
         </div>
     </div>
@@ -197,8 +207,11 @@
                         const response =  fetch(`http://localhost:5600/liaise_detail/homework_id/${homeworkID}`)
                           .then(response => response.json())
                           .then(data => {
-                            if (data.code === 404) {
-                              this.message = "There is no liaise available for this homework";
+                            if (data.code === 404 || data.code === 500) {
+                              // console.log(message)
+                              this.message = "There is no offer available for this homework";
+                              console.log(data.code)
+                              console.log(message)
                             } else {
                               this.liaise = data.data.liaisons_result;
                             }
