@@ -159,7 +159,7 @@
         const session_id = urlParams.get('session_id');
         console.log(session_id);
 
-        url = "http://localhost:5400/payment/success?session_id=" + session_id
+        url = "http://localhost:8000/api/v1/payment/success/" + session_id
 
         console.log(url)
 
@@ -183,7 +183,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                  
+                  console.log(data)
                 })
         })
         .catch(error => {

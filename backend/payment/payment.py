@@ -335,9 +335,9 @@ def create_checkout_session():
 
 
 # On success, update status of payment to be on HOLD
-@app.route('/payment/success', methods=['GET'])
-def order_success():
-    session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+@app.route('/payment/success/<string:session_id>', methods=['GET'])
+def order_success(session_id):
+    session = stripe.checkout.Session.retrieve(session_id)
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
     payment_id = session.payment_intent
 
@@ -378,9 +378,9 @@ def order_success():
 
 
 # On Failure, update status of payment to be FAILED
-@app.route('/payment/cancel', methods=['GET'])
-def order_failure():
-    session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+@app.route('/payment/cancel/<string:session_id>', methods=['GET'])
+def order_failure(session_id):
+    session = stripe.checkout.Session.retrieve(session_id)
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
     payment_id = session.payment_intent
 
