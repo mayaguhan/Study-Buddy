@@ -107,34 +107,42 @@ def find_by_user_id(user_id):
 
 
 # Add a new User
-@app.route("/user/<string:username>", methods=['POST'])
-def create_user(username):
-    if (User.query.filter_by(username=username).first()):
+@app.route("/user/addUser", methods=['POST'])
+def create_user():
+    data = request.get_json()
+    if data['username']:
+        username = data['username']
+        if (User.query.filter_by(username=username).first()):
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "username": username
+                    },
+                    "message": "User already exists."
+                }
+            ), 400
+        user = User(None, **data)
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "username": username
+                    },
+                    "message": "An error occurred creating the user."
+                }
+            ), 500
+    else:
         return jsonify(
             {
                 "code": 400,
-                "data": {
-                    "username": username
-                },
-                "message": "User already exists."
+                "message": "An error occurred creating the user, username was not given."
             }
         ), 400
-    data = request.get_json()
-    user = User(None, **data)
-
-    try:
-        db.session.add(user)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "username": username
-                },
-                "message": "An error occurred creating the user."
-            }
-        ), 500
 
     return jsonify(
         {
@@ -145,9 +153,9 @@ def create_user(username):
 
 
 # Delete a User
-@app.route("/user/<string:username>", methods=['DELETE'])
-def delete_user(username):
-    user = User.query.filter_by(username=username).first()
+@app.route("/user/<string:user_id>", methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.filter_by(user_id=user_id).first()
     if user:
         db.session.delete(user)
         db.session.commit()
@@ -155,16 +163,16 @@ def delete_user(username):
             {
                 "code": 200,
                 "data": {
-                    "username": username
+                    "user_id": user_id
                 },
-                "message": "User " + username + " has been successfully removed"
+                "message": "User " + user_id + " has been successfully removed"
             }
         )
     return jsonify(
         {
             "code": 404,
             "data": {
-                "username": username
+                "user_id": user_id
             },
             "message": "User not found."
         }
