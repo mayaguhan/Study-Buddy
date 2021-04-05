@@ -153,31 +153,40 @@ def create_user():
 
 
 # Delete a User
-@app.route("/user/<string:user_id>", methods=['DELETE'])
-def delete_user(user_id):
-    user = User.query.filter_by(user_id=user_id).first()
-    if user:
-        db.session.delete(user)
-        db.session.commit()
+@app.route("/user/deleteUser", methods=['DELETE'])
+def delete_user():
+    data = request.get_json()
+    if data['user_id']:
+        user_id = data['user_id']
+        user = User.query.filter_by(user_id=user_id).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "user_id": user_id
+                    },
+                    "message": "User " + str(user_id) + " has been successfully removed"
+                }
+            )
         return jsonify(
             {
-                "code": 200,
+                "code": 404,
                 "data": {
                     "user_id": user_id
                 },
-                "message": "User " + user_id + " has been successfully removed"
+                "message": "User not found."
             }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "data": {
-                "user_id": user_id
-            },
-            "message": "User not found."
-        }
-    ), 404
-
+        ), 404
+    else:
+        return jsonify(
+            {
+                "code": 400,
+                "message": "An error occurred deleting the user, user_id was not given."
+            }
+        ), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
