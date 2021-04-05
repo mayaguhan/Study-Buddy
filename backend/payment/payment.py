@@ -44,24 +44,6 @@ class Payment(db.Model):
                 "created": self.created,
                 "status": self.status}
 
-# Get All Payments
-@app.route("/payment")
-def get_all():
-    payment_list = Payment.query.all()
-    if len(payment_list):
-        return jsonify(
-            {
-                "code": 200,
-                "payments": [payment.json() for payment in payment_list]
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no payments."
-        }
-    ), 404
-
 
 # Get All Payments
 @app.route("/payment")
