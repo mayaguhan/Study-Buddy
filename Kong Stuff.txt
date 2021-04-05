@@ -1,0 +1,85 @@
+HOMEWORK
+
+For addHomework,
+
+Original path is /homework/addHomework and method is POST
+Kong's path is /api/v1/homework and method is POST
+However...
+In postman, I can only access using http:localhost:8000/api/v1/homework/addHomework with method POST
+
+
+
+For deleteHomework,
+
+Original path is /homework/<string:homework_id> and method is DELETE
+Kong's path is /api/v1/homework and method is DELETE
+However...
+In postman, I can only access using http:localhost:8000/api/v1/homework/1 with method DELETE
+
+
+For updateHomework,
+
+Original path is /homework/updateStatus/<string:homework_id> and method is PUT
+Kong's path is /api/v1/homework and method is PUT
+However...
+In postman, I can only access using http:localhost:8000/api/v1/homework/1 with method DELETE
+
+
+
+
+
+LIAISE
+
+Original path is /liaise/addLiaison and method is POST
+Kong's path is /api/v1/liaise and method is POST
+However...
+In postman, I can only access using http://localhost:8000/api/v1/liaise/addLiaison with method POST
+
+
+Original path is /liaise/deleteLiaison and method is DELETE
+Kong's path is /api/v1/liaise and method is POST
+However...
+In postman, I can only access using http://localhost:8000/api/v1/liaise/deleteLiaison with method DELETE
+
+
+For all update methods [Accept/Reject/Confirm Homework]
+Original paths are /liaise/accept/<string:liaise_id>/<string:homework_id> | /liaise/reject | /liaise/confirmHomework/<string:liaise_id> with method PUT
+Kong's path is /api/v1/liaise and method is PUT
+However...
+In postman, I can only access using http://localshot:8000/api/v1/liaise/accept/<string:liaise_id>/<string:homework_id> | http://localshot:8000/api/v1/liaise/reject | http://localshot:8000/api/v1/liaise/confirmHomework/<string:liaise_id> with method PUT
+
+
+
+
+
+PAYMENT
+
+Original path is /payment/addPayment and method is POST
+Kong's path is /api/v1/payment and method is POST
+However...
+In postman, I can only access using http://localhost:8000/api/v1/payment/addPayment with method POST
+
+
+Original path is /payment/create-checkout-session and method is POST
+Kong's path is /api/v1/payment and method is POST
+However,
+I can only access using http://localhost:8000/api/v1/payment/create-checkout-session with method POST
+
+
+Original path is /payment/deletePayment/<string:payment_id> and method is DELETE
+Kong's path is /api/v1/payment and method is DELETE
+However...
+In postman, I can only access using http://localhost:8000/api/v1/payment/deletePayment/<string:payment_id>
+
+
+
+For all update methods [Update by Payment Id, Update by Liaise Id]
+
+Original path is /payment/updateStatusByPaymentId/<string:payment_id> | /payment/updateStatusByLiaiseId/<string:liaise_id>/<string:status> with method PUT
+Kong's path is /api/v1/payment and method is PUT
+However...
+In postman, I can only access using http://localhost:8000/api/v1/payment/updateStatusByPaymentId/<string:payment_id> | http://localhost:8000/api/v1/payment/updateStatusByLiaiseId/<string:liaise_id>/<string:status>
+
+
+
+
