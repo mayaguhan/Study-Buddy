@@ -88,9 +88,9 @@
               <li class="nav-item" style="list-style-type: none">
                 <a class="nav-link" href="my_homework.html">
                   Your Homework
-                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./open_homework.html">Open</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./progress_homework.html">In Progress</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./completed_homework.html">Completed</a></li>
+                      <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./open_homework.html">Open</a></li>
+                      <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./progress_homework.html">In Progress</a></li>
+                      <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
@@ -100,7 +100,7 @@
               </li>
 
               <li class="nav-item text-nowrap">
-                <a class="nav-link" href="#" style="color: red;">Sign out</a>
+                <a class="nav-link" href="../logout.html" style="color: red;">Sign out</a>
               </li> 
             </ul>
           </div>
@@ -159,7 +159,6 @@
               username: `${localStorage.getItem("username")}`,
               "homework": [],
               message: "There is a problem retrieving homework data, please try again later."
-             
           },
           methods: {
               getOpenHomework: function () {
@@ -187,8 +186,10 @@
           
           },
           created: function () {
-              // on Vue instance created, load the homework list
               this.getOpenHomework();
+              if (localStorage.getItem("username") == null) {
+                window.location.replace("../login.html"); 
+              }
           }
       });
     </script>
