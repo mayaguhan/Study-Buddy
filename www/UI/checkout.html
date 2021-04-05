@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -34,7 +33,6 @@
     .img_logo{
         display: inline;
         margin: 0 auto;
-        margin-left: -25%;
         height: 100%;
         width: auto;
     }
@@ -46,7 +44,7 @@
         width:80%;
     }
     </style>
-    <link href="dashboard.css" rel="stylesheet">
+    <link href="./css/dashboard.css" rel="stylesheet">
 
 
     <!-- NEW SCRIPT FOR VUE -->
@@ -71,7 +69,7 @@
             <ul class="nav flex-column">
               <div class="logo-image center">
                   <span>
-                    <img src="cat.png" class="rounded img_logo">
+                    <img v-bind:src="profilePhoto" class="rounded img_logo">
                   </span>
               </div>
               <li class="nav-item center">
@@ -81,26 +79,26 @@
               </li>
               <br>
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="homepage.html">
+                <a class="nav-link" aria-current="page" href="./homepage.html">
                   View All Listings
                 </a>
               </li>
               <li class="nav-item" style="list-style-type: none">
-                <a class="nav-link" href="my_homework.html">
+                <a class="nav-link" href="./your_homework/my_homework.html">
                   Your Homework
-                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="open_homework.html">Open</a></li>
-                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
-                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
+                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./your_homework/open_homework.html">Open</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="new_listing.html">
+                <a class="nav-link" href="./new_listing.html">
                   Create New Listing
                 </a>
               </li>
 
               <li class="nav-item text-nowrap">
-                <a class="nav-link" href="logout.html" style="color: red;">Sign out</a>
+                <a class="nav-link" href="#" style="color: red;">Sign out</a>
               </li> 
             </ul>
           </div>
@@ -110,11 +108,11 @@
               <h1 class="h2">Checkout</h1>
             </div> 
 
-            <div id="app" class="row col-12">
-                <img v-bind:src="liaise.homework_image" alt="No Image Found">
+            <div id="app" class="row col-12 ms-1 mb-3">
+                <img v-bind:src="liaise.homework_image" alt="No Image Found" style="width: 50%; height:50%;">
                 <p>Homework Name: {{ liaise.homework_title}}</p>
                 <p>Tutor Name: {{ liaise.tutor_username }} </p>
-                <p>Price: $ {{ liaise.offering }}</p>
+                <p>Price: ${{ liaise.offering }}</p>
                 
                 <button type="button" class="btn btn-info" id="checkout-button" onclick="createCheckoutSession()">Checkout</button>
             </div>
@@ -137,7 +135,8 @@
       var sidebar = new Vue ({
         el: "#sidebarMenu",
         data: {
-          username: `${localStorage.getItem("username")}`
+          username: `${localStorage.getItem("username")}`,
+          profilePhoto: `${localStorage.getItem("photo")}`
         
         }
 
@@ -158,7 +157,7 @@
 
           // Replace with the liaise detail url
           const response =
-            fetch(`http://localhost:5600/liaise_detail/liaiseId/${liaiseID}`)
+            fetch(`http://localhost:5600/liaise_detail/liaise_id/${liaiseID}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(response);
@@ -184,9 +183,6 @@
         },
 
         created: function () {
-          if (localStorage.getItem("username") == null) {
-            window.location.replace("./login.html"); 
-          }
           this.getLiaiseDetails();
         }
       })
@@ -199,50 +195,38 @@
       var body = {
         'price_data': {
           'currency': 'sgd',
-          'unit_amount': 5000,
+          'unit_amount': 0,
           'product_data': {
-              'name': 'FK DAVID',
-              'images': ['https://i.imgur.com/EHyR2nP.png'],
+              'name': '',
+              'images': [],
             },
         },
         'quantity': 1,
       }
       
-      
       img_arr = []
-      //Image must be dynamically changed
-      img_arr.push('https://i.imgur.com/EHyR2nP.png')
-      console.log(img_arr)
-
+      img_arr.push(localStorage.getItem("homework_image"))
       unit_amount = localStorage.getItem("offering")*100;
       body.price_data.unit_amount = unit_amount;
       body.price_data.product_data.name = localStorage.getItem("homework_title");
       body.price_data.product_data.images = img_arr;
 
-      console.log(body)
 
       fetch("http://localhost:5400/create-checkout-session", {
         method: "POST",
         body: JSON.stringify(body),
       })
         .then(function (response) {
-          // console.log(response)
           return response.json();
         })
         .then(function (session) {
-          // console.log(session.payment_id)
-          // console.log("HELLO")
           payment_details = {
             'payment_id': session.payment_id,
-            'liaise_id': 9,
-            'sender_id': 12,
-            "receiver_id": 100,
+            'liaise_id': new URLSearchParams(window.location.search).get('liaise_id'), 
+            'sender_id': localStorage.getItem("user_id"),
+            "receiver_id": new URLSearchParams(window.location.search).get('tutor_id'), 
             "status": "Pending"
           }
-
-          // console.log(payment_details)
-
-          //Insert payment into database with STATUS = Pending
 
           fetch("http://localhost:5400/payment/addPayment", {
             method: "POST",

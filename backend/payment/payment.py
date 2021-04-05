@@ -1,16 +1,12 @@
 from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
+from sqlalchemy import or_, and_, desc, asc
 from os import environ
 from flask_cors import CORS
 from datetime import datetime
 import stripe
 
-
-
-# This is your real test secret API key.
 stripe.api_key = 'sk_test_51IYNsbAnXlfn6Qey2xQsssmxk06NgRtbg5Nsju1nxxhir40QVZe49xU5ZmuEdIKOGKhnPtqlPUzFVdP8UIwJBAWY002ooSpSYA'
-
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
@@ -21,10 +17,7 @@ db = SQLAlchemy(app)
 
 CORS(app)
 
-
-#This part will have to be modified
-YOUR_DOMAIN = 'http://localhost/study_buddy/www/Testing/UI'
-
+YOUR_DOMAIN = 'http://localhost/study_buddy/www/UI'
 
 class Payment(db.Model):
     __tablename__ = 'payment'
@@ -35,7 +28,6 @@ class Payment(db.Model):
     receiver_id = db.Column(db.Integer, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now())
     status = db.Column(db.String(20), nullable=False)
-
 
     def __init__(self, payment_id, liaise_id, sender_id, receiver_id, status):
         self.payment_id = payment_id
@@ -52,31 +44,36 @@ class Payment(db.Model):
                 "created": self.created,
                 "status": self.status}
 
-# Get All Payment
-@app.route("/payment")
-def get_all():
-    payment_list = Payment.query.all()
-    if len(payment_list):
+
+# Get All Payment by Status
+@app.route("/payment/paymentByStatus/<string:status>")
+def get_payment_status(status):
+    if status == "All":
+        payment_list = Payment.query.all()
+    else:
+        payment_list = Payment.query.filter_by(status=status).order_by(desc(Payment.created)).all()
+    if payment_list:
         return jsonify(
             {
                 "code": 200,
-                "data": {
-                    "payments": [payment.json() for payment in payment_list]
-                }
+                "payments": [payment.json() for payment in payment_list]
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "There are no payments."
+            "message": "There are no Payments for this status."
         }
     ), 404
 
 
 # Get All Payout
-@app.route("/payment/payout")
-def get_payout():
-    payment_list = Payment.query.filter(or_(Payment.status=="confirm", Payment.status=="cancel")).all()
+@app.route("/payment/payout/<string:status>")
+def get_payout_status(status):
+    if status == "All":
+        payment_list = Payment.query.filter(or_(Payment.status=="Confirm", Payment.status=="Cancel")).order_by(asc(Payment.created)).all()
+    else:
+        payment_list = Payment.query.filter_by(status=status).order_by(desc(Payment.created)).all()
     if payment_list:
         return jsonify(
             {
@@ -92,7 +89,7 @@ def get_payout():
     ), 404
 
 
-# Get a Single Payment
+# Get a Single Payment by Payment Id
 @app.route("/payment/payment_id/<string:payment_id>")
 def find_by_payment_id(payment_id):
     payment = Payment.query.filter_by(payment_id=payment_id).first()
@@ -111,28 +108,11 @@ def find_by_payment_id(payment_id):
     ), 404
 
 
-# Get a Payment by Liaise ID
-@app.route("/payment/liaise_id/<string:liaise_id>")
-def find_by_liase_id(liaise_id):
-    payment = Payment.query.filter_by(liaise_id=liaise_id).first()
-    if payment:
-        return jsonify(
-            {
-                "code": 200,
-                "data": payment.json()
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "Payment not found."
-        }
-    ), 404
-
-# Get All Payment by Liaise ID
-@app.route("/payment/paymentByLiaiseId/<string:liaise_id>")
-def get_homework_liaise_id(liaise_id):
-    payment_list = Payment.query.filter_by(liaise_id=liaise_id).all()
+# Search Payments
+@app.route("/payment/searchPayoutPaymentId/<string:payment_id>")
+def search_payout_by_payment_id(payment_id):
+    search = "%{}%".format(payment_id)
+    payment_list = Payment.query.filter(and_(Payment.payment_id.like(search)), (or_(Payment.status=="Confirm", Payment.status=="Cancel")) ).all()
     if payment_list:
         return jsonify(
             {
@@ -143,14 +123,53 @@ def get_homework_liaise_id(liaise_id):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no Payments for this homework."
+            "message": "Payment not found."
         }
     ), 404
 
 
-# Submit Payment
+# Search Payouts
+@app.route("/payment/searchPaymentId/<string:payment_id>")
+def search_by_payment_id(payment_id):
+    search = "%{}%".format(payment_id)
+    payment_list = Payment.query.filter(Payment.payment_id.like(search)).all()
+    if payment_list:
+        return jsonify(
+            {
+                "code": 200,
+                "payments": [payment.json() for payment in payment_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Payout not found."
+        }
+    ), 404
+
+
+# # Get a Payment by Liaise ID
+# @app.route("/payment/liaise_id/<string:liaise_id>")
+# def find_by_liase_id(liaise_id):
+#     payment = Payment.query.filter_by(liaise_id=liaise_id).first()
+#     if payment:
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": payment.json()
+#             }
+#         )
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "message": "Payment not found."
+#         }
+#     ), 404
+
+
+# Add a new Payment
 @app.route("/payment/addPayment", methods=['POST'])
-def create_payment():
+def add_payment():
     data = json.loads(request.get_data())
     payment = Payment(**data)
     try:
@@ -173,7 +192,7 @@ def create_payment():
 
 #Update Payment Status by Payment Id
 @app.route("/payment/updateStatusByPaymentId/<string:payment_id>", methods=['PUT'])
-def update_status_payment(payment_id):
+def update_status_by_payment_id(payment_id):
     try:
         payment = Payment.query.filter_by(payment_id=payment_id).first()
         if not payment:
@@ -209,10 +228,10 @@ def update_status_payment(payment_id):
 
 
 #Update Payment Status by Liaise Id
-@app.route("/payment/updateStatusByLiaiseId/<string:liaise_id>", methods=['PUT'])
-def update_status_liaise(liaise_id):
+@app.route("/payment/updateStatusByLiaiseId/<string:liaise_id>/<string:status>", methods=['PUT'])
+def update_status_by_liaise_id(liaise_id, status):
     try:
-        payment = Payment.query.filter_by(liaise_id=liaise_id).first()
+        payment = Payment.query.filter(and_(Payment.liaise_id == liaise_id, Payment.status == status)).first()
         if not payment:
             return jsonify(
                 {
@@ -280,7 +299,6 @@ def create_checkout_session():
     data = json.loads(request.get_data())
     data_list = []
     data_list.append(data)
-    print(data_list)
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -291,7 +309,6 @@ def create_checkout_session():
         )
 
         # Update database with PK --> Payment ID and DateTime on top of existing data attributes to be updated
-
         return jsonify({'id': checkout_session.id,
                         'payment_id': checkout_session.payment_intent})
     except Exception as e:
@@ -305,8 +322,6 @@ def order_success():
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
     payment_id = session.payment_intent
 
-    print(session.payment_intent)
-
     try:
         payment = Payment.query.filter_by(payment_id=session.payment_intent).first()
         if not payment:
@@ -319,8 +334,6 @@ def order_success():
                     "message": "Payment not found."
                 }
             ), 404
-
-        
         payment.status = "Hold"
         db.session.commit()
 
@@ -352,8 +365,6 @@ def order_failure():
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
     payment_id = session.payment_intent
 
-    print(session.payment_intent)
-
     try:
         payment = Payment.query.filter_by(payment_id=session.payment_intent).first()
         if not payment:
@@ -366,8 +377,6 @@ def order_failure():
                     "message": "Payment not found."
                 }
             ), 404
-
-        
         payment.status = "Failed"
         db.session.commit()
 
@@ -390,10 +399,6 @@ def order_failure():
                 "message": "An error occurred while updating the payment. " + str(e)
             }
         ), 500
-
-
-
-
 
 
 if __name__ == '__main__':

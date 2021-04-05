@@ -55,7 +55,7 @@
                             </li>
             
                             <li class="nav-item text-nowrap">
-                            <a class="nav-link" href="logout.html" style="color: red;">Sign out</a>
+                            <a class="nav-link" href="#" style="color: red;">Sign out</a>
                             </li> 
                         </ul>
                     </div>
@@ -126,6 +126,10 @@
 
 
     <script>
+        // Declaring Local Storage
+        localStorage.username = "yuquanyeo"
+        localStorage.user_id = "1"
+
         var sidebar = new Vue ({
             el: "#sidebarMenu",
             data: {
@@ -154,6 +158,20 @@
                                 this.message = data.message;
                             } else {
                                 this.homework = data.homework;
+                            }
+                        })
+                        .catch(error => {
+                            console.log(this.message + error);
+                        });
+                },
+                getUserDetails: function () {
+                    const response = fetch(`http://localhost:5000/user/username/${localStorage.getItem("username")}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 404) {
+                                this.message = data.message;
+                            } else {
+                                localStorage.photo=data.data.photo;
                             }
                         })
                         .catch(error => {
@@ -199,9 +217,7 @@
             },
             created: function () {
                 this.getAllOpenHomework();
-                if (localStorage.getItem("username") == null) {
-                    window.location.replace("./login.html"); 
-                }
+                this.getUserDetails();
             }
         });
     </script>

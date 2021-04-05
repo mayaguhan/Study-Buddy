@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
+from sqlalchemy import and_
 from os import environ
 from flask_cors import CORS
 import json
@@ -64,7 +65,7 @@ def get_all():
     ), 404
 
 
-# Get a Single Liaise Offering
+# Get a Single Liaise Offering by Liaise Id
 @app.route("/liaise/<string:liaise_id>")
 def find_by_liaise_id(liaise_id):
     liaison = Liaise.query.filter_by(liaise_id=liaise_id).first()
@@ -106,8 +107,9 @@ def get_accepted_liaise(homework_id):
 
 # Get All Liaise Offerings by Homework ID
 @app.route("/liaise/liaiseByHomework/<string:homework_id>")
-def get_homework_all(homework_id):
-    liaise_list = Liaise.query.filter_by(homework_id=homework_id).all()
+def get_homework_by_liaise_id(homework_id):
+    liaise_list = Liaise.query.filter(and_(Liaise.homework_id == homework_id, Liaise.status == "Pending")).all()
+    
     if liaise_list:
         return jsonify(
             {
@@ -124,7 +126,27 @@ def get_homework_all(homework_id):
 
 
 
-# Get All Liaise Offerings by Homework ID
+# Get All Liaise Offerings by user ID
+@app.route("/liaise/liaiseByUserId/<string:tutor_id>")
+def get_liaise_by_user_id(tutor_id):
+    liaise_list = Liaise.query.filter_by(tutor_id=tutor_id).all()
+    
+    if liaise_list:
+        return jsonify(
+            {
+                "code": 200,
+                "liaisons": [liaise.json() for liaise in liaise_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no Liaisons for this User."
+        }
+    ), 404
+
+
+# Get All Liaise Average Rating by Tutor Id
 @app.route("/liaise/averageRating/<string:tutor_id>")
 def get_average_rating(tutor_id):
     rating = db.session.query(func.avg(Liaise.tutor_rating)).filter_by(tutor_id=tutor_id).first()[0]
@@ -143,9 +165,10 @@ def get_average_rating(tutor_id):
         }
     ), 404
 
+
 # Submit Liaise Offering
 @app.route("/liaise/addLiaison", methods=['POST'])
-def create_liaison():
+def add_liaison():
     data = request.get_json()
     liaison = Liaise(None, **data)
     try:
