@@ -101,7 +101,7 @@
               </li>
 
               <li class="nav-item text-nowrap">
-                <a class="nav-link" href="#" style="color: red;">Sign out</a>
+                <a class="nav-link" href="../logout.html" style="color: red;">Sign out</a>
               </li> 
             </ul>
           </div>
@@ -254,7 +254,6 @@
               newTutor_remark:"",
               remarkAdded: false,
               addRemarkError: "",
-             
           },
           methods: {
             addRemark: function() {
@@ -417,7 +416,9 @@
           
           },
           created: function () {
-              // on Vue instance created, load the homework list
+              if (localStorage.getItem("username") == null) {
+                window.location.replace("../login.html"); 
+              }
               this.getAllHomework();
           }
       });
