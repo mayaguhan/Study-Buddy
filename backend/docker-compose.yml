@@ -2,84 +2,8 @@ version: "3.8"
 
 volumes:
   rabbitmq_data:
-  pgdata: 
-  kongadata:
 
 services:
-
-    #######################################
-  # Postgres: The database used by Kong
-  #######################################
-  kong-database:
-    image: postgres:9.6
-    restart: always
-    environment:
-      POSTGRES_DB: kong
-      POSTGRES_USER: kong
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "kong"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  #######################################
-  # Kong database migration
-  #######################################
-  kong-migration:
-    image: kong:2.0.4
-    command: "kong migrations bootstrap"
-    restart: on-failure
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: password
-    depends_on:
-      - kong-database
-
-  #######################################
-  # Kong: The API Gateway
-  #######################################
-  kong:
-    image: kong:2.0.4
-    restart: always
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: password
-      KONG_PROXY_LISTEN: 0.0.0.0:8000
-      KONG_ADMIN_LISTEN: 0.0.0.0:8001
-    depends_on:
-      - kong-migration
-    ports:
-      - "8000:8000"
-  
-  #######################################
-  # Konga: Kong GUI
-  #######################################
-  konga:
-    image: pantsel/konga
-    restart: always
-    environment:
-      DB_ADAPTER: postgres
-      DB_HOST: kong-database
-      DB_USER: kong
-      DB_PASSWORD: password
-      DB_DATABASE: konga_db
-    depends_on:
-      - kong
-    ports:
-      - "1337:1337"
-    volumes:
-      - kongadata:/app/kongadata
-
-      
   ##################################
   # User: The User microservice
   ##################################
@@ -87,7 +11,7 @@ services:
     build:
       context: user
       dockerfile: user.Dockerfile
-    image: mayaguhan/user:esd
+    image: yuquanyeo/user:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_user
@@ -103,7 +27,7 @@ services:
     build:
       context: homework
       dockerfile: homework.Dockerfile
-    image: mayaguhan/homework:esd
+    image: yuquanyeo/homework:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_homework
@@ -119,7 +43,7 @@ services:
     build:
       context: liaise
       dockerfile: liaise.Dockerfile
-    image: mayaguhan/liaise:esd
+    image: yuquanyeo/liaise:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_liaise
@@ -135,7 +59,7 @@ services:
     build:
       context: accept_offering
       dockerfile: accept_offering.Dockerfile
-    image: mayaguhan/accept_offering:esd
+    image: yuquanyeo/accept_offering:esd
     restart: always
     depends_on:
       - homework
@@ -158,7 +82,7 @@ services:
     build:
       context: payment
       dockerfile: payment.Dockerfile
-    image: mayaguhan/payment:esd
+    image: yuquanyeo/payment:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/sb_payment
@@ -201,7 +125,7 @@ services:
     build:
       context: liaise_detail
       dockerfile: liaise_detail.Dockerfile
-    image: mayaguhan/liaise_detail:esd
+    image: yuquanyeo/liaise_detail:esd
     restart: always
     depends_on:
       - user
@@ -227,7 +151,7 @@ services:
     build:
       context: modify_homework
       dockerfile: modify_homework.Dockerfile
-    image: mayaguhan/modify_homework:esd
+    image: yuquanyeo/modify_homework:esd
     restart: always
     depends_on:
       - homework
@@ -266,7 +190,7 @@ services:
     build:
       context: amqp_error
       dockerfile: error.Dockerfile
-    image: mayaguhan/error:esd
+    image: yuquanyeo/error:esd
     restart: always
     depends_on:
       - rabbitmq
@@ -282,7 +206,7 @@ services:
     build:
       context: notification
       dockerfile: notification.Dockerfile
-    image: mayaguhan/notification:esd
+    image: yuquanyeo/notification:esd
     restart: always
     ports:
       - "5800:5800"

@@ -37,6 +37,7 @@
     .img_logo{
         display: inline;
         margin: 0 auto;
+        margin-left: -25%;
         height: 100%;
         width: auto;
     }
@@ -54,7 +55,7 @@
       padding: 0 0px;
     }
     </style>
-    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="dashboard.css" rel="stylesheet">
   </head>
   <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -71,7 +72,7 @@
             <ul class="nav flex-column">
               <div class="logo-image center">
                   <span>
-                    <img v-bind:src="profilePhoto" class="rounded img_logo">
+                    <img src="cat.png" class="rounded img_logo">
                   </span>
               </div>
               <li class="nav-item center">
@@ -81,20 +82,20 @@
               </li>
               <br>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="./homepage.html">
+                <a class="nav-link active" aria-current="page" href="homepage.html">
                   View All Listings
                 </a>
               </li>
               <li class="nav-item" style="list-style-type: none">
-                <a class="nav-link" href="./your_homework/my_homework.html">
+                <a class="nav-link" href="my_homework.html">
                   Your Homework
-                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="./your_homework/open_homework.html">Open</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
+                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="./new_listing.html">
+                <a class="nav-link" href="new_listing.html">
                   Create New Listing
                 </a>
               </li>
@@ -108,46 +109,42 @@
 
           <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 align-items-center">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
+              <!-- <h1 class="h2">Details of Listing</h1> -->
             </div>
 
             <div id="app">
-                <div class="mb-2" style="float: left; width:50%; height: 50%;">
-                  <img v-bind:src="homework.image" class="w-100 h-100" >
-                </div>
+                <img src="cat.png" class="w-100 h-50" >
+                <h2>{{ homework.title }}</h2> 
+                <h3>S${{ homework.price }}</h3>
+                <br>
+                <h4>Description:</h4>
+                {{ homework.description }}
+                <br> <br>
 
-                <div class="mb-2" style="float: right; width: 50%;">
-                  <h2>{{ homework.title }}</h2> 
-                  <h3>S${{ homework.price }}</h3>
-                  <br>
-                  <h4>Description:</h4>
-                  {{ homework.description }}
-                  <br> <br>
+                <h4>Meeting via:</h4>
+                <p>{{ homework.meeting_type }}</p>
 
-                  <h4>Meeting via:</h4>
-                  <p>{{ homework.meeting_type }}</p>
+                <h4>Deadline:</h4>
+                <p>{{ homework.deadline }}</p>
 
-                  <h4>Deadline:</h4>
-                  <p>{{ homework.deadline }}</p>
-
-                </div>
-                
-                <div class="input-group col-3 mb-4 align-items-right">
+                <!-- to edit -->
+                <div class="input-group col-3 mb-3 align-items-right">
                   <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                   </div>
-                  <input type="number" v-model="offering" class="form-control" aria-label="Amount (to the nearest dollar)" min=0>
+                  <input type="number" v-model="offering" class="form-control" aria-label="Amount (to the nearest dollar)">
                   
                   <div class="input-group-append">
                     <a @click="makeOffer" class="btn btn-outline-secondary" v-on:submit.prevent="onSubmit">Make offer</a>
                   </div>
 
                 </div>
-
-                <div class="text-success mb-2" v-if="offerAdded">
+                
+                <div class="text-success" v-if="offerAdded">
                   The liaise has been successfully placed! <br>
                   <br>
                 </div>
-                <div class="text-danger mb-2" v-if="makeOfferError!=''">
+                <div class="text-danger" v-if="makeOfferError!=''">
                   There is a problem liaising:<br>
                   {{ makeOfferError}}
                   <br>
@@ -172,8 +169,7 @@
       var sidebar = new Vue ({
         el: "#sidebarMenu",
         data: {
-          username: `${localStorage.getItem("username")}`,
-          profilePhoto: `${localStorage.getItem("photo")}`
+          username: `${localStorage.getItem("username")}`
         }
 
       });
@@ -189,6 +185,8 @@
             username: `${localStorage.getItem("username")}`,
             "homework": [],
             message: "There is a problem retrieving homework data, please try again later.",
+            // newTitle: "",
+            // newISBN13: "",
             offering: "",
             offerAdded: false,
             makeOfferError: ""
@@ -223,13 +221,6 @@
               // reset data
               this.offerAdded = false;
               this.makeOfferError = "";
-              if (this.offering != "") {
-                if (parseInt(this.offering) < 0) {
-                  this.makeOfferError = "Please enter a price greater than $0";
-                  clearInterval(makeOffer());
-                }
-              }
-              
 
               let jsonData = JSON.stringify({
                   homework_id: `${homeworkID}`,
@@ -267,7 +258,7 @@
               }
         },
         created: function () {
-            // on Vue instance created, load the homework
+            // on Vue instance created, load the homework list
             this.findHomework();
         }
       });

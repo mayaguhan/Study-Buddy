@@ -14,8 +14,11 @@ CORS(app)
 
 # Send Email
 @app.route("/notification/email", methods=['POST'])
-def send_email():
+def send_notification():
     data = request.get_json()
+
+    # emailSubject = "Offer Acceptance from " + data["tutor_name"]
+    # emailContent = "You have accepted an offer from " + data["tutor_name"] + " for " + data["homework_title"] + "."
 
     message = Mail(
         from_email= 'studybuddyapp@outlook.com',
