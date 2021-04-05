@@ -45,6 +45,24 @@ class Payment(db.Model):
                 "status": self.status}
 
 
+# Get All Payments
+@app.route("/payment")
+def get_all():
+    payment_list = Payment.query.all()
+    if len(payment_list):
+        return jsonify(
+            {
+                "code": 200,
+                "payments": [payment.json() for payment in payment_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no payments."
+        }
+    ), 404
+
 # Get All Payment by Status
 @app.route("/payment/paymentByStatus/<string:status>")
 def get_payment_status(status):
@@ -108,7 +126,7 @@ def find_by_payment_id(payment_id):
     ), 404
 
 
-# Search Payments
+# Search Payouts
 @app.route("/payment/searchPayoutPaymentId/<string:payment_id>")
 def search_payout_by_payment_id(payment_id):
     search = "%{}%".format(payment_id)
@@ -128,7 +146,7 @@ def search_payout_by_payment_id(payment_id):
     ), 404
 
 
-# Search Payouts
+# Search Payments
 @app.route("/payment/searchPaymentId/<string:payment_id>")
 def search_by_payment_id(payment_id):
     search = "%{}%".format(payment_id)
@@ -290,11 +308,12 @@ def delete_payment(payment_id):
     ), 404
 
 
-
+####################
 # EXTERNAL API CALLS
+####################
 
 # Creating checkout session
-@app.route('/create-checkout-session', methods=['POST'])
+@app.route('/payment/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     data = json.loads(request.get_data())
     data_list = []
@@ -316,7 +335,7 @@ def create_checkout_session():
 
 
 # On success, update status of payment to be on HOLD
-@app.route('/success', methods=['GET'])
+@app.route('/payment/success', methods=['GET'])
 def order_success():
     session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
@@ -359,7 +378,7 @@ def order_success():
 
 
 # On Failure, update status of payment to be FAILED
-@app.route('/cancel', methods=['GET'])
+@app.route('/payment/cancel', methods=['GET'])
 def order_failure():
     session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
     payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)

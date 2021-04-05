@@ -119,25 +119,24 @@
 
                 </div>
                 <div class="modal-body">
-                    <div class="btn-toolbar">
-                        <img id="modalImage" class="d-block w-100">
-                        <p id="modalHomeworkDescription"></p>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col">
-                                    <b>Tutor Info</b>
-                                    <p id="modalTutorUsername"></p>
-                                    <p id="modalTutorTelegram"></p>
-                                    <p id="modalTutorContact"></p>
-                                    <p id="modalTutorEmail"></p>
-                                </div>
-                                <div class="col">
-                                    <b>Student Info</b>
-                                    <p id="modalStudentUsername"></p>
-                                    <p id="modalStudentTelegram"></p>
-                                    <p id="modalStudentContact"></p>
-                                    <p id="modalStudentEmail"></p>
-                                </div>
+                    <img id="modalImage" class="d-block w-100">
+                    <h5 id="modalHomeworkOffering"></h5>
+                    <h6 id="modalHomeworkDescription"></h6><br>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <b>Tutor Info</b>
+                                <p id="modalTutorUsername"></p>
+                                <p id="modalTutorTelegram"></p>
+                                <p id="modalTutorContact"></p>
+                                <p id="modalTutorEmail"></p>
+                            </div>
+                            <div class="col">
+                                <b>Student Info</b>
+                                <p id="modalStudentUsername"></p>
+                                <p id="modalStudentTelegram"></p>
+                                <p id="modalStudentContact"></p>
+                                <p id="modalStudentEmail"></p>
                             </div>
                         </div>
                     </div>
@@ -187,6 +186,7 @@
                             console.log(paymentDetail);
                             document.getElementById("modalTitle").innerText = paymentDetail.homework_title;
                             document.getElementById("modalHomeworkDescription").innerText = paymentDetail.homework_description;
+                            document.getElementById("modalHomeworkOffering").innerText = `Offering: $${paymentDetail.offering}`;
                             document.getElementById("modalImage").src = paymentDetail.homework_image;
                             document.getElementById("modalTutorUsername").innerText = paymentDetail.tutor_username;
                             document.getElementById("modalTutorTelegram").innerText = paymentDetail.tutor_telegram_id;
