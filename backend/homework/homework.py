@@ -76,7 +76,7 @@ def get_all():
     ), 404
 
 
-# Get All Available Homework
+# Get All Available Homework by User Id
 @app.route("/homework/availableHomework/<string:student_id>")
 def get_all_available(student_id):
     todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
@@ -96,7 +96,8 @@ def get_all_available(student_id):
         }
     ), 404
 
-# Get a Single Homework
+
+# Get a Single Homework by Homework Id
 @app.route("/homework/<string:homework_id>")
 def find_by_homework_id(homework_id):
     homework = Homework.query.filter_by(homework_id=homework_id).first()
@@ -134,30 +135,13 @@ def get_homework_status(status):
     ), 404
 
 
-# Get All Homework by Student Id
-@app.route("/homework/homeworkByStudentId/<string:student_id>")
-def get_homework_student(student_id):
-    homework_list = Homework.query.filter_by(student_id=student_id).all()
-    if homework_list:
-        return jsonify(
-            {
-                "code": 200,
-                "homework": [homework.json() for homework in homework_list]
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no homework for this user."
-        }
-    ), 404
-
-
-
 # Get All Homework by Student Id and Status
 @app.route("/homework/homeworkByStudentIdStatus/<string:student_id>/<string:status>")
 def get_homework_student_status(student_id, status):
-    homework_list = Homework.query.filter_by(student_id=student_id, status=status).all()
+    if (status == "All"):
+        homework_list = Homework.query.filter_by(student_id=student_id).all()
+    else:
+        homework_list = Homework.query.filter_by(student_id=student_id, status=status).all()
     if homework_list:
         return jsonify(
             {
@@ -175,7 +159,7 @@ def get_homework_student_status(student_id, status):
 
 # Add a Homework
 @app.route("/homework/addHomework", methods=['POST'])
-def create_homework():
+def add_homework():
     data = request.get_json()
     homework = Homework(None, **data)
     try:
@@ -257,11 +241,6 @@ def update_status(homework_id):
                 "message": "An error occurred while updating the homework. " + str(e)
             }
         ), 500
-
-
-
-
-
 
 
 if __name__ == '__main__':

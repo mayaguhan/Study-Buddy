@@ -205,74 +205,6 @@ def processAcceptance(offering):
 
 
 
-    # #Error handling
-    # if homework_code not in range(200,300):
-    #     #Inform error microservice
-    #     print("\n-----Publishing the homework error message with routing_key=homework.error-----")
-        
-    #     message = json.dumps(homework_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="homework.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-    #     #delivery_mode makes the message persistent
-    #     print("\nHomework Error Status ({:d}) published to the RabbitMQ Exchange:".format(homework_code), homework_result)
-
-
-    #     return {
-    #         "code": 500,
-    #         "data": {"homework_result": homework_result},
-    #         "message": "Homework status update failure has been sent for error handling"
-    #     }
-
-
-    #     # ERROR HANDLING WITHOUT AMQP
-    #     # print("Error in updating homework")
-    #     # return {
-    #     #     "code": 400,
-    #     #     "data": {
-    #     #         "homework_result": homework_result
-    #     #     },
-    #     #     "message": "There has been an error in updating the homework. Error has been sent for error handling."
-    #     # }
-    
-
-
-    # #Invoke liaise microservice to update status
-    # updated_liaise_URL = liaise_URL + '/accept/' + str(liaise_id) + '/' + str(homework_id)
-    # liaise_result = invoke_http(updated_liaise_URL, method='PUT', json=offering)
-    # liaise_code = liaise_result["code"]
-
-
-    # #Error Handling
-    # if liaise_code not in range(200,300):
-    #     #Inform error microservice
-    #     print("\n-----Publishing the liaise error with routing_key=liaise.error-----")
-
-    #     message = json.dumps(liaise_result)
-    #     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="liaise.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
-    #     #delivery_mode makes the message persistent
-
-    #     print("\nLiaise Error Status ({:d}) published to the RabbitMQ Exchange:".format(liaise_code), liaise_result)
-
-
-    #     return {
-    #         "code": 500,
-    #         "data": {"liaise_result": liaise_result},
-    #         "message": "Liaise status update failure has been sent for error handling"
-    #     }
-
-
-    #ERROR HANDLING WITHOUT AMQP
-    # if liaise_code not in range(200,300):
-    #     print("Error in updating homework")
-    #     return {
-    #         "code": 400,
-    #         "data": {
-    #             "liaise_result": liaise_result
-    #         },
-    #         "message": "There has been an error in updating the liaison. Error has been sent for error handling."
-    #     }
-
-
-    # Return update result
     return {
         "code": 201,
         "data": {
@@ -282,8 +214,6 @@ def processAcceptance(offering):
             "liaise_update_result": liaise_update_result,
             "student_result": student_result,
             "tutor_result": tutor_result
-            # "student_email_result": student_email_result,
-            # "tutor_email_result": tutor_email_result
         }
     }
 

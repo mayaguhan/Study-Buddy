@@ -55,7 +55,7 @@
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Search</span>
+                        <span class="input-group-text">Search</span>
                     </div>
                     <input type="text" v-on:keyup="findPayment($event)" class="form-control" placeholder="Payment Id" aria-label="Payment Id">
                 </div>
@@ -177,7 +177,7 @@
                     });
                 },
                 getPaymentDetail: function (liaise_id) {
-                    const response = fetch("http://localhost:5600/liaise_detail/liaiseId/" + liaise_id)
+                    const response = fetch("http://localhost:5600/liaise_detail/liaise_id/" + liaise_id)
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {

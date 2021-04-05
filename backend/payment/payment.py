@@ -89,7 +89,7 @@ def get_payout_status(status):
     ), 404
 
 
-# Get a Single Payment
+# Get a Single Payment by Payment Id
 @app.route("/payment/payment_id/<string:payment_id>")
 def find_by_payment_id(payment_id):
     payment = Payment.query.filter_by(payment_id=payment_id).first()
@@ -148,45 +148,28 @@ def search_payout_by_payment_id(payment_id):
     ), 404
 
 
-# Get a Payment by Liaise ID
-@app.route("/payment/liaise_id/<string:liaise_id>")
-def find_by_liase_id(liaise_id):
-    payment = Payment.query.filter_by(liaise_id=liaise_id).first()
-    if payment:
-        return jsonify(
-            {
-                "code": 200,
-                "data": payment.json()
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "Payment not found."
-        }
-    ), 404
+# # Get a Payment by Liaise ID
+# @app.route("/payment/liaise_id/<string:liaise_id>")
+# def find_by_liase_id(liaise_id):
+#     payment = Payment.query.filter_by(liaise_id=liaise_id).first()
+#     if payment:
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": payment.json()
+#             }
+#         )
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "message": "Payment not found."
+#         }
+#     ), 404
 
-# Get All Payment by Liaise ID ***
-@app.route("/payment/paymentByLiaiseId/<string:liaise_id>")
-def get_homework_liaise_id(liaise_id):
-    payment_list = Payment.query.filter_by(liaise_id=liaise_id).all()
-    if payment_list:
-        return jsonify(
-            {
-                "code": 200,
-                "payments": [payment.json() for payment in payment_list]
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no Payments for this homework."
-        }
-    ), 404
 
-# Submit Payment
+# Add a new Payment
 @app.route("/payment/addPayment", methods=['POST'])
-def create_payment():
+def add_payment():
     data = json.loads(request.get_data())
     payment = Payment(**data)
     try:
@@ -209,7 +192,7 @@ def create_payment():
 
 #Update Payment Status by Payment Id
 @app.route("/payment/updateStatusByPaymentId/<string:payment_id>", methods=['PUT'])
-def update_status_payment(payment_id):
+def update_status_by_payment_id(payment_id):
     try:
         payment = Payment.query.filter_by(payment_id=payment_id).first()
         if not payment:
@@ -246,7 +229,7 @@ def update_status_payment(payment_id):
 
 #Update Payment Status by Liaise Id
 @app.route("/payment/updateStatusByLiaiseId/<string:liaise_id>/<string:status>", methods=['PUT'])
-def update_status_liaise(liaise_id, status):
+def update_status_by_liaise_id(liaise_id, status):
     try:
         payment = Payment.query.filter(and_(Payment.liaise_id == liaise_id, Payment.status == status)).first()
         if not payment:

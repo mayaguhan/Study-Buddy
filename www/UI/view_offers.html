@@ -127,19 +127,13 @@
                       <p class="card-text">Offered Price: ${{ aLiaise.offering }}</p>
                       
                       <div class="row">
-                        <!-- <a v-bind:href="'checkout.html?liaise_id=' + aLiaise.liaise_id + '&tutor_id=' + aLiaise.tutor_id" class="btn btn-outline-success btn-block d-block w-50">Accept</a>
-                        <a @click="declineOffering(aLiaise.liaise_id)" class="btn btn-outline-danger btn-block d-block w-50" style="float:right;">Decline</a>
-                        <a class="btn btn-outline-primary d-block w-100" style="justify-content: center; display: flex;" v-on:click.stop.prevent="openWindow('https://t.me/' + aLiaise.telegram_id)">Chat</a> -->
                         <div class="col">
                           <a v-bind:href="'checkout.html?liaise_id=' + aLiaise.liaise_id + '&tutor_id=' + aLiaise.tutor_id" class="btn btn-outline-success btn-block">Accept</a>
-                          
-                          
                         </div>
                         <div class="col">
                           <a @click="declineOffering(aLiaise.liaise_id)" class="btn btn-outline-danger btn-block" style="float:right;">Decline</a>
                         </div>
                       </div>
-                      
                       <br>
                       <a class="btn btn-outline-primary" style="justify-content: center; display: flex;" v-on:click.stop.prevent="openWindow('https://t.me/' + aLiaise.telegram_id)">Chat</a>
                     </div>
@@ -151,11 +145,8 @@
               </div>
             </div>
           </main>
-
         </div>
-
     </div>
-
           <script>
             let params = new URLSearchParams(location.search);
             var homeworkID = params.get('homework_id');
@@ -198,36 +189,25 @@
                 },
                 methods: {
                     getLiaiseByHomework: function () {
-                        const response =
-                            fetch(`http://localhost:5600/liaise_detail/${homeworkID}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(response);
-                                    if (data.code === 404) {
-                                        // no liaise in db
-                                        this.message = "There is no liaise available for this homework";
-                                    } else {
-                                        this.liaise = data.data.liaisons_result;
-                                        console.log(this.liaise)
-                                    }
-                                })
-                                .catch(error => {
-                                    console.log(this.message + error);
-                                    // Display No Liaise Available
-
-
-                                });
-      
+                        const response =  fetch(`http://localhost:5600/liaise_detail/homework_id/${homeworkID}`)
+                          .then(response => response.json())
+                          .then(data => {
+                            if (data.code === 404) {
+                              this.message = "There is no liaise available for this homework";
+                            } else {
+                              this.liaise = data.data.liaisons_result;
+                            }
+                          })
+                          .catch(error => {
+                            console.log(this.message + error);
+                          });
                     },
-
                     declineOffering: function (liaise_id) {
-                      // reset data
                       this.rejectAdded = false;
                       this.rejectOfferingError = "";
 
                       let jsonData = JSON.stringify({
                           liaise_id: liaise_id
-                          
                       });
 
                       fetch(`http://localhost:5200/liaise/reject`,
@@ -258,7 +238,9 @@
                               }
                           })
                     },
-
+                    openWindow: function (link) {
+                      window.open(link);
+                    }
                     
                 },
                 created: function () {

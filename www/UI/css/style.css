@@ -5,24 +5,27 @@
     overflow: hidden;
     border-radius: 50%;
 } 
+
 .center {
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
+
 .img_logo{
     display: inline;
     margin: 0 auto;
-    margin-left: -25%;
     height: 100%;
     width: auto;
 }
+
 .line{
     display:inline-block;
     border-bottom:2px #5B3400 solid;
     margin-left:5px;
     width:80%;
 }
+
 a.custom-card,
 a.custom-card:hover {
     color: inherit;

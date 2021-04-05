@@ -65,7 +65,7 @@ def get_all():
     ), 404
 
 
-# Get a Single Liaise Offering
+# Get a Single Liaise Offering by Liaise Id
 @app.route("/liaise/<string:liaise_id>")
 def find_by_liaise_id(liaise_id):
     liaison = Liaise.query.filter_by(liaise_id=liaise_id).first()
@@ -107,7 +107,7 @@ def get_accepted_liaise(homework_id):
 
 # Get All Liaise Offerings by Homework ID
 @app.route("/liaise/liaiseByHomework/<string:homework_id>")
-def get_homework_all(homework_id):
+def get_homework_by_liaise_id(homework_id):
     liaise_list = Liaise.query.filter(and_(Liaise.homework_id == homework_id, Liaise.status == "Pending")).all()
     
     if liaise_list:
@@ -128,7 +128,7 @@ def get_homework_all(homework_id):
 
 # Get All Liaise Offerings by user ID
 @app.route("/liaise/liaiseByUserId/<string:tutor_id>")
-def get_liaise_by_userId(tutor_id):
+def get_liaise_by_user_id(tutor_id):
     liaise_list = Liaise.query.filter_by(tutor_id=tutor_id).all()
     
     if liaise_list:
@@ -168,7 +168,7 @@ def get_average_rating(tutor_id):
 
 # Submit Liaise Offering
 @app.route("/liaise/addLiaison", methods=['POST'])
-def create_liaison():
+def add_liaison():
     data = request.get_json()
     liaison = Liaise(None, **data)
     try:

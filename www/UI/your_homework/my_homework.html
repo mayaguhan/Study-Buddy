@@ -285,7 +285,7 @@
               getAllHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentId/${localStorage.getItem("user_id")}`)
+                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/All`)
                           .then(response => response.json())
                           .then(data => {
                               console.log(response);

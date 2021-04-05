@@ -20,12 +20,10 @@ liaise_URL = environ.get('liaise_URL') or "http://liaise:5200/liaise"
 
 
 
-@app.route("/liaise_detail/<string:homework_id>")
-def user_liaise_detail(homework_id):
-    # print(liaise_id)
+@app.route("/liaise_detail/homework_id/<string:homework_id>")
+def liaise_detail_by_homework_id(homework_id):
     if homework_id:
         try:
-            # Activate retrieveLiaiseDetail function to retrieve user details for each liaise
             result = retrieveLiaiseDetail(homework_id)
             print('\nresult: ', result)
             return jsonify(result), result['code']
@@ -47,8 +45,8 @@ def user_liaise_detail(homework_id):
     })
 
 
-@app.route("/liaise_detail/liaiseId/<string:liaise_id>")
-def user_liaise_detail_by_liaiseId(liaise_id):
+@app.route("/liaise_detail/liaise_id/<string:liaise_id>")
+def liaise_detail_by_liaise_id(liaise_id):
     if liaise_id:
         try:
             result = retrieveLiaiseDetailByLiaiseId(liaise_id)
@@ -72,8 +70,8 @@ def user_liaise_detail_by_liaiseId(liaise_id):
     })
 
 
-@app.route("/liaise_detail/userId/<string:user_id>")
-def user_liaise_detail_by_userId(user_id):
+@app.route("/liaise_detail/user_id/<string:user_id>")
+def liaise_detail_by_user_id(user_id):
     if user_id:
         try:
             result = retrieveLiaiseDetailByUserId(user_id)
