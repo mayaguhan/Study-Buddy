@@ -110,7 +110,7 @@ def find_by_payment_id(payment_id):
 
 # Search Payments
 @app.route("/payment/searchPayoutPaymentId/<string:payment_id>")
-def search_by_payment_id(payment_id):
+def search_payout_by_payment_id(payment_id):
     search = "%{}%".format(payment_id)
     payment_list = Payment.query.filter(and_(Payment.payment_id.like(search)), (or_(Payment.status=="Confirm", Payment.status=="Cancel")) ).all()
     if payment_list:
@@ -130,7 +130,7 @@ def search_by_payment_id(payment_id):
 
 # Search Payouts
 @app.route("/payment/searchPaymentId/<string:payment_id>")
-def search_payout_by_payment_id(payment_id):
+def search_by_payment_id(payment_id):
     search = "%{}%".format(payment_id)
     payment_list = Payment.query.filter(Payment.payment_id.like(search)).all()
     if payment_list:
