@@ -34,6 +34,7 @@
     .img_logo{
         display: inline;
         margin: 0 auto;
+        margin-left: -25%;
         height: 100%;
         width: auto;
     }
@@ -44,11 +45,13 @@
         margin-left:5px;
         width:80%;
     }
-
-
-    
+    .container {
+      width: auto;
+      max-width: 680px;
+      padding: 0 0px;
+    }
     </style>
-    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="dashboard.css" rel="stylesheet">
 
     <!-- NEW SCRIPT FOR VUE -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -69,7 +72,7 @@
             <ul class="nav flex-column">
               <div class="logo-image center">
                   <span>
-                    <img v-bind:src="profilePhoto" class="rounded img_logo">
+                    <img src="cat.png" class="rounded img_logo">
                   </span>
               </div>
               <li class="nav-item center">
@@ -79,20 +82,20 @@
               </li>
               <br>
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="./homepage.html">
+                <a class="nav-link" aria-current="page" href="homepage.html">
                   View All Listings
                 </a>
               </li>
               <li class="nav-item" style="list-style-type: none">
-                <a class="nav-link" href="./your_homework/my_homework.html">
+                <a class="nav-link" href="my_homework.html">
                   Your Homework
-                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./your_homework/open_homework.html">Open</a></li>
-                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
-                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
+                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="open_homework.html">Open</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="./new_listing.html">
+                <a class="nav-link" href="new_listing.html">
                   Create New Listing
                 </a>
               </li>
@@ -109,18 +112,18 @@
               <h1 class="h2">Offerings for Homework </h1>
             </div>
 
-            <div id="app" v-if="hasLiaise" class="mb-3">
+            <div id="app" v-if="hasLiaise">
               <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div v-for="aLiaise in getEachLiaise">
-                  <div class="col">
-                    <div class="card h-100">
-                      <img class="w-100 h-100" v-bind:src="aLiaise.photo" alt="Card image cap">
+      
+                  <div class="card col-3" style = "padding: 0px; margin: 0px 6px;">
+                    <img class="card-img-top" v-bind:src="aLiaise.photo" alt="Card image cap">
                     <div class="card-body">
                       <h5 class="card-title"> {{ aLiaise.username }} </h5>
                       <p class="card-text">Tutor Rating: {{ Math.round(aLiaise.rating * 100) / 100 }} / 5
                         <div style="width: 100px; height: 30px;"> 
                           <div style="background-color: yellow;" v-bind:style="{width: aLiaise.rating * 20 + '%' }">
-                            <img src="./assets/stars.png" style="display: block;"/>
+                            <img src="assets/stars.png" style="display: block;"/>
                           </div>
                         </div>
                       </p>
@@ -128,34 +131,40 @@
                       
                       <div class="row">
                         <div class="col">
-                          <a v-bind:href="'checkout.html?liaise_id=' + aLiaise.liaise_id + '&tutor_id=' + aLiaise.tutor_id" class="btn btn-outline-success btn-block">Accept</a>
+                        <a v-bind:href="'checkout.html?liaise_id=' + aLiaise.liaise_id" @click="acceptOffering(aLiaise.homework_id, aLiaise.liaise_id)" class="btn btn-outline-success btn-block">Accept</a>
                         </div>
                         <div class="col">
                           <a @click="declineOffering(aLiaise.liaise_id)" class="btn btn-outline-danger btn-block" style="float:right;">Decline</a>
                         </div>
                       </div>
+                      
                       <br>
                       <a class="btn btn-outline-primary" style="justify-content: center; display: flex;" v-on:click.stop.prevent="openWindow('https://t.me/' + aLiaise.telegram_id)">Chat</a>
                     </div>
                   </div>
                 </div>
               </div>
-              <div v-if="!hasLiaise">
-                {{ message }}
-              </div>
             </div>
           </main>
+
         </div>
+
     </div>
+    <footer class="footer mt-auto py-3 bg-dark">
+      <div class="container">
+        <span class="text-muted">If you face any issues, please contact yuquan.yeo.2019@sis.smu.edu.sg</span>
+      </div>
+    </footer>
+
+
           <script>
             let params = new URLSearchParams(location.search);
-            var homeworkID = params.get('homework_id');
-      
+            var homeworkID = params.get('homework_id')
+
             var sidebar = new Vue ({
               el: "#sidebarMenu",
               data: {
-                username: `${localStorage.getItem("username")}`,
-                profilePhoto: `${localStorage.getItem("photo")}`,
+                username: `${localStorage.getItem("username")}`
               }
       
             });
@@ -185,32 +194,49 @@
                     rejectAdded: false,
                     rejectOfferingError: '',
                     markAdded: false,
+                    markProgressError: ''
                     
                 },
                 methods: {
                     getLiaiseByHomework: function () {
-                        const response =  fetch(`http://localhost:5600/liaise_detail/homework_id/${homeworkID}`)
-                          .then(response => response.json())
-                          .then(data => {
-                            if (data.code === 404) {
-                              this.message = "There is no liaise available for this homework";
-                            } else {
-                              this.liaise = data.data.liaisons_result;
-                            }
-                          })
-                          .catch(error => {
-                            console.log(this.message + error);
-                          });
+                        // on Vue instance created, load the book list
+                        const response =
+                            fetch(`http://localhost:5600/liaise_detail/${homeworkID}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(response);
+                                    if (data.code === 404) {
+                                        // no homework in db
+                                        this.message = data.message;
+                                    } else {
+                                        this.liaise = data.data.liaisons_result;
+                                        console.log(this.liaise)
+                                    }
+                                })
+                                .catch(error => {
+                                    // Errors when calling the service; such as network error, 
+                                    // service offline, etc
+                                    console.log(this.message + error);
+      
+                                });
+      
                     },
-                    declineOffering: function (liaise_id) {
-                      this.rejectAdded = false;
-                      this.rejectOfferingError = "";
+
+                    // makePayment: function() {
+
+                    // }
+                    acceptOffering: function (homework_id, liaise_id) {
+                      // reset data
+                      this.acceptAdded = false;
+                      this.acceptOfferingError = "";
 
                       let jsonData = JSON.stringify({
-                          liaise_id: liaise_id
+                          liaise_id: 'liaise_id',
+                          homework_id: 'homework_id'
+                          
                       });
 
-                      fetch(`http://localhost:5200/liaise/reject`,
+                      fetch(`http://localhost:5200/liaise/accept/${liaise_id}/${homework_id}`,
                           {
                               method: "PUT",
                               headers: {
@@ -220,7 +246,45 @@
                           })
                           .then(response => response.json())
                           .then(data => {
-                              this.getLiaiseByHomework();
+                              console.log(data);
+                              result = data.data;
+                              console.log(result);
+                              this.markProgress(homework_id);
+                              
+                              switch (data.code) {
+                                  case 201:
+                                      this.acceptAdded = true;
+                                      break;
+                                  case 400:
+                                  case 500:
+                                      this.acceptOfferingError = data.message;
+                                      break;
+                                  default:
+                                      throw `${data.code}: ${data.message}`;
+                              }
+                          })
+                    },
+
+                    declineOffering: function (liaise_id) {
+                      // reset data
+                      this.rejectAdded = false;
+                      this.rejectOfferingError = "";
+
+                      let jsonData = JSON.stringify({
+                          liaise_id: 'liaise_id'
+                          
+                      });
+
+                      fetch(`http://localhost:5200/liaise/reject/${liaise_id}`,
+                          {
+                              method: "PUT",
+                              headers: {
+                                  "Content-type": "application/json"
+                              },
+                              body: jsonData
+                          })
+                          .then(response => response.json())
+                          .then(data => {
                               console.log(data);
                               result = data.data;
                               console.log(result);
@@ -238,13 +302,52 @@
                               }
                           })
                     },
+
+                    markProgress: function (homework_id) {
+                      // reset data
+                      this.markAdded = false;
+                      this.markProgressError = "";
+
+                      let jsonData = JSON.stringify({
+                          homework_id: 'homework_id',
+                          status: "Progress"
+                          
+                      });
+
+                      fetch(`http://localhost:5100/homework/${homework_id}`,
+                          {
+                              method: "PUT",
+                              headers: {
+                                  "Content-type": "application/json"
+                              },
+                              body: jsonData
+                          })
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log(data);
+                              result = data.data;
+                              console.log(result);
+                              
+                              switch (data.code) {
+                                  case 201:
+                                      this.markAdded = true;
+
+                                      break;
+                                  case 400:
+                                  case 500:
+                                      this.markProgressError = data.message;
+                                      break;
+                                  default:
+                                      throw `${data.code}: ${data.message}`;
+                              }
+                          })
+                    },
                     openWindow: function (link) {
-                      window.open(link);
+                      window.open(link ,'_blank');
                     }
-                    
+                
                 },
                 created: function () {
-                    // on Vue instance created, load the liaise list
                     if (localStorage.getItem("username") == null) {
                       window.location.replace("./login.html"); 
                     }

@@ -34,6 +34,7 @@
     .img_logo {
         display: inline;
         margin: 0 auto;
+        margin-left: -25%;
         height: 100%;
         width: auto;
     }
@@ -56,7 +57,7 @@
       padding: 0 0px;
     }
     </style>
-    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="dashboard.css" rel="stylesheet">
 
     <!-- NEW SCRIPT FOR VUE -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -77,7 +78,7 @@
             <ul class="nav flex-column">
               <div class="logo-image center">
                   <span>
-                    <img v-bind:src="imageSRC" class="rounded img_logo">
+                    <img src="cat.png" class="rounded img_logo">
                   </span>
               </div>
               <li class="nav-item center">
@@ -87,56 +88,62 @@
               </li>
               <br>
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="../homepage.html">
+                <a class="nav-link" aria-current="page" href="homepage.html">
                   View All Listings
                 </a>
               </li>
               <li class="nav-item" style="list-style-type: none">
-                <a class="nav-link" href="my_homework.html">
+                <a class="nav-link active" href="my_homework.html">
                   Your Homework
-                       <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./open_homework.html">Open</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./progress_homework.html">In Progress</a></li>
-                       <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./completed_homework.html">Completed</a></li>
+                  <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="open_homework.html">Open</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="progress_homework.html">In Progress</a></li>
+                  <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="completed_homework.html">Completed</a></li>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="../new_listing.html">
+                <a class="nav-link" href="new_listing.html">
                   Create New Listing
                 </a>
               </li>
 
               <li class="nav-item text-nowrap">
-                <a class="nav-link" href="../logout.html" style="color: red;">Sign out</a>
+                <a class="nav-link" href="#" style="color: red;">Sign out</a>
               </li> 
             </ul>
           </div>
         </nav>
           <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
-              <h1 class="h2">My Homework - Open</h1>
+              <h1 class="h2">All My Homework</h1>
             </div>
+            <!-- <div class = "e-card-horizontal"> -->
+            <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" /> -->
             
-            
+            <br> 
 
-            
-            <div id="app" v-if="hasHomework" class="mb-3">
+            <div id="app" v-if="hasHomework">
               <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div v-for="aHomework in homework">
                   <div class="col">
                     <div class="card h-100">
-                      <img v-bind:src="aHomework.image" class="w-100 h-100">
+                      <img src="./cat.png" class="w-100 h-100">
                       <div class="card-body">
                         <h5 class="card-title">{{ aHomework.title }}</h5>
                         <p class="card-text">{{ aHomework.description }}</p>
                         <p class="card-text">$ {{ aHomework.price }}</p>
-                        <a v-bind:href="'../view_offers.html?homework_id=' + aHomework.homework_id" class="btn btn-outline-primary">View Offers</a>
+                        <p class="card-text" style="font-style:italic; ">{{ aHomework.status }}</p>
+                        <div v-if="aHomework.status == 'Unsolve'">
+                          <a v-bind:href="'view_offers.html?homework_id=' + aHomework.homework_id" class="btn btn-outline-primary" style="text-align: center;">View Offers</a>
+                        </div>
+                        <div v-if="aHomework.status == 'Progress'">
+                          <a @click="markCompleted(aHomework.homework_id)" class="btn btn-outline-success" style="text-align: center;">Mark as Completed</a>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
-              
               </div>
+    
             </div>
             
           </main>
@@ -153,8 +160,7 @@
       var sidebar = new Vue ({
         el: "#sidebarMenu",
         data: {
-          username: `${localStorage.getItem("username")}`,
-          imageSRC: `${localStorage.getItem("photo")}`,
+          username: `${localStorage.getItem("username")}`
         }
 
       });
@@ -173,10 +179,10 @@
              
           },
           methods: {
-              getOpenHomework: function () {
+              getAllHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/unsolve`)
+                      fetch(`http://localhost:5100/homework/homeworkByStudentId/${localStorage.getItem("user_id")}`)
                           .then(response => response.json())
                           .then(data => {
                               console.log(response);
@@ -194,15 +200,51 @@
 
                           });
 
+              },
+              markCompleted: function (homework_id) {
+                // reset data
+                this.markAdded = false;
+                this.markCompletedError = "";
+
+                let jsonData = JSON.stringify({
+                    homework_id: 'homework_id',
+                    status: "Solved"
+                    
+                });
+
+                fetch(`http://localhost:5100/homework/${homework_id}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: jsonData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        result = data.data;
+                        console.log(result);
+                        
+                        switch (data.code) {
+                            case 201:
+                                this.markAdded = true;
+
+                                break;
+                            case 400:
+                            case 500:
+                                this.markCompletedError = data.message;
+                                break;
+                            default:
+                                throw `${data.code}: ${data.message}`;
+                        }
+                    })
               }
           
           },
           created: function () {
               // on Vue instance created, load the homework list
-              if (localStorage.getItem("username") == null) {
-                window.location.replace("../login.html"); 
-              }
-              this.getOpenHomework();
+              this.getAllHomework();
           }
       });
     </script>
