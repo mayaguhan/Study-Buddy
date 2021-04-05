@@ -1,42 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Username</title>
+    <title>Payout Management</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <style>
-        .logo-image {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 50%;
-        } 
-        .center {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .img_logo{
-            display: inline;
-            margin: 0 auto;
-            margin-left: -25%;
-            height: 100%;
-            width: auto;
-        }
-        .line{
-            display:inline-block;
-            border-bottom:2px #5B3400 solid;
-            margin-left:5px;
-            width:80%;
-        }
-        a.custom-card,
-        a.custom-card:hover {
-            color: inherit;
-            text-decoration: none;
-        }
-    </style>
+    <link href="../css/style.css" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 </head>
@@ -65,12 +34,12 @@
                             </li>
                             <br>
                             <li class="nav-item">
-                                <a class="nav-link" href="admin_page.html">
-                                    Manage Payouts
+                                <a class="nav-link active" aria-current="page" href="payout_management.html">
+                                    Payout Management
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="admin_payment_management.html">
+                                <a class="nav-link" href="payment_management.html">
                                     Payment Management
                                 </a>
                             </li>
@@ -82,23 +51,32 @@
                 </nav>
             </div>
             <div class="col-10">
-                <h1>Payment</h1>
-                <p>Filter by: 
-                    <select id="statusFilter" name="status">
-                        <option value="all" selected>All</option>
-                        <option value="all">Pending</option>
-                        <option value="all">Hold</option>
-                        <option value="all">Confirm</option>
-                        <option value="all">Complete</option>
-                        <option value="all">Cancel</option>
-                    </select>
+                <h1>Payout Management</h1>
 
-                </p>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Search</span>
+                    </div>
+                    <input type="text" v-on:keyup="findPayment($event)" class="form-control" placeholder="Payment Id" aria-label="Payment Id">
+                </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="statusFilter">Status Filter</label>
+                    </div>
+                    <select class="custom-select" id="statusFilter" @change="filterStatus($event)">
+                        <option selected value="All">All</option>
+                        <option value="Confirm">Confirm</option>
+                        <option value="Cancel">Cancel</option>
+                    </select>
+                </div>
+
                 <div class="row">
                     <div id="main" class="col-12">
                         <table class="table table-striped" v-if="hasPayments">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Payment Id</th>
                                     <th>Liaise Id</th>
                                     <th>Sender Id</th>
@@ -108,6 +86,7 @@
                                     <th>Details</th>
                                 </tr>
                                 <tr v-for="payout in payments">
+                                    <td><input type="checkbox" v-bind:value="[payout.payment_id, payout.status]" name="paymentCheckbox"></td>
                                     <td>{{ payout.payment_id }}</td>
                                     <td>{{ payout.liaise_id }}</td>
                                     <td>{{ payout.sender_id }}</td>
@@ -123,6 +102,7 @@
                                 </tr>
                             </thead>
                         </table>
+                        <button class="d-none" @click="makePayout()" id="makePayout-btn">Payout</button>
                         <div class="text-danger" v-if="!hasPayments">{{ message }}</div>
                     </div>
                 </div>
@@ -167,7 +147,7 @@
     </div>
 
     <script>
-        payment_url = "http://localhost:5400/payment";
+        payment_url = "http://localhost:5400/payment/payout";
         var app = new Vue({
             el: "#app",
             computed: {
@@ -181,14 +161,15 @@
             },
             methods: {
                 getAllPayments: function () {
-                    const response = fetch("http://localhost:5400/payment")
+                    const response = fetch("http://localhost:5400/payment/payout/All")
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {
                             this.message = "There are no payouts available at this moment"
+                            
                         } else {
-                            console.log(data.data.payments);
-                            this.payments = data.data.payments;
+                            document.getElementById("makePayout-btn").className = "btn btn-outline-success mb-3 d-block w-100";
+                            this.payments = data.payments;
                         }
                     })
                     .catch(error => {
@@ -250,44 +231,61 @@
                                     this.getAllPayments();
                                 case 201:
                                     this.getAllPayments();
-                                break;
+                                    break;
                                 case 400:
-
+                                    break;
                                 case 500:
-                                    // this.getAllHomework();
                                     break;
                                 default:
                                     throw `${data.code}: ${data.message}`;
                             }
                         })
                         this.getAllPayments();
-
-
                     }
 
                     let jsonData = JSON.stringify({
                         payment_id_list: paymentIdList,
                     });
                     console.log(jsonData);
+                },
+                filterStatus() {
+                    status = event.target.value;
+                    const response = fetch(`http://localhost:5400/payment/payout/${status}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.code === 404) {
+                            this.payments = [];
+                            this.message = "There are no payments available"
+                        } else {
+                            this.payments = data.payments;
+                        }
+                    })
+                    .catch(error => {
+                        console.log(this.message + error);
+                    });
+                },
+                findPayment() {
+                    payment_id = event.target.value;
+                    let paymentUrl = `http://localhost:5400/payment/payout/All`;
+                    if (payment_id != "") {
+                        paymentUrl = `http://localhost:5400/payment/searchPayoutPaymentId/${payment_id}`;
+                    }
+                    const response = fetch(paymentUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.code === 404) {
+                            this.payments = [];
+                            this.message = "There are no payments available"
+                        } else {
+                            this.payments = data.payments;
+                        }
+                    })
+                    .catch(error => {
+                        console.log(this.message + error);
+                    });
                 }
 
 
-                // findPayment: function () {
-                //     const response = fetch(`${payment_url}/username/${this.username}`)
-                //     .then(response => response.json())
-                //     .then(data => {
-                //         console.log(response);
-                //         if (data.code === 404) {
-                //             this.message = data.message;
-                //             this.payments = [];
-                //         } else {
-                //             this.payments = [data.data];
-                //         }
-                //     })
-                //     .catch(error => {
-                //         console.log(this.message + error);
-                //     });
-                // },
             },
             created: function () {
                 this.getAllPayments();
