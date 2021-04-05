@@ -91,9 +91,9 @@
                 <li class="nav-item" style="list-style-type: none">
                   <a class="nav-link" href="./your_homework/my_homework.html">
                     Your Homework
-                         <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./your_homework/open_homework.html">Open</a></li>
-                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
-                         <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
+                        <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link active" href="./your_homework/open_homework.html">Open</a></li>
+                        <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
+                        <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -103,7 +103,7 @@
                 </li>
 
                 <li class="nav-item text-nowrap">
-                  <a class="nav-link" href="#" style="color: red;">Sign out</a>
+                  <a class="nav-link" href="logout.html" style="color: red;">Sign out</a>
                 </li> 
               </ul>
             </div>
@@ -135,6 +135,12 @@
         data: {
           username: `${localStorage.getItem("username")}`,
           profilePhoto: `${localStorage.getItem("photo")}`,
+        },
+        created: function () {
+          if (localStorage.getItem("username") == null) {
+            window.location.replace("./login.html"); 
+          }
+          this.getLiaiseDetails();
         }
 
       });

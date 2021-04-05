@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Login</title>
+</head>
+<body>
+    <div class="container" id="app">
+        <h1>Login</h1>
+        <form v-on:submit.prevent="onSubmit">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" aria-describedby="username">
+            </div>
+
+            <div class="text text-danger font-weight-bold">
+                <p id="loginResult"></p>
+            </div>
+
+            <button type="button" class="btn btn-primary d-block w-100" @click="getUserDetails()">Login</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        if (localStorage.getItem("username") != null) {
+            window.location.replace("./homepage.html"); 
+        }
+
+        var app = new Vue({
+            el: "#app",
+            methods: {
+                getUserDetails: function () {
+                    const response = fetch(`http://localhost:5000/user/username/${document.getElementById("username").value}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 404) {
+                                this.message = data.message;
+                            } else {
+                                localStorage.user_id = data.data.user_id;
+                                localStorage.username = data.data.username;
+                                localStorage.photo = data.data.photo;
+                                window.location.replace("homepage.html"); 
+                            }
+                        })
+                        .catch(error => {
+                            console.log(this.message + error);
+                        });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
