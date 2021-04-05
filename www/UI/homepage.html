@@ -1,159 +1,141 @@
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
     <title>Study Buddy - Homepage</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="./css/style.css" rel="stylesheet">
     <link href="./css/dashboard.css" rel="stylesheet">
-    <style>
-      .logo-image {
-        width: 100px;
-        height: 100px;
-        position: relative;
-        overflow: hidden;
-        border-radius: 50%;
-      }
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
 
-      .center {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .img_logo{
-        display: inline;
-        margin: 0 auto;
-        height: 100%;
-        width: auto;
-      }
-
-      .line{
-        display:inline-block;
-        border-bottom:2px #5B3400 solid;
-        margin-left:5px;
-        width:80%;
-      }
-  
-      a.custom-card,
-      a.custom-card:hover {
-        color: inherit;
-        text-decoration: none;
-      }
-    </style>
-  </head>
-  <body>
+<body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Study Buddy</a>
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
-      </header>
-      
-    <div class="container-fluid">
+    </header>
+
+    <div class="container-fluid" id="app">
         <div class="row">
-          <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-            <div class="position-sticky pt-3">
-              <ul class="nav flex-column">
-                <div class="logo-image center">
-                    <span>
-                      <img v-bind:src="profilePhoto" class="rounded img_logo">
-                    </span>
-                </div>
-                <li class="nav-item center">
-                  <a class="nav-link">
-                    @{{ username }}
-                  </a>
-                </li>
-                <br>
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="./homepage.html">
-                    View All Listings
-                  </a>
-                </li>
-                <li class="nav-item" style="list-style-type: none">
-                  <a class="nav-link" href="./your_homework/my_homework.html">
-                    Your Homework
-                        <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="./your_homework/open_homework.html">Open</a></li>
-                        <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
-                        <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="./new_listing.html">
-                    Create New Listing
-                  </a>
-                </li>
-
-                <li class="nav-item text-nowrap">
-                  <a class="nav-link" href="#" style="color: red;">Sign out</a>
-                </li> 
-              </ul>
-            </div>
-          </nav>
-          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <h1>Available Homework Listing</h1>
-
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Search</span>
-                </div>
-                <input type="text" v-on:keyup="findPayment($event)" class="form-control" placeholder="Payment Id" aria-label="Payment Id">
-            </div>
-
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                  <label class="input-group-text" for="statusFilter">Status Filter</label>
-              </div>
-              <select class="custom-select" id="statusFilter" @change="filterStatus($event)">
-                  <option selected value="All">All</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Hold">Hold</option>
-                  <option value="Confirm">Confirm</option>
-                  <option value="Complete">Complete</option>
-                  <option value="Cancel">Cancel</option>
-                  <option value="Refund">Refund</option>
-              </select>
-            </div>
-
-            <div id="app" v-if="hasHomework">
-              <div v-for="aHomework in homework">
-              
-                <a v-bind:href="'./listing_info.html?homework_id=' + aHomework.homework_id" class="custom-card">
-                  <div class="card mb-3">
-                    <div class="row g-0">
-                      <div class="col-md-3">
-                        <img v-bind:src="aHomework.image" class="w-100 h-100">
-                      </div>
-                      <div class="col-md-9">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ aHomework.title }}</h5>
-                          <p class="card-text">{{ aHomework.description }}</p>
-                          <p class="card-text">$ {{ aHomework.price }}</p>
-                            <button type="button" class="btn btn-outline-primary mb-4 me-4" style="right:0; bottom:0; position: absolute;">View Listing</button>
-                        </div>
-                      </div>
+            <div class="col">
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                    <div class="position-sticky pt-3">
+                        <ul class="nav flex-column">
+                            <div class="logo-image center">
+                                <span>
+                                    <img v-bind:src="profilePhoto" class="rounded img_logo">
+                                </span>
+                            </div>
+                            <li class="nav-item center">
+                                <a class="nav-link">
+                                    @{{ username }}
+                                </a>
+                            </li>
+                            <br>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="./homepage.html">
+                                    View All Listings
+                                </a>
+                            </li>
+                            <li class="nav-item" style="list-style-type: none">
+                                <a class="nav-link" href="./your_homework/my_homework.html">
+                                    Your Homework
+                                    <li style="padding: 0px 0px 0px 32px;" ><a class="nav-link" href="./your_homework/open_homework.html">Open</a></li>
+                                    <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/progress_homework.html">In Progress</a></li>
+                                    <li style="padding: 0px 0px 0px 32px;"><a class="nav-link" href="./your_homework/completed_homework.html">Completed</a></li>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" href="./new_listing.html">
+                                Create New Listing
+                            </a>
+                            </li>
+            
+                            <li class="nav-item text-nowrap">
+                            <a class="nav-link" href="#" style="color: red;">Sign out</a>
+                            </li> 
+                        </ul>
                     </div>
-                  </div>
-                </a>
-              </div>
-              <div class="text-danger" v-if="!hasHomework">{{ message }}</div>
+                </nav>
             </div>
-          </main>
+            <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <h1 class="h2 mt-3 mb-4">Available Homework Listing</h1>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Search</span>
+                    </div>
+                    <input type="text" v-on:keyup="findHomework($event)" class="form-control" placeholder="Homework Title" aria-label="Homework Title">
+                </div>
+    
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="statusFilter">Status Filter</label>
+                    </div>
+                    <select class="custom-select" id="statusFilter" @change="filterStatus($event)">
+                        <option selected value="All">All</option>
+                        <option value="Accounting">Accounting</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="English">English</option>
+                        <option value="Geography">Geography</option>
+                        <option value="History">History</option>
+                        <option value="Literature">Literature</option>
+                        <option value="Malay">Malay</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="Social Studies">Social Studies</option>
+                        <option value="Tamil">Tamil</option>
+                    </select>
+                </div>
+                
+                <div id="app" v-if="hasHomework">
+                    <div v-for="aHomework in homework">
+                        <div class="custom-card">
+                            <div class="card mb-3">
+                                <div class="row g-0">
+                                    <div class="col-md-3">
+                                        <img v-bind:src="aHomework.image" class="w-100 h-100">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ aHomework.title }}</h5>
+                                            <div class="card-text">
+                                                <p> {{ aHomework.description }} </p>
+                                                <p> {{ aHomework.subject }} </p>
+                                                <p>$ {{ aHomework.price }} </p>
+                                            </div>
+                                            <a v-bind:href="'./listing_info.html?homework_id=' + aHomework.homework_id">
+                                                <button type="button" class="btn btn-outline-primary mb-4 me-4 d-block float-right" >View Listing</button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-danger" v-if="!hasHomework">{{ message }}</div>
+            </div>
         </div>
     </div>
-      <script>
+
+
+
+    <script>
+        // Declaring Local Storage
         localStorage.username = "yuquanyeo"
         localStorage.user_id = "1"
 
         var sidebar = new Vue ({
-          el: "#sidebarMenu",
-          data: {
-            username: `${localStorage.getItem("username")}`,
-            profilePhoto: `${localStorage.getItem("photo")}`
-          }
+            el: "#sidebarMenu",
+            data: {
+                username: localStorage.getItem("username"),
+                profilePhoto: localStorage.getItem("photo")
+            }
         });
 
         var app = new Vue({
@@ -168,46 +150,80 @@
                 message: "There is a problem retrieving homework data, please try again later."
             },
             methods: {
-              getAllOpenHomework: function () {
-                const response = fetch("http://localhost:5100/homework/availableHomework/" + localStorage.getItem("user_id"))
-                  .then(response => response.json())
-                  .then(data => {
-                    if (data.code === 404) {
-                      this.message = data.message;
-                    } else {
-                      this.homework = data.homework;
+                getAllOpenHomework: function () {
+                    const response = fetch(`http://localhost:5100/homework/availableHomework/${localStorage.getItem("user_id")}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 404) {
+                                this.message = data.message;
+                            } else {
+                                this.homework = data.homework;
+                            }
+                        })
+                        .catch(error => {
+                            console.log(this.message + error);
+                        });
+                },
+                getUserDetails: function () {
+                    const response = fetch(`http://localhost:5000/user/username/${localStorage.getItem("username")}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 404) {
+                                this.message = data.message;
+                            } else {
+                                localStorage.photo=data.data.photo;
+                            }
+                        })
+                        .catch(error => {
+                            console.log(this.message + error);
+                        });
+                },
+                filterStatus() {
+                    status = event.target.value;
+                    const response = fetch(`http://localhost:5100/homework/availableHomework/${localStorage.getItem("user_id")}/${status}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 404) {
+                                this.homework = [];
+                                this.message = "There are no homework available for that subject"
+                            } else {
+                                this.homework = data.homework;
+                            }
+                        })
+                        .catch(error => {
+                            console.log(this.message + error);
+                        });
+                },
+                findHomework() {
+                    homework_title = event.target.value;
+                    let homeworkUrl = `http://localhost:5100/homework/availableHomework/${localStorage.getItem("user_id")}`;
+                    if (homework_title != "") {
+                        homeworkUrl = `http://localhost:5100/homework/searchTitle/${homework_title}`;
                     }
-                  })
-                  .catch(error => {
-                    console.log(this.message + error);
-                  });
-              },
-              getUserDetails: function () {
-                const response = fetch(`http://localhost:5000/user/username/${this.username}`)
-                  .then(response => response.json())
-                  .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                      this.message = data.message;
-                    } else {
-                      localStorage.photo=data.data.photo;
+                    const response = fetch(homeworkUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 404) {
+                                this.homework = [];
+                                this.message = "There is no homework with that title"
+                            } else {
+                                this.homework = data.homework;
+                            }
+                    })
+                    .catch(error => {
+                        console.log(this.message + error);
+                    });
                     }
-                  })
-                  .catch(error => {
-                    console.log(this.message + error);
-                  });
-              },
             },
             created: function () {
-                // on Vue instance created, load the homework list
                 this.getAllOpenHomework();
-                // on Vue instance created, store user's info
                 this.getUserDetails();
             }
         });
-      </script>
+    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
+
 </html>

@@ -97,6 +97,30 @@ def get_all_available(student_id):
     ), 404
 
 
+# Get All Available Homework by User Id and Subject
+@app.route("/homework/availableHomework/<string:student_id>/<string:subject>")
+def get_all_available_by_subject(student_id, subject):
+    todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+    if subject == "All":
+        homework_list = Homework.query.filter(and_(Homework.student_id != student_id, Homework.status == "Unsolve", Homework.deadline > todays_datetime)).all()
+    else:
+        homework_list = Homework.query.filter(and_(Homework.student_id != student_id, Homework.status == "Unsolve", Homework.deadline > todays_datetime, Homework.subject == subject)).all()
+    
+    if len(homework_list):
+        return jsonify(
+            {
+                "code": 200,
+                "homework": [homework.json() for homework in homework_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no homeworks."
+        }
+    ), 404
+
+
 # Get a Single Homework by Homework Id
 @app.route("/homework/<string:homework_id>")
 def find_by_homework_id(homework_id):
@@ -119,7 +143,10 @@ def find_by_homework_id(homework_id):
 # Get All Homework by Status
 @app.route("/homework/homeworkByStatus/<string:status>")
 def get_homework_status(status):
-    homework_list = Homework.query.filter_by(status=status).all()
+    if status == "All":
+        homework_list = Homework.query.all()
+    else:
+        homework_list = Homework.query.filter_by(status=status).all()
     if homework_list:
         return jsonify(
             {
@@ -153,6 +180,26 @@ def get_homework_student_status(student_id, status):
         {
             "code": 404,
             "message": "There are no homework of this status for this user."
+        }
+    ), 404
+
+
+# Search Homework by Title
+@app.route("/homework/searchTitle/<string:title>")
+def search_by_title(title):
+    search = "%{}%".format(title)
+    homework_list = Homework.query.filter(Homework.title.like(search)).all()
+    if homework_list:
+        return jsonify(
+            {
+                "code": 200,
+                "homework": [homework.json() for homework in homework_list]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Homework not found."
         }
     ), 404
 
