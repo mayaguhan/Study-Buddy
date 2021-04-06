@@ -154,8 +154,8 @@
                                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                                   <div id="app">
                                     <div class="mb-3">
-                                      <label for="tutor_rating" class="form-label">Tutor Rating: </label>
-                                      <input type="number" v-model="newTutor_rating" class="form-control" id="tutor_rating" placeholder="">
+                                      <label for="tutor_rating" class="form-label">Tutor Rating [0-5]: </label>
+                                      <input type="text" v-model="newTutor_rating" class="form-control" id="tutor_rating" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" onkeydown="checkKey()">
                                     </div>
                                     <div class="mb-3">
                                       <label for="tutor_remark" class="form-label">Remarks about Tutor</label>
@@ -220,6 +220,13 @@
   </div>
 
     <script>
+      function checkKey(){
+        permitted = "123450"
+        if(!permitted.includes(event.key) && event.key!=="Backspace"){
+          event.preventDefault();
+        }
+      }
+
       let selectedHomework;
 
       var sidebar = new Vue ({
