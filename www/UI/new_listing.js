@@ -17,7 +17,7 @@ window.onload=function(){
                 localStorage.newHomeworkImage = data.data.link;
                 console.log(localStorage.getItem("newHomeworkImage"))
                 if (localStorage.getItem("newHomeworkImage") != null) {
-                    alert("Please continue filling up rest of the form");
+                    alert("Image has been successfully uploaded");
                 }
 
             })
