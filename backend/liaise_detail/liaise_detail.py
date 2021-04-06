@@ -20,6 +20,13 @@ liaise_URL = environ.get('liaise_URL') or "http://liaise:5200/liaise"
 
 
 
+@app.route("/liaise_detail")
+def get_liaise_detail():
+    text = "Hello World"
+    return text
+
+
+
 @app.route("/liaise_detail/homework_id/<string:homework_id>")
 def liaise_detail_by_homework_id(homework_id):
     if homework_id:
