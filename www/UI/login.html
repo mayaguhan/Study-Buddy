@@ -46,7 +46,11 @@
                                 localStorage.user_id = data.data.user_id;
                                 localStorage.username = data.data.username;
                                 localStorage.photo = data.data.photo;
-                                window.location.replace("homepage.html"); 
+                                if (data.data.username == "studybuddy") { // Admin
+                                    window.location.replace("./admin/payout_management.html"); 
+                                } else {
+                                    window.location.replace("homepage.html"); 
+                                }
                             }
                         })
                         .catch(error => {

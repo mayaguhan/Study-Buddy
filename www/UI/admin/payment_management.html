@@ -25,11 +25,11 @@
                     <div class="position-sticky pt-3">
                         <ul class="nav flex-column">
                             <div class="logo-image center">
-                                <span><img src="https://i.imgur.com/gWlJuOi.jpg" class="rounded img_logo"></span>
+                                <img v-bind:src="profilePhoto" class="rounded img_logo">
                             </div>
                             <li class="nav-item center">
                                 <a class="nav-link">
-                                    StudyBuddy
+                                    @{{ username }}
                                 </a>
                             </li>
                             <br>
@@ -44,7 +44,7 @@
                                 </a>
                             </li>
                             <li class="nav-item text-nowrap">
-                                <a class="nav-link" href="#" style="color: red;">Sign out</a>
+                                <a class="nav-link" href="../logout.html" style="color: red;">Sign out</a>
                             </li> 
                         </ul>
                     </div>
@@ -183,6 +183,14 @@
     </div>
 
     <script>
+        var sidebar = new Vue ({
+            el: "#sidebarMenu",
+            data: {
+                username: localStorage.getItem("username"),
+                profilePhoto: localStorage.getItem("photo")
+            }
+        });
+
         var app = new Vue({
             el: "#app",
             computed: {
@@ -276,6 +284,9 @@
                 }
             },
             created: function () {
+                if (localStorage.getItem("username") == null) {
+                    window.location.replace("./login.html"); 
+                }
                 this.getAllPayments();
             }
         });
