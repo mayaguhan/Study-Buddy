@@ -97,33 +97,38 @@
                     </select>
                 </div>
                 
-                <div id="app" v-if="hasHomework">
-                    <div v-for="aHomework in homework">
-                        <div class="custom-card">
-                            <div class="card mb-3">
-                                <div class="row g-0">
-                                    <div class="col-md-3">
-                                        <img v-bind:src="aHomework.image" class="w-100 h-100">
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ aHomework.title }}</h5>
-                                            <div class="card-text">
-                                                <p> {{ aHomework.description }} </p>
-                                                <p> {{ aHomework.subject }} </p>
-                                                <p>$ {{ aHomework.price }} </p>
+                <div id="app">
+                    <div v-if="hasHomework">
+                        <div v-for="aHomework in homework">
+                            <div class="custom-card">
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-md-3">
+                                            <img v-bind:src="aHomework.image" class="w-100 h-100">
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ aHomework.title }}</h5>
+                                                <div class="card-text">
+                                                    <p> {{ aHomework.description }} </p>
+                                                    <p> {{ aHomework.subject }} </p>
+                                                    <p>$ {{ aHomework.price }} </p>
+                                                </div>
+                                                <a v-bind:href="'./listing_info.html?homework_id=' + aHomework.homework_id">
+                                                    <button type="button" class="btn btn-outline-primary mb-4 me-4 d-block float-right" >View Listing</button>
+                                                </a>
                                             </div>
-                                            <a v-bind:href="'./listing_info.html?homework_id=' + aHomework.homework_id">
-                                                <button type="button" class="btn btn-outline-primary mb-4 me-4 d-block float-right" >View Listing</button>
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="text-danger d-none" v-if="!hasHomework">{{ message }}</div>
+                    <div v-else v-bind:class="{ 'd-none': noError, 'text-danger': !noError }">
+                        {{ message }}
+                    </div>
+                </div> 
+                    
             </div>
         </div>
     </div>
@@ -148,7 +153,8 @@
             },
             data: {
                 "homework": [],
-                message: "There is a problem retrieving homework data, please try again later."
+                message: "There is a problem retrieving homework data, please try again later.",
+                noError: true
             },
             methods: {
                 getAllOpenHomework: function () {
@@ -162,6 +168,7 @@
                             }
                         })
                         .catch(error => {
+                            this.noError = false;
                             console.log(this.message + error);
                         });
                 },

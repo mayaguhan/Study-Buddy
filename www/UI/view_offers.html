@@ -150,7 +150,7 @@
             </div>
             </div> 
             
-            <div class = "d-none" v-else>
+            <div v-else v-bind:class="{ 'd-none': noError, 'text-danger': !noError }">
               {{ message }}
             </div>
 
@@ -201,6 +201,7 @@
                     rejectOfferingError: '',
                     markAdded: false,
                     noOfferings: "",
+                    noError: true
                     
                 },
                 methods: {
@@ -208,17 +209,16 @@
                         const response =  fetch(`http://localhost:5600/liaise_detail/homework_id/${homeworkID}`)
                           .then(response => response.json())
                           .then(data => {
-                            if (data.code === 404 || data.code === 500) {
+                            if (data.code === 500) {
                               // console.log(message)
-                              this.message = "There is no offer available for this homework";
                               this.noOfferings = "Sorry! There is no offer available for this homework";
                               console.log(data.code)
-                              console.log(message)
                             } else {
                               this.liaise = data.data.liaisons_result;
                             }
                           })
                           .catch(error => {
+                            this.noError = false;
                             console.log(this.message + error);
                           });
                     },
