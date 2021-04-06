@@ -308,45 +308,6 @@
                           });
 
               },
-              markCompleted: function (homework_id) {
-                // reset data
-                this.markAdded = false;
-                this.markCompletedError = "";
-
-                let jsonData = JSON.stringify({
-                    homework_id: 'homework_id',
-                    status: "Solved"
-                    
-                });
-
-                fetch(`http://localhost:5100/homework/${homework_id}`,
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: jsonData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        result = data.data;
-                        console.log(result);
-                        
-                        switch (data.code) {
-                            case 201:
-                                this.markAdded = true;
-
-                                break;
-                            case 400:
-                            case 500:
-                                this.markCompletedError = data.message;
-                                break;
-                            default:
-                                throw `${data.code}: ${data.message}`;
-                        }
-                    })
-              },
 
               markCompleted: function (homework_id) {
                 this.markAdded = false;

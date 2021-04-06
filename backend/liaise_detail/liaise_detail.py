@@ -22,8 +22,26 @@ liaise_URL = environ.get('liaise_URL') or "http://liaise:5200/liaise"
 
 @app.route("/liaise_detail")
 def get_liaise_detail():
-    text = "Hello World"
-    return text
+    try:
+        result = retrieveLiaiseDetailAll()
+        print('\nresult: ', result)
+        return jsonify(result), result['code']
+        
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+        print(ex_str)
+
+        return jsonify({
+            "code": 500,
+            "message": "liaise_detail.py internal error: " + ex_str
+        }), 500
+    
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " +str(request.get_data())
+    })
 
 
 
@@ -43,7 +61,7 @@ def liaise_detail_by_homework_id(homework_id):
 
             return jsonify({
                 "code": 500,
-                "message": "accept_offering.py internal error: " + ex_str
+                "message": "liaise_detail.py internal error: " + ex_str
             }), 500
     
     return jsonify({
@@ -68,7 +86,7 @@ def liaise_detail_by_liaise_id(liaise_id):
 
             return jsonify({
                 "code": 500,
-                "message": "accept_offering.py internal error: " + ex_str
+                "message": "liaise_detail.py internal error: " + ex_str
             }), 500
     
     return jsonify({
@@ -93,13 +111,53 @@ def liaise_detail_by_user_id(user_id):
 
             return jsonify({
                 "code": 500,
-                "message": "accept_offering.py internal error: " + ex_str
+                "message": "liaise_detail.py internal error: " + ex_str
             }), 500
     
     return jsonify({
         "code": 400,
         "message": "Invalid JSON input: " +str(request.get_data())
     })
+
+
+
+def retrieveLiaiseDetailAll():
+    return_list = []
+
+    liaisons_result = invoke_http(liaise_URL, method='GET')
+    liaisons_code = liaisons_result["code"]
+    print(liaisons_result)
+
+    if len(liaisons_result["data"]["liaisons"]) > 0:
+        for liaise in liaisons_result["data"]["liaisons"]:
+            homework_id = liaise["homework_id"]
+
+            homework_result = invoke_http(homework_URL + '/' + str(homework_id), method='GET')
+            homework_code = homework_result["code"]
+            homework_detail = homework_result["data"]
+
+            tutor_id = liaise["tutor_id"]
+            student_id = homework_result["data"]["student_id"]
+            
+            tutor_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
+            tutor_code = tutor_result["code"]
+            tutor_detail = tutor_result["data"]
+
+            student_result = invoke_http(user_URL + '/user_id/' + str(student_id), method='GET')
+            student_code = student_result["code"]
+            student_detail = student_result["data"]
+
+            liaise["homework"] = homework_detail
+            liaise["student"] = student_detail
+            liaise["tutor"] = tutor_detail
+
+    return {
+        "code": 201,
+        "data": {
+            "liaisons_result" : liaisons_result
+        }
+    }
+
 
 def retrieveLiaiseDetail(homework_id):
     return_list = []
