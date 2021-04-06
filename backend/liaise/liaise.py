@@ -107,7 +107,7 @@ def get_accepted_liaise(homework_id):
 
 # Get All Liaise Offerings by Homework ID
 @app.route("/liaise/liaiseByHomework/<string:homework_id>")
-def get_homework_by_liaise_id(homework_id):
+def get_liaise_by_homework_id(homework_id):
     liaise_list = Liaise.query.filter(and_(Liaise.homework_id == homework_id, Liaise.status == "Pending")).all()
     
     if liaise_list:
