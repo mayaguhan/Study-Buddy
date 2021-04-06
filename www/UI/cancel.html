@@ -122,7 +122,7 @@
                 <!-- insert code here -->
                 <p>Forgot to add something to your cart? Shop around then come back to pay!</p>
 
-                <strong>Click here to go back to view all listings.  You will be redirected in 30 seconds. Find out how to redirect</strong>
+                <strong>Click <a href= homepage.html>here</a> to go back to view all listings.  You will be redirected in 15 seconds.</strong>
 
             </div>
                 
@@ -135,6 +135,10 @@
     
 
     <script>
+      var timer = setTimeout(function() {
+            window.location='./homepage.html'
+        }, 15000);
+
       var sidebar = new Vue ({
         el: "#sidebarMenu",
         data: {
