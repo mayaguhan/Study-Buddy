@@ -61,7 +61,6 @@ def modifyHomework(homework, action):
             "data": {"liaise_id_result": liaise_id_result},
             "message": "Liaise has been sent for error handling"
         }
-    print(liaise_id_result)
     liaise_id = liaise_id_result['data']['liaise_id']
 
 

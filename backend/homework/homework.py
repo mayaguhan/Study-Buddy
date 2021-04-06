@@ -78,7 +78,7 @@ def get_all():
 
 # Get All Available Homework by User Id
 @app.route("/homework/availableHomework/<string:student_id>")
-def get_all_available(student_id):
+def get_all_available_for_user_id(student_id):
     todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     homework_list = Homework.query.filter(and_(Homework.student_id != student_id, Homework.status == "Unsolve", Homework.deadline > todays_datetime)).all()
     print(homework_list)
@@ -99,7 +99,7 @@ def get_all_available(student_id):
 
 # Get All Available Homework by User Id and Subject
 @app.route("/homework/availableHomework/<string:student_id>/<string:subject>")
-def get_all_available_by_subject(student_id, subject):
+def get_all_available_for_user_id_and_subject(student_id, subject):
     todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     if subject == "All":
         homework_list = Homework.query.filter(and_(Homework.student_id != student_id, Homework.status == "Unsolve", Homework.deadline > todays_datetime)).all()

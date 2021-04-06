@@ -65,7 +65,7 @@ def get_all():
 
 # Get All Payment by Status
 @app.route("/payment/paymentByStatus/<string:status>")
-def get_payment_status(status):
+def get_payment_by_status(status):
     if status == "All":
         payment_list = Payment.query.all()
     else:
@@ -87,7 +87,7 @@ def get_payment_status(status):
 
 # Get All Payout
 @app.route("/payment/payout/<string:status>")
-def get_payout_status(status):
+def get_payout_by_status(status):
     if status == "All":
         payment_list = Payment.query.filter(or_(Payment.status=="Confirm", Payment.status=="Cancel")).order_by(asc(Payment.created)).all()
     else:

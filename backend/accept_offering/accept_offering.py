@@ -52,14 +52,9 @@ def accept_offering():
 def processAcceptance(offering):
     amqp_setup.check_setup()
 
-    # Retrieve Liaise Id & Student Id using Payment Id
-    print(offering)
     payment_id = offering["payment_id"]
-    print(payment_id) #pi_1IcAwKAnXlfn6QeyBm03bBlK
     payment_result = invoke_http(payment_URL + '/payment_id/' + str(payment_id), method='GET', json=offering)
     payment_code = payment_result["code"]
-    print(payment_result)
-    print(payment_code)
 
     if payment_code not in range(200,300):
         print("\n-----Publishing the Payment error message with routing_key=payment.error-----")
@@ -71,6 +66,8 @@ def processAcceptance(offering):
             "data": {"payment_result": payment_result},
             "message": "Payment insertion failure has been sent for error handling"
         }
+    liaise_id = payment_result["data"]["liaise_id"]
+    student_id = payment_result["data"]["sender_id"]
 
     liaise_id = payment_result["data"]["liaise_id"]
     student_id = payment_result["data"]["sender_id"]
@@ -78,8 +75,6 @@ def processAcceptance(offering):
     # Retrieve Homework Id & Tutor Id using Liaise Id
     liaise_result = invoke_http(liaise_URL + '/' + str(liaise_id), method='GET')
     liaise_code = liaise_result["code"]
-    tutor_id = liaise_result["data"]["tutor_id"]
-    homework_id = liaise_result["data"]["homework_id"]
 
     if liaise_code not in range(200,300):
         print("\n-----Publishing the Liaise error message with routing_key=liaise.error-----")
@@ -91,6 +86,8 @@ def processAcceptance(offering):
             "data": {"liaise_result": liaise_result},
             "message": "Liaise has been sent for error handling"
         }
+    tutor_id = liaise_result["data"]["tutor_id"]
+    homework_id = liaise_result["data"]["homework_id"]
 
 
     # Update Homework Status = Progress
@@ -133,8 +130,6 @@ def processAcceptance(offering):
     # Invoke user microservice to retrieve student details
     student_result = invoke_http(user_URL + '/user_id/' + str(student_id), method='GET')
     student_code = student_result["code"]
-    student_email = student_result['data']['email']
-    student_name = student_result['data']['username']
 
     if student_code not in range(200,300):
         print("\n-----Publishing the Student error message with routing_key=student.error-----")
@@ -146,16 +141,16 @@ def processAcceptance(offering):
             "data": {"student_result": student_result},
             "message": "Student has been sent for error handling"
         }
+    student_email = student_result['data']['email']
+    student_name = student_result['data']['username']
 
 
     # Invoke user microservice to retrieve tutor details
     tutor_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
     tutor_code = tutor_result["code"]
-    tutor_email = tutor_result['data']['email']
-    tutor_name = tutor_result['data']['username']
 
     if tutor_code not in range(200,300):
-        print("\n-----Publishing the Tutor update error message with routing_key=tutor.error-----")
+        print("\n-----Publishing the Tutor error message with routing_key=tutor.error-----")
         message = json.dumps(tutor_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="tutor.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
         print("\nTutor Error ({:d}) published to the RabbitMQ Exchange:".format(tutor_code), tutor_result)
@@ -164,6 +159,8 @@ def processAcceptance(offering):
             "data": {"tutor_result": tutor_result},
             "message": "Tutor has been sent for error handling"
         }
+    tutor_email = tutor_result['data']['email']
+    tutor_name = tutor_result['data']['username']
 
 
     # Invoke Notification Microservice to send email to Student
@@ -176,7 +173,7 @@ def processAcceptance(offering):
     student_email_code = student_email_result["code"]
 
     if student_email_code not in range(200,300):
-        print("\n-----Publishing the Student Email update error message with routing_key=student_email.error-----")
+        print("\n-----Publishing the Student Email error message with routing_key=student_email.error-----")
         message = json.dumps(student_email_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="student_email.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
         print("\nStudent Email Error ({:d}) published to the RabbitMQ Exchange:".format(student_email_code), student_email_result)
@@ -197,7 +194,7 @@ def processAcceptance(offering):
     tutor_email_code = tutor_email_result["code"]
 
     if tutor_email_code not in range(200,300):
-        print("\n-----Publishing the Tutor Email update error message with routing_key=tutor_email.error-----")
+        print("\n-----Publishing the Tutor Email error message with routing_key=tutor_email.error-----")
         message = json.dumps(tutor_email_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="tutor_email.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
         print("\nTutor Email Error ({:d}) published to the RabbitMQ Exchange:".format(tutor_email_code), tutor_email_result)
