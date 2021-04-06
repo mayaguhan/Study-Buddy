@@ -129,7 +129,8 @@
                         <p class="card-text">$ {{ aHomework.price }}</p>
                         <div class="row">
                           <div class="col">
-                            <button type="button" class="btn btn-outline-success btn-block" id='feedback-btn' data-toggle="modal" data-target="#feedbackModal">
+                            {{ aHomework.homework_id }}
+                            <button type="button" class="btn btn-outline-success btn-block" id='feedback-btn' @click="selectId(aHomework.homework_id)" data-toggle="modal" data-target="#feedbackModal">
                               Mark as Completed
                             </button>
                           </div>
@@ -161,7 +162,7 @@
                                       <textarea class="form-control" v-model="newTutor_remark" id="tutor_remark" rows="3"></textarea>
                                     </div>
                                     <div>
-                                      <button type="button" class="btn btn-outline-success" @click="markCompleted(aHomework.homework_id) ; location.reload()">
+                                      <button type="button" class="btn btn-outline-success" @click="markCompleted(aHomework.homework_id);">
                                         Submit Feedback
                                       </button>
                                     </div>
@@ -197,7 +198,7 @@
                                 <p>
                                   Are you sure you want to cancel this homework? You will be refunded with the amount you paid.
                                 </p>
-                                <button type="button" class="btn btn-outline-danger" @click="markCancel(aHomework.homework_id)">
+                                <button type="button" class="btn btn-outline-danger" @click="markCancel()">
                                   Yes
                                 </button>
                               </div>
@@ -219,6 +220,7 @@
   </div>
 
     <script>
+      let selectedHomework;
 
       var sidebar = new Vue ({
         el: "#sidebarMenu",
@@ -290,8 +292,13 @@
                               console.log(this.message + error);
                           });
               },
+              selectId: function(id) {
+                selectedHomework = id;
+              },
 
-              markCompleted: function (homework_id) {
+              markCompleted: function () {
+                let homework_id = selectedHomework;
+
                 this.markAdded = false;
                 this.markCompletedError = "";
 
