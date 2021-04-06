@@ -185,7 +185,7 @@
                     homework_title = event.target.value;
                     let homeworkUrl = `http://localhost:5100/homework/availableHomework/${localStorage.getItem("user_id")}`;
                     if (homework_title != "") {
-                        homeworkUrl = `http://localhost:5100/homework/searchTitle/${homework_title}`;
+                        homeworkUrl = `http://localhost:5100/homework/searchTitle/${localStorage.getItem("user_id")}/${homework_title}`;
                     }
                     const response = fetch(homeworkUrl)
                         .then(response => response.json())

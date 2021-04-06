@@ -185,10 +185,10 @@ def get_homework_student_status(student_id, status):
 
 
 # Search Homework by Title
-@app.route("/homework/searchTitle/<string:title>")
-def search_by_title(title):
+@app.route("/homework/searchTitle/<string:user_id>/<string:title>")
+def search_by_title(user_id, title):
     search = "%{}%".format(title)
-    homework_list = Homework.query.filter(Homework.title.like(search)).all()
+    homework_list = Homework.query.filter(and_(Homework.title.like(search), Homework.student_id != user_id)).all()
     if homework_list:
         return jsonify(
             {
