@@ -138,13 +138,13 @@
                           <p class="card-text" style="font-style:italic; ">In Progress</p>
                           <div class="row">
                             <div class="col">
-                              <button type="button" class="btn btn-outline-success btn-block" id='feedback-btn' data-toggle="modal" data-target="#feedbackModal">
+                              <button type="button" class="btn btn-outline-success btn-block" id='feedback-btn' data-toggle="modal" data-target="#feedbackModal" @click="selectId(aHomework.homework_id)">
                                 Mark as Completed
                               </button>
                             </div>
                               
                             <div class="col">
-                              <button type="button" class="btn btn-outline-danger btn-block" id='cancel-btn' data-toggle="modal" data-target="#cancelModal">
+                              <button type="button" class="btn btn-outline-danger btn-block" id='cancel-btn' data-toggle="modal" data-target="#cancelModal" @click="selectId(aHomework.homework_id)">
                                 Cancel Homework
                               </button>
                             </div>
@@ -162,15 +162,15 @@
                                   <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                                     <div id="app">
                                       <div class="mb-3">
-                                        <label for="tutor_rating" class="form-label">Tutor Rating: </label>
-                                        <input type="number" v-model="newTutor_rating" class="form-control" id="tutor_rating" placeholder="">
+                                        <label for="tutor_rating" class="form-label">Tutor Rating [0-5]: </label>
+                                        <input type="text" v-model="newTutor_rating" class="form-control" id="tutor_rating" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" onkeydown="checkKey()">
                                       </div>
                                       <div class="mb-3">
                                         <label for="tutor_remark" class="form-label">Remarks about Tutor</label>
                                         <textarea class="form-control" v-model="newTutor_remark" id="tutor_remark" rows="3"></textarea>
                                       </div>
                                       <div>
-                                        <button type="button" class="btn btn-outline-success" @click="markCompleted(aHomework.homework_id)">
+                                        <button type="button" class="btn btn-outline-success" @click="markCompleted()">
                                           Submit Feedback
                                         </button>
                                       </div>
@@ -206,7 +206,7 @@
                                   <p>
                                     Are you sure you want to cancel this homework? You will be refunded with the amount you paid.
                                   </p>
-                                  <button type="button" class="btn btn-outline-danger" @click="markCancel(aHomework.homework_id)">
+                                  <button type="button" class="btn btn-outline-danger" @click="markCancel()">
                                     Yes
                                   </button>
                                 </div>
@@ -232,6 +232,14 @@
     </div>
 
     <script>
+      let selectedHomework;
+
+      function checkKey(){
+        permitted = "123450"
+        if(!permitted.includes(event.key) && event.key!=="Backspace"){
+          event.preventDefault();
+        }
+      }
 
       var sidebar = new Vue ({
         el: "#sidebarMenu",
@@ -308,8 +316,13 @@
                           });
 
               },
+              
+              selectId: function(id) {
+                console.log(id);
+                selectedHomework = id;
+              },
 
-              markCompleted: function (homework_id) {
+              markCompleted: function () {
                 this.markAdded = false;
                 this.markCompletedError = "";
 
@@ -320,7 +333,7 @@
                   this.addRemark();
                   this.remarkAdded = true;
                   let jsonData = JSON.stringify({
-                      homework_id: homework_id,
+                      homework_id: selectedHomework,
                       tutor_rating: this.newTutor_rating,
                       tutor_remark: this.newTutor_remark
                   });
@@ -350,9 +363,9 @@
                   }
               },
 
-              markCancel: function (homework_id) {
+              markCancel: function () {
                 let jsonData = JSON.stringify({
-                    homework_id: homework_id
+                    homework_id: selectedHomework
                 });
                 fetch(`http://localhost:5700/modify_homework/cancel`,
                   {

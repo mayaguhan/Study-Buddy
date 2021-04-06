@@ -135,7 +135,7 @@
                           </div>
                             
                           <div class="col">
-                            <button type="button" class="btn btn-outline-danger btn-block" id='cancel-btn' data-toggle="modal" data-target="#cancelModal">
+                            <button type="button" class="btn btn-outline-danger btn-block" id='cancel-btn' data-toggle="modal" data-target="#cancelModal" @click="selectId(aHomework.homework_id)">
                               Cancel Homework
                             </button>
                           </div>
@@ -219,14 +219,14 @@
   </div>
 
     <script>
+      let selectedHomework;
+      
       function checkKey(){
         permitted = "123450"
         if(!permitted.includes(event.key) && event.key!=="Backspace"){
           event.preventDefault();
         }
       }
-
-      let selectedHomework;
 
       var sidebar = new Vue ({
         el: "#sidebarMenu",
@@ -299,12 +299,11 @@
                           });
               },
               selectId: function(id) {
+                console.log(id);
                 selectedHomework = id;
               },
 
               markCompleted: function () {
-                let homework_id = selectedHomework;
-
                 this.markAdded = false;
                 this.markCompletedError = "";
 
@@ -315,7 +314,7 @@
                   this.addRemark();
                   this.remarkAdded = true;
                   let jsonData = JSON.stringify({
-                      homework_id: homework_id,
+                      homework_id: selectedHomework,
                       tutor_rating: this.newTutor_rating,
                       tutor_remark: this.newTutor_remark
                   });
@@ -345,9 +344,9 @@
                   }
               },
 
-              markCancel: function (homework_id) {
+              markCancel: function () {
                 let jsonData = JSON.stringify({
-                    homework_id: homework_id
+                    homework_id: selectedHomework
                 });
                 fetch(`http://localhost:5700/modify_homework/cancel`,
                   {
