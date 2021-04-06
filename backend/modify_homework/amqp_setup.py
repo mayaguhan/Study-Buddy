@@ -31,7 +31,7 @@ connection = pika.BlockingConnection(
 channel = connection.channel()
 # Set up the exchange if the exchange doesn't exist
 # - use a 'topic' exchange to enable interaction
-exchangename = "homework_topic"
+exchangename = "study_buddy_topic"
 exchangetype = "topic"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
 # 'durable' makes the queue survive broker restarts

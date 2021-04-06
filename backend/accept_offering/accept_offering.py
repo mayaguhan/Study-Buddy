@@ -53,9 +53,13 @@ def processAcceptance(offering):
     amqp_setup.check_setup()
 
     # Retrieve Liaise Id & Student Id using Payment Id
-    payment_id = offering["payment_id"] #pi_1IcAwKAnXlfn6QeyBm03bBlK
+    print(offering)
+    payment_id = offering["payment_id"]
+    print(payment_id) #pi_1IcAwKAnXlfn6QeyBm03bBlK
     payment_result = invoke_http(payment_URL + '/payment_id/' + str(payment_id), method='GET', json=offering)
     payment_code = payment_result["code"]
+    print(payment_result)
+    print(payment_code)
     liaise_id = payment_result["data"]["liaise_id"]
     student_id = payment_result["data"]["sender_id"]
 
