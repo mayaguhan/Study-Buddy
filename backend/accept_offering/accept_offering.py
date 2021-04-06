@@ -60,8 +60,6 @@ def processAcceptance(offering):
     payment_code = payment_result["code"]
     print(payment_result)
     print(payment_code)
-    liaise_id = payment_result["data"]["liaise_id"]
-    student_id = payment_result["data"]["sender_id"]
 
     if payment_code not in range(200,300):
         print("\n-----Publishing the Payment error message with routing_key=payment.error-----")
@@ -74,6 +72,8 @@ def processAcceptance(offering):
             "message": "Payment insertion failure has been sent for error handling"
         }
 
+    liaise_id = payment_result["data"]["liaise_id"]
+    student_id = payment_result["data"]["sender_id"]
 
     # Retrieve Homework Id & Tutor Id using Liaise Id
     liaise_result = invoke_http(liaise_URL + '/' + str(liaise_id), method='GET')
