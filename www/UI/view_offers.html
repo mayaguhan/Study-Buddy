@@ -115,7 +115,7 @@
             </div>
       
             <div id="app">
-
+              <h4 style="font-style: italic; color: red;" v-if="noOfferings != ''">{{noOfferings}}</h4>
             <div v-if= "hasLiaise" class="mb-3">
               <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div v-for="aLiaise in getEachLiaise">
@@ -200,9 +200,11 @@
                     rejectAdded: false,
                     rejectOfferingError: '',
                     markAdded: false,
+                    noOfferings: "",
                     
                 },
                 methods: {
+                    // kotteh
                     getLiaiseByHomework: function () {
                         const response =  fetch(`http://localhost:5600/liaise_detail/homework_id/${homeworkID}`)
                           .then(response => response.json())
@@ -210,6 +212,7 @@
                             if (data.code === 404 || data.code === 500) {
                               // console.log(message)
                               this.message = "There is no offer available for this homework";
+                              this.noOfferings = "Sorry! There is no offer available for this homework";
                               console.log(data.code)
                               console.log(message)
                             } else {
