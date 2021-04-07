@@ -297,7 +297,7 @@
               getAllHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/All`)
+                      fetch(`http://localhost:8000/api/v1/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/All`)
                           .then(response => response.json())
                           .then(data => {
                               console.log(response);
@@ -337,7 +337,7 @@
                       tutor_rating: this.newTutor_rating,
                       tutor_remark: this.newTutor_remark
                   });
-                  fetch(`http://localhost:5700/modify_homework/confirm`,
+                  fetch(`http://localhost:8000/api/v1/modify_homework/confirm`,
                     {
                       method: "POST",
                       headers: {
@@ -367,7 +367,7 @@
                 let jsonData = JSON.stringify({
                     homework_id: selectedHomework
                 });
-                fetch(`http://localhost:5700/modify_homework/cancel`,
+                fetch(`http://localhost:8000/api/v1/modify_homework/cancel`,
                   {
                     method: "POST",
                     headers: {

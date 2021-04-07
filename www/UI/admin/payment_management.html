@@ -204,7 +204,7 @@
             },
             methods: {
                 getAllPayments: function () {
-                    const response = fetch("http://localhost:5400/payment/paymentByStatus/All")
+                    const response = fetch("http://localhost:8000/api/v1/payment/paymentByStatus/All")
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {
@@ -218,7 +218,7 @@
                     });
                 },
                 getPaymentDetail: function (liaise_id) {
-                    const response = fetch("http://localhost:5600/liaise_detail/liaise_id/" + liaise_id)
+                    const response = fetch("http://localhost:8000/api/v1/liaise_detail/liaise_id/" + liaise_id)
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {
@@ -248,7 +248,7 @@
                 },
                 filterStatus() {
                     status = event.target.value;
-                    const response = fetch(`http://localhost:5400/payment/paymentByStatus/${status}`)
+                    const response = fetch(`http://localhost:8000/api/v1/payment/paymentByStatus/${status}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {
@@ -264,9 +264,9 @@
                 },
                 findPayment() {
                     payment_id = event.target.value;
-                    let paymentUrl = `http://localhost:5400/payment/paymentByStatus/All`;
+                    let paymentUrl = `http://localhost:8000/api/v1/payment/paymentByStatus/All`;
                     if (payment_id != "") {
-                        paymentUrl = `http://localhost:5400/payment/searchPaymentId/${payment_id}`;
+                        paymentUrl = `http://localhost:8000/api/v1/payment/searchPaymentId/${payment_id}`;
                     }
                     const response = fetch(paymentUrl)
                     .then(response => response.json())
@@ -292,7 +292,7 @@
         });
         function confirmDelete() {
             let selectedPaymentId = document.getElementById("selectedDelete").innerText;
-            fetch(`http://localhost:5400/payment/deletePayment/${selectedPaymentId}`, {
+            fetch(`http://localhost:8000/api/v1/payment/deletePayment/${selectedPaymentId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-type": "application/json"

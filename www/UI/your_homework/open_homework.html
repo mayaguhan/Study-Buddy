@@ -169,7 +169,7 @@
               getOpenHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/unsolve`)
+                      fetch(`http://localhost:8000/api/v1/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/unsolve`)
                           .then(response => response.json())
                           .then(data => {
                               console.log(response);

@@ -206,7 +206,7 @@
                 },
                 methods: {
                     getLiaiseByHomework: function () {
-                        const response =  fetch(`http://localhost:5600/liaise_detail/homework_id/${homeworkID}`)
+                        const response =  fetch(`http://localhost:8000/api/v1/liaise_detail/homework_id/${homeworkID}`)
                           .then(response => response.json())
                           .then(data => {
                             if (data.code === 500) {
@@ -230,7 +230,7 @@
                           liaise_id: liaise_id
                       });
 
-                      fetch(`http://localhost:5200/liaise/reject`,
+                      fetch(`http://localhost:8000/api/v1/liaise/reject`,
                           {
                               method: "PUT",
                               headers: {

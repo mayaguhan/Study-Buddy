@@ -127,6 +127,7 @@
                         <h5 class="card-title">{{ aHomework.title }}</h5>
                         <p class="card-text">{{ aHomework.description }}</p>
                         <p class="card-text">$ {{ aHomework.price }}</p>
+                        
                         <div class="row">
                           <div class="col">
                             <button type="button" class="btn btn-outline-success btn-block" id='feedback-btn' @click="selectId(aHomework.homework_id)" data-toggle="modal" data-target="#feedbackModal">
@@ -135,11 +136,18 @@
                           </div>
                             
                           <div class="col">
-                            <button type="button" class="btn btn-outline-danger btn-block" id='cancel-btn' data-toggle="modal" data-target="#cancelModal" @click="selectId(aHomework.homework_id)">
+                            <button type="button" class="btn btn-outline-danger btn-block" style="float: right;" id='cancel-btn' data-toggle="modal" data-target="#cancelModal" @click="selectId(aHomework.homework_id)">
                               Cancel Homework
                             </button>
                           </div>
-                          
+                        </div>
+
+                        <div class="row mt-2">
+                          <div class="col">
+                            <a class="btn btn-outline-primary btn-block" style="justify-content: center; display: flex;" v-on:click.stop.prevent="openWindow('https://t.me/' + aHomework.telegram_id)">
+                              Chat with {{ aHomework.username }}
+                            </a>
+                          </div>
                         </div>
 
                         <!-- Feedback Modal -->
@@ -282,14 +290,15 @@
               getAllHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/progress`)
+                      fetch(`http://localhost:8000/api/v1/liaise_detail/user_id/${localStorage.getItem("user_id")}/student`)
                           .then(response => response.json())
                           .then(data => {
                               if (data.code === 404) {
                                   // no homework in db
                                   this.message = data.message;
                               } else {
-                                  this.homework = data.homework;
+                                  // console.log(data.data)
+                                  this.homework = data.data;
                               }
                           })
                           .catch(error => {
@@ -318,7 +327,7 @@
                       tutor_rating: this.newTutor_rating,
                       tutor_remark: this.newTutor_remark
                   });
-                  fetch(`http://localhost:5700/modify_homework/confirm`,
+                  fetch(`http://localhost:8000/api/v1/modify_homework/confirm`,
                     {
                       method: "POST",
                       headers: {
@@ -348,7 +357,7 @@
                 let jsonData = JSON.stringify({
                     homework_id: selectedHomework
                 });
-                fetch(`http://localhost:5700/modify_homework/cancel`,
+                fetch(`http://localhost:8000/api/v1/modify_homework/cancel`,
                   {
                     method: "POST",
                     headers: {
@@ -371,6 +380,9 @@
                         throw `${data.code}: ${data.message}`;
                     }
                   })
+              },
+              openWindow: function (link) {
+                window.open(link);
               }
 
 

@@ -106,9 +106,9 @@ def get_accepted_liaise(homework_id):
 
 
 # Get All Liaise Offerings by Homework ID
-@app.route("/liaise/liaiseByHomework/<string:homework_id>")
-def get_liaise_by_homework_id(homework_id):
-    liaise_list = Liaise.query.filter(and_(Liaise.homework_id == homework_id, Liaise.status == "Pending")).all()
+@app.route("/liaise/liaiseByHomework/<string:homework_id>/<string:status>")
+def get_liaise_by_homework_id(homework_id, status):
+    liaise_list = Liaise.query.filter(and_(Liaise.homework_id == homework_id, Liaise.status == status)).all()
     
     if liaise_list:
         return jsonify(
@@ -308,41 +308,44 @@ def reject_liaison():
         ), 400
 
 
-@app.route("/liaise/confirmHomework/<string:liaise_id>", methods=['PUT'])
-def confirm_homework(liaise_id):
-    try:
-        liaise = Liaise.query.filter_by(liaise_id=liaise_id).first()
-        if not liaise:
+@app.route("/liaise/confirmHomework", methods=['PUT'])
+def confirm_homework():
+    data = request.get_json()
+    if data['liaise_id']:
+        liaise_id = data['liaise_id']
+        try:
+            liaise = Liaise.query.filter_by(liaise_id=liaise_id).first()
+            if not liaise:
+                return jsonify(
+                    {
+                        "code": 404,
+                        "data": {
+                            "liaise_id": liaise
+                        },
+                        "message": "Liaise not found."
+                    }
+                ), 404
+            
+            if data['tutor_rating'] and data['tutor_remark']:
+                liaise.tutor_rating = data['tutor_rating']
+                liaise.tutor_remark = data['tutor_remark']
+                db.session.commit()
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": liaise.json()
+                    }
+                ), 200
+        except Exception as e:
             return jsonify(
                 {
-                    "code": 404,
+                    "code": 500,
                     "data": {
-                        "liaise_id": liaise
+                        "liaise": liaise_id
                     },
-                    "message": "Liaise not found."
+                    "message": "An error occurred while updating the liaise. " + str(e)
                 }
-            ), 404
-        data = request.get_json()
-        if data['tutor_rating'] and data['tutor_remark']:
-            liaise.tutor_rating = data['tutor_rating']
-            liaise.tutor_remark = data['tutor_remark']
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": liaise.json()
-                }
-            ), 200
-    except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "liaise": liaise_id
-                },
-                "message": "An error occurred while updating the liaise. " + str(e)
-            }
-        ), 500
+            ), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5200, debug=True)

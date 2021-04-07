@@ -128,7 +128,13 @@
                         <p class="card-text" style="font-style:italic; ">Pending</p>
                       </div>
                       <div v-else-if="aLiaise.status == 'Accept'">
-                        <p class="card-text" style="font-style:italic;color:green; ">Accepted</p>
+                        <p class="card-text" style="font-style:italic;color:green; ">
+                          Accepted<br>
+                          <a class="btn btn-outline-primary" style="justify-content: center; display: flex;" v-on:click.stop.prevent="openWindow('https://t.me/' + aLiaise.student_telegram_id)">
+                            Chat with {{ aLiaise.student_username }}
+                          </a>
+                        </p>
+                        
                       </div>
                       <div v-else="aLiaise.status == 'Reject'">
                         <p class="card-text" style="font-style:italic; color:red; ">Rejected</p>
@@ -168,7 +174,6 @@
                       result = []
                       for (let i = 0; i < this.liaise.length; i++) {
                         result.push(this.liaise[i])
-                        console.log(this.liaise[i]);
                       }
                       return result
                     }
@@ -180,7 +185,7 @@
                 },
                 methods: {
                     getLiaiseByUserID: function () {
-                        const response =  fetch(`http://localhost:5600/liaise_detail/user_id/${localStorage.getItem("user_id")}`)
+                        const response =  fetch(`http://localhost:8000/api/v1/liaise_detail/user_id/${localStorage.getItem("user_id")}/tutor`)
                           .then(response => response.json())
                           .then(data => {
                             if (data.code === 404) {
@@ -193,6 +198,9 @@
                             console.log(this.message + error);
                           });
                     },
+                    openWindow: function (link) {
+                      window.open(link);
+                    }
                 },
                 created: function () {
                     // on Vue instance created, load the liaise list

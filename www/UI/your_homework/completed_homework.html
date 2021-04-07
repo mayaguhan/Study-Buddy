@@ -169,7 +169,7 @@
               getAllHomework: function () {
                   // on Vue instance created, load the book list
                   const response =
-                      fetch(`http://localhost:5100/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/solve`)
+                      fetch(`http://localhost:8000/api/v1/homework/homeworkByStudentIdStatus/${localStorage.getItem("user_id")}/solve`)
                           .then(response => response.json())
                           .then(data => {
                               console.log(response);

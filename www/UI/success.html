@@ -168,7 +168,7 @@
         const session_id = urlParams.get('session_id');
         console.log(session_id);
 
-        url = "http://localhost:5400/payment/success/" + session_id
+        url = "http://localhost:8000/api/v1/payment/success/" + session_id
 
         console.log(url)
 
@@ -183,7 +183,7 @@
                 payment_id: data.data.payment_id
           });
 
-          fetch(`http://localhost:5300/accept_offering/accept`, {
+          fetch(`http://localhost:8000/api/v1/accept_offering/accept`, {
                     method: "POST",
                     headers: {
                       "Content-type": "application/json"

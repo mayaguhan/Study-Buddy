@@ -158,7 +158,7 @@
             },
             methods: {
                 getAllOpenHomework: function () {
-                    const response = fetch(`http://localhost:5100/homework/availableHomework/${localStorage.getItem("user_id")}`)
+                    const response = fetch(`http://localhost:8000/api/v1/homework/availableHomework/${localStorage.getItem("user_id")}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.code === 404) {
@@ -174,7 +174,7 @@
                 },
                 filterStatus() {
                     status = event.target.value;
-                    const response = fetch(`http://localhost:5100/homework/availableHomework/${localStorage.getItem("user_id")}/${status}`)
+                    const response = fetch(`http://localhost:8000/api/v1/homework/availableHomework/${localStorage.getItem("user_id")}/${status}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.code === 404) {
@@ -190,9 +190,9 @@
                 },
                 findHomework() {
                     homework_title = event.target.value;
-                    let homeworkUrl = `http://localhost:5100/homework/availableHomework/${localStorage.getItem("user_id")}`;
+                    let homeworkUrl = `http://localhost:8000/api/v1/homework/availableHomework/${localStorage.getItem("user_id")}`;
                     if (homework_title != "") {
-                        homeworkUrl = `http://localhost:5100/homework/searchTitle/${localStorage.getItem("user_id")}/${homework_title}`;
+                        homeworkUrl = `http://localhost:8000/api/v1/homework/searchTitle/${localStorage.getItem("user_id")}/${homework_title}`;
                     }
                     const response = fetch(homeworkUrl)
                         .then(response => response.json())

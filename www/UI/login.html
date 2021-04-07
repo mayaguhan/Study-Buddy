@@ -37,7 +37,7 @@
             el: "#app",
             methods: {
                 getUserDetails: function () {
-                    const response = fetch(`http://localhost:5000/user/username/${document.getElementById("username").value}`)
+                    const response = fetch(`http://localhost:8000/api/v1/user/username/${document.getElementById("username").value}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.code === 404) {

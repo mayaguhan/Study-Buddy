@@ -167,7 +167,7 @@
             },
             methods: {
                 getAllPayments: function () {
-                    const response = fetch("http://localhost:5400/payment/payout/All")
+                    const response = fetch("http://localhost:8000/api/v1/payment/payout/All")
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {
@@ -183,7 +183,7 @@
                     });
                 },
                 getPaymentDetail: function (liaise_id) {
-                    const response = fetch("http://localhost:5600/liaise_detail/liaise_id/" + liaise_id)
+                    const response = fetch("http://localhost:8000/api/v1/liaise_detail/liaise_id/" + liaise_id)
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {
@@ -223,7 +223,7 @@
                             jsonData = JSON.stringify({ status: "Refund" })
                         }
 
-                        fetch(`http://localhost:5400/payment/updateStatusByPaymentId/${paymentDetail[0]}`, {
+                        fetch(`http://localhost:8000/api/v1/payment/updateStatusByPaymentId/${paymentDetail[0]}`, {
                             method: "PUT",
                             headers: {
                                 "Content-type": "application/json"
@@ -257,7 +257,7 @@
                 },
                 filterStatus() {
                     status = event.target.value;
-                    const response = fetch(`http://localhost:5400/payment/payout/${status}`)
+                    const response = fetch(`http://localhost:8000/api/v1/payment/payout/${status}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.code === 404) {
@@ -273,9 +273,9 @@
                 },
                 findPayment() {
                     payment_id = event.target.value;
-                    let paymentUrl = `http://localhost:5400/payment/payout/All`;
+                    let paymentUrl = `http://localhost:8000/api/v1/payment/payout/All`;
                     if (payment_id != "") {
-                        paymentUrl = `http://localhost:5400/payment/searchPayoutPaymentId/${payment_id}`;
+                        paymentUrl = `http://localhost:8000/api/v1/payment/searchPayoutPaymentId/${payment_id}`;
                     }
                     const response = fetch(paymentUrl)
                     .then(response => response.json())

@@ -45,6 +45,8 @@ def modify_homework(action):
 
 
 def modifyHomework(homework, action):
+    print(homework, action)
+    
     amqp_setup.check_setup()
 
     homework_id = homework['homework_id']
@@ -79,14 +81,16 @@ def modifyHomework(homework, action):
                 "data": {"homework_result": homework_result},
                 "message": "Homework has been sent for error handling"
             }
-
+        homework["liaise_id"] = liaise_id
+        print(homework)
+        print(liaise_URL + '/confirmHomework')
 
         # Update Liaise with tutor ratings & remark
-        liaise_result = invoke_http(liaise_URL + '/confirmHomework/' + str(liaise_id), method='PUT', json=homework)
+        liaise_result = invoke_http(liaise_URL + '/confirmHomework', method='PUT', json=homework)
         liaise_code = liaise_result["code"]
 
         if liaise_code not in range(200,300):
-            print("\n-----Publishing the Liaise error message with routing_key=liaise.error-----")
+            print("\n-----Publishing the Liaise update error message with routing_key=liaise.error-----")
             message = json.dumps(liaise_result)
             amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="liaise.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
             print("\nLiaise Error ({:d}) published to the RabbitMQ Exchange:".format(liaise_code), liaise_result)
@@ -95,7 +99,6 @@ def modifyHomework(homework, action):
                 "data": {"liaise_result": liaise_result},
                 "message": "Liaise has been sent for error handling"
             }
-
 
         # Update Payment Status = Confirm
         homework["status"] = "Confirm"
@@ -113,6 +116,7 @@ def modifyHomework(homework, action):
                 "message": "Payment insertion failure has been sent for error handling"
             }
 
+
     elif action == "cancel":
         # Update Homework Status = Cancel
         homework["status"] = "Cancel"
@@ -129,7 +133,7 @@ def modifyHomework(homework, action):
                 "data": {"homework_result": homework_result},
                 "message": "Homework has been sent for error handling"
             }
-
+        homework["liaise_id"] = liaise_id
 
         # Update Liaise as Rejected
         liaise_result = invoke_http(liaise_URL + '/reject', method='PUT', json=homework)
@@ -161,14 +165,6 @@ def modifyHomework(homework, action):
                 "data": {"payment_result": payment_result},
                 "message": "Payment insertion failure has been sent for error handling"
             }
-
-
-    else:
-        return {
-            "code": 400,
-            "message": "Invalid action executed"
-        }
-    
 
 
     # Return update result

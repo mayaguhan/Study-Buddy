@@ -244,8 +244,9 @@
                             image: this.newImage,
                             deadline: this.newDeadline
                         });
-    
-                        fetch(`http://localhost:5100/homework/addHomework`,
+
+                        if (this.newImage != ''){
+                          fetch(`http://localhost:8000/api/v1/homework/addHomework`,
                             {
                                 method: "POST",
                                 headers: {
@@ -272,6 +273,8 @@
                                         throw `${data.code}: ${data.message}`;
                                 }
                             })
+
+                        }
                     }
                 },
                 created: function () {

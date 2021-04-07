@@ -191,7 +191,7 @@
             findHomework: function () {
             // console.log(`${homeworkID}`);
             const response =
-                fetch(`http://localhost:5100/homework/${homeworkID}`)
+                fetch(`http://localhost:8000/api/v1/homework/${homeworkID}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -231,7 +231,7 @@
                   offering: this.offering
               });
 
-              fetch('http://localhost:5200/liaise/addLiaison',
+              fetch('http://localhost:8000/api/v1/liaise/addLiaison',
                   {
                       method: "POST",
                       headers: {

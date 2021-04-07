@@ -94,11 +94,14 @@ def liaise_detail_by_liaise_id(liaise_id):
 
 
 # Get All Liaise Detail by User Id
-@app.route("/liaise_detail/user_id/<string:user_id>")
-def liaise_detail_by_user_id(user_id):
+@app.route("/liaise_detail/user_id/<string:user_id>/<string:role>")
+def liaise_detail_by_user_id(user_id, role):
     if user_id:
         try:
-            result = retrieveLiaiseDetailByUserId(user_id)
+            if role == "student":
+                result = retrieveLiaiseDetailByUserIdStudent(user_id)
+            elif role == "tutor":
+                result = retrieveLiaiseDetailByUserIdTutor(user_id)
             return jsonify(result), result['code']
         
         except Exception as e:
@@ -216,7 +219,7 @@ def retrieveLiaiseDetail(homework_id):
     return_list = []
 
     # Invoke Liaise Microservice to retrieve tutor_id
-    liaisons_result = invoke_http(liaise_URL + '/liaiseByHomework/' + str(homework_id), method='GET')
+    liaisons_result = invoke_http(liaise_URL + '/liaiseByHomework/' + str(homework_id) + '/Pending', method='GET')
     liaisons_code = liaisons_result["code"]
 
     if liaisons_code not in range(200,300):
@@ -360,7 +363,6 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         liaisons_result["data"]["student_email"] = student_result["data"]["email"]
         liaisons_result["data"]["student_telegram_id"] = student_result["data"]["telegram_id"]
         liaisons_result["data"]["student_photo"] = student_result["data"]["photo"]
-        
 
     return {
         "code": 201,
@@ -369,7 +371,7 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
 
 
 # Get All Liaise Detail by User Id
-def retrieveLiaiseDetailByUserId(user_id):
+def retrieveLiaiseDetailByUserIdTutor(user_id):
     return_list = []
     # Invoke Liaise Microservice to retrieve homework_id
     liaisons_result = invoke_http(liaise_URL + "/liaiseByUserId/" + str(user_id), method='GET')
@@ -403,12 +405,90 @@ def retrieveLiaiseDetailByUserId(user_id):
                     "data": {"homework_result": homework_result},
                     "message": "Homework has been sent for error handling"
                 }
+            student_id = homework_result["data"]["student_id"]
+            liaison["student_id"] = student_id
             liaison["title"] = homework_result["data"]["title"]
             liaison["description"] = homework_result["data"]["description"]
             liaison["image"] = homework_result["data"]["image"]
 
-            return_list.append(liaison)
+            # Invoke User Microservice to retrieve Student detail
+            student_result = invoke_http(user_URL + '/user_id/' + str(student_id), method='GET')
+            student_code = student_result["code"]
+            if student_code not in range(200,300):
+                print("\n-----Publishing the User error message with routing_key=user.error-----")
+                message = json.dumps(student_result)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
+                print("\nUser Error ({:d}) published to the RabbitMQ Exchange:".format(student_code), student_result)
+                return {
+                    "code": 500,
+                    "data": {"student_result": student_result},
+                    "message": "User has been sent for error handling"
+                }
+            liaison["student_username"] = student_result["data"]["username"]
+            liaison["student_telegram_id"] = student_result["data"]["telegram_id"]
 
+            return_list.append(liaison)
+    return {
+        "code": 201,
+        "data": return_list
+    }
+
+# Get All Liaise Detail by User Id
+def retrieveLiaiseDetailByUserIdStudent(user_id):
+    return_list = []
+    # Invoke Homework microservice to retrieve all homeworks by student
+    homework_result = invoke_http(homework_URL + '/homeworkByStudentIdStatus/' + str(user_id) + '/Progress', method='GET')
+    homework_code = homework_result["code"]
+
+    if homework_code not in range(200,300):
+        print("\n-----Publishing the Homework error message with routing_key=homework.error-----")
+        message = json.dumps(homework_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="homework.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
+        print("\nHomework Error ({:d}) published to the RabbitMQ Exchange:".format(homework_code), homework_result)
+        return {
+            "code": 500,
+            "data": {"homework_result": homework_result},
+            "message": "Homework has been sent for error handling"
+        }
+    
+    if len(homework_result["homework"]) > 0:
+        for homework in homework_result["homework"]:
+            homework_id = homework["homework_id"]
+            
+            # Invoke Liaise Microservice to retrieve all accepted liaise of this homework
+            tutor_liaise_result = invoke_http(liaise_URL + "/liaiseByHomework/" + str(homework_id) + '/Accept', method='GET')
+            tutor_liaise_code = tutor_liaise_result["code"]
+
+            if tutor_liaise_code not in range(200,300):
+                print("\n-----Publishing the Liaise error message with routing_key=liaise.error-----")
+                message = json.dumps(tutor_liaise_result)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="liaise.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
+                print("\nLiaise Error ({:d}) published to the RabbitMQ Exchange:".format(tutor_liaise_code), tutor_liaise_result)
+                return {
+                    "code": 500,
+                    "data": {"liaise_result": tutor_liaise_result},
+                    "message": "Liaise has been sent for error handling"
+                }
+            tutor_id = tutor_liaise_result["liaisons"][0]["tutor_id"]
+
+            # Invoke User Microservice to retrieve tutor detail
+            tutor_result = invoke_http(user_URL + '/user_id/' + str(tutor_id), method='GET')
+            tutor_code = tutor_result["code"]
+
+            if tutor_code not in range(200,300):
+                print("\n-----Publishing the User error message with routing_key=user.error-----")
+                message = json.dumps(tutor_result)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="user.error", body=message, properties=pika.BasicProperties(delivery_mode=2))
+                print("\nUser Error ({:d}) published to the RabbitMQ Exchange:".format(tutor_code), tutor_result)
+                return {
+                    "code": 500,
+                    "data": {"tutor_result": tutor_result},
+                    "message": "User has been sent for error handling"
+                }
+            homework["telegram_id"] = tutor_result["data"]["telegram_id"]
+            homework["username"] = tutor_result["data"]["username"]
+
+            return_list.append(homework)
 
     return {
         "code": 201,
