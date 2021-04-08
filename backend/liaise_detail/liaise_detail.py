@@ -322,6 +322,7 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         liaisons_result["data"]["homework_description"] = homework_result["data"]["description"]
         liaisons_result["data"]["homework_subject"] = homework_result["data"]["subject"]
         liaisons_result["data"]["homework_image"] = homework_result["data"]["image"]
+        liaisons_result["data"]["homework_status"] = homework_result["data"]["status"]
         liaisons_result["data"]["student_id"] = student_id
 
 
@@ -343,6 +344,9 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         liaisons_result["data"]["tutor_email"] = tutor_result["data"]["email"]
         liaisons_result["data"]["tutor_telegram_id"] = tutor_result["data"]["telegram_id"]
         liaisons_result["data"]["tutor_photo"] = tutor_result["data"]["photo"]
+        liaisons_result["data"]["tutor_account_num"] = tutor_result["data"]["account_num"]
+        liaisons_result["data"]["tutor_account_type"] = tutor_result["data"]["account_type"]
+        liaisons_result["data"]["tutor_bank_name"] = tutor_result["data"]["bank_name"]
 
 
         # Invoke User Microservice to retrieve Student detail
@@ -362,6 +366,9 @@ def retrieveLiaiseDetailByLiaiseId(liaise_id):
         liaisons_result["data"]["student_contact"] = student_result["data"]["contact"]
         liaisons_result["data"]["student_email"] = student_result["data"]["email"]
         liaisons_result["data"]["student_telegram_id"] = student_result["data"]["telegram_id"]
+        liaisons_result["data"]["student_account_num"] = student_result["data"]["account_num"]
+        liaisons_result["data"]["student_account_type"] = student_result["data"]["account_type"]
+        liaisons_result["data"]["student_bank_name"] = student_result["data"]["bank_name"]
         liaisons_result["data"]["student_photo"] = student_result["data"]["photo"]
 
     return {

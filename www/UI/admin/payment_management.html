@@ -137,6 +137,9 @@
                                 <p id="modalTutorTelegram"></p>
                                 <p id="modalTutorContact"></p>
                                 <p id="modalTutorEmail"></p>
+                                <p id="modalTutorBankName"></p>
+                                <p id="modalTutorAccountType"></p>
+                                <p id="modalTutorAccountNum"></p>
                             </div>
                             <div class="col">
                                 <b>Student Info</b>
@@ -144,8 +147,12 @@
                                 <p id="modalStudentTelegram"></p>
                                 <p id="modalStudentContact"></p>
                                 <p id="modalStudentEmail"></p>
+                                <p id="modalStudentBankName"></p>
+                                <p id="modalStudentAccountType"></p>
+                                <p id="modalStudentAccountNum"></p>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -233,10 +240,16 @@
                             document.getElementById("modalTutorTelegram").innerText = paymentDetail.tutor_telegram_id;
                             document.getElementById("modalTutorContact").innerText = paymentDetail.tutor_contact;
                             document.getElementById("modalTutorEmail").innerText = paymentDetail.tutor_email;
+                            document.getElementById("modalTutorBankName").innerText = paymentDetail.tutor_bank_name;
+                            document.getElementById("modalTutorAccountType").innerText = paymentDetail.tutor_account_type;
+                            document.getElementById("modalTutorAccountNum").innerText = paymentDetail.tutor_account_num;
                             document.getElementById("modalStudentUsername").innerText = paymentDetail.student_username;
                             document.getElementById("modalStudentTelegram").innerText = paymentDetail.student_telegram_id;
                             document.getElementById("modalStudentContact").innerText = paymentDetail.student_contact;
                             document.getElementById("modalStudentEmail").innerText = paymentDetail.student_email;
+                            document.getElementById("modalStudentBankName").innerText = paymentDetail.student_bank_name;
+                            document.getElementById("modalStudentAccountType").innerText = paymentDetail.student_account_type;
+                            document.getElementById("modalStudentAccountNum").innerText = paymentDetail.student_account_num;
                         }
                     })
                     .catch(error => {
