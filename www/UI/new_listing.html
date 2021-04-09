@@ -241,11 +241,11 @@
                             title: this.newTitle,
                             description: this.newDescription,
                             price: this.newPrice,
-                            image: this.newImage,
+                            image: localStorage.getItem("newHomeworkImage"),
                             deadline: this.newDeadline
                         });
 
-                        if (this.newImage != ''){
+                        if (localStorage.getItem("newHomeworkImage")){
                           fetch(`http://localhost:8000/api/v1/homework/addHomework`,
                             {
                                 method: "POST",
