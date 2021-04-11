@@ -215,6 +215,10 @@
                           </div>
                         </div>
 
+                        <div v-else-if="aHomework.status == 'Cancel'">
+                          <p class="card-text" style="font-style:italic; ">Cancelled</p>
+                        </div>
+
                         <div v-else>
                           <p class="card-text" style="font-style:italic; ">Completed</p>
                         </div>
