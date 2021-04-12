@@ -35,7 +35,7 @@ def send_email():
         return jsonify(
             {
                 "code": 500,
-                "message": e
+                "message": "There was an error in sending email." + e
             }
         )
 
