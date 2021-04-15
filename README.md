@@ -13,6 +13,13 @@ Please follow the following instructions if your are running on a Windows machin
 4) Click on "Import" tab on the landing page
 5) Select on "databases.sql" file
 6) Check if the required information has been bootstrapped into the database
+7) Click User accounts
+8) Click Add user account and specify the following:
+    User name: (Use text field:) is123
+    Host name: (Any host) %
+    Password: Change to No Password
+9) Select Data, this will check SELECT, INSERT, UPDATE, DELETE, FILE
+10) Click Go and a new user: is213 will be added. This will allow remote access to the database
 
 ## Setting up Kong API Gateway
 1) Go to localhost:1337
@@ -50,6 +57,13 @@ Please follow the following instructions if your are running on a Windows machin
 4) Click on "Import" tab on the landing page
 5) Select on "databases.sql" file
 6) Check if the required information has been bootstrapped into the database
+7) Click User accounts
+8) Click Add user account and specify the following:
+    User name: (Use text field:) is123
+    Host name: (Any host) %
+    Password: Change to No Password
+9) Select Data, this will check SELECT, INSERT, UPDATE, DELETE, FILE
+10) Click Go and a new user: is213 will be added. This will allow remote access to the database
 
 ## Setting up Kong API Gateway
 1) Go to localhost:1337
