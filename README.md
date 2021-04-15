@@ -40,6 +40,9 @@ Please follow the following instructions if your are running on a Windows machin
 4) Sign in using the account created
 5) Create new connection; using Name: Default and Kong Admin URL: http://kong:8001
 
+### Limitations
+Due to the limitation of the API, in order to call the Imgur API, it must be called from 127.0.0.1.
+This issue will be avoided if we use a domain name.
 
 
 # Installation for Mac Users
@@ -83,3 +86,7 @@ Please follow the following instructions if your are running on a Windows machin
 3) Password: adminadmin
 4) Sign in using the account created
 5) Create new connection; using Name: Default and Kong Admin URL: http://kong:8001
+
+### Limitations
+Due to the limitation of the API, in order to call the Imgur API, it must be called from 127.0.0.1.
+This issue will be avoided if we use a domain name.
