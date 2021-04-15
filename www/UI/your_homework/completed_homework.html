@@ -189,7 +189,6 @@
 
               },
               findUser: function () {
-              console.log(this.username);
               const response =
                   fetch(`${get_user_URL}/${this.username}`)
                       .then(response => response.json())
