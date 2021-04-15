@@ -141,7 +141,7 @@ def search_payout_by_payment_id(payment_id):
     return jsonify(
         {
             "code": 404,
-            "message": "Payment not found."
+            "message": "Payout not found."
         }
     ), 404
 
@@ -161,28 +161,10 @@ def search_by_payment_id(payment_id):
     return jsonify(
         {
             "code": 404,
-            "message": "Payout not found."
+            "message": "Payment not found."
         }
     ), 404
 
-
-# # Get a Payment by Liaise ID
-# @app.route("/payment/liaise_id/<string:liaise_id>")
-# def find_by_liase_id(liaise_id):
-#     payment = Payment.query.filter_by(liaise_id=liaise_id).first()
-#     if payment:
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": payment.json()
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "message": "Payment not found."
-#         }
-#     ), 404
 
 
 # Add a new Payment
@@ -275,7 +257,7 @@ def update_status_by_liaise_id(liaise_id, status):
             {
                 "code": 500,
                 "data": {
-                    "payment": liaise_id
+                    "liaise_id": liaise_id
                 },
                 "message": "An error occurred while updating the payment. " + str(e)
             }
