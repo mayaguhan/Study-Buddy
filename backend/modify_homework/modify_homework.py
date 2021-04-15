@@ -45,8 +45,6 @@ def modify_homework(action):
 
 
 def modifyHomework(homework, action):
-    print(homework, action)
-    
     amqp_setup.check_setup()
 
     homework_id = homework['homework_id']
